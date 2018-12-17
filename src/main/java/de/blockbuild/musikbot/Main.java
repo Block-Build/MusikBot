@@ -28,8 +28,7 @@ public class Main extends JavaPlugin {
 		// initInstances();
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			if (true /* mcbConfigsManager.setupConfigurations() */ ) {
-				// bot = new Bot(this, eventWaiter);
-				System.out.println("Musik Bot wird gestartet");
+				System.out.println("Music Bot get started");
 				bot = new Bot();
 			} else {
 				this.getServer().shutdown();
