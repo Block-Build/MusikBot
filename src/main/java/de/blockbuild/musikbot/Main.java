@@ -29,7 +29,7 @@ public class Main extends JavaPlugin {
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			if (true /* load config */ ) {
 				System.out.println("Music Bot get started");
-				bot = new Bot();
+				bot = new Bot(this);
 			} else {
 				this.getServer().shutdown();
 			}
