@@ -2,6 +2,7 @@ package de.blockbuild.musikbot.Listener;
 
 import java.util.Random;
 
+import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -38,6 +39,17 @@ public class MessageListener extends ListenerAdapter {
 			textChannel = event.getTextChannel();
 			member = event.getMember();
 			name = member.getEffectiveName();
+
+			// Just test command
+			AudioPlayerSendHandler apsh = (AudioPlayerSendHandler) guild.getAudioManager().getSendingHandler();
+
+			if (msg.equals("!v10")) {
+				apsh.getPlayer().setVolume(10);
+			} else if (msg.equals("!v50")) {
+				apsh.getPlayer().setVolume(50);
+			} else if (msg.equals("!v100")) {
+				apsh.getPlayer().setVolume(100);
+			}
 		}
 
 		if (msg.equals("!ping")) {
@@ -45,9 +57,8 @@ public class MessageListener extends ListenerAdapter {
 		} else if (msg.equals("!roll")) {
 			Random rand = new Random();
 			int roll = rand.nextInt(6) + 1;
-			channel.sendMessage("Your roll: " + roll).queue(sentMessage -> // This is called a lambda statement. If you
-																			// don't know
-			{ // what they are or how they work, try google!
+			channel.sendMessage("Your roll: " + roll).queue(sentMessage -> // This is called a lambda statement.
+			{
 				if (roll < 3) {
 					channel.sendMessage("The roll for messageId: " + sentMessage.getId()
 							+ " wasn't very good... Must be bad luck!\n").queue();

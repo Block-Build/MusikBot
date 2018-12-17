@@ -13,12 +13,12 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 
 public class Bot {
-
 	private JDA jda;
 	public static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
 			Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
 			Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI,
-			Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE, Permission.MESSAGE_TTS };
+			Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE,
+			Permission.MESSAGE_TTS };
 
 	public Bot() {
 		start();
@@ -30,11 +30,9 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT)
 					.setToken("NTIzOTI3MzY3NDY3NjYzNDAx.Dvh6cg.r6rrETJfOYRBJp2Xc3l-zPn_BuY")
 					.setGame(Game.of(GameType.DEFAULT, "starting...")).setAudioEnabled(true)
-					.setStatus(OnlineStatus.DO_NOT_DISTURB)
-					.addEventListener(new ReadyListener())
-					.build();
+					.setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(new ReadyListener()).build();
 			jda.awaitReady();
-			System.out.println("Bot started successfully");
+			return true;
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -42,7 +40,6 @@ public class Bot {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	public boolean stop() {
@@ -54,5 +51,9 @@ public class Bot {
 	public void initListener() {
 		jda.addEventListener(new MessageListener());
 		jda.addEventListener(new ReadyListener());
+	}
+
+	public JDA getJDA() {
+		return jda;
 	}
 }

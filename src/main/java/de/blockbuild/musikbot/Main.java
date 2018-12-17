@@ -27,15 +27,12 @@ public class Main extends JavaPlugin {
 	private void start() {
 		// initInstances();
 		Bukkit.getScheduler().runTaskLater(this, () -> {
-			if (true /* mcbConfigsManager.setupConfigurations() */ ) {
+			if (true /* load config */ ) {
 				System.out.println("Music Bot get started");
 				bot = new Bot();
 			} else {
 				this.getServer().shutdown();
 			}
 		}, 1L);
-		// Bukkit.getScheduler().runTaskLater(this, () ->
-		// Bukkit.getPluginManager().callEvent(new StartEvent(this)), 20L);
-
 	}
 }
