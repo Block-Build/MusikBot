@@ -5,6 +5,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin{
 	
+	Bot bot;
+	
 	@Override
 	public void onEnable() {
 		try {
@@ -16,11 +18,11 @@ public class Main extends JavaPlugin{
 	
     @Override
     public void onDisable() {
-        /*if (bot != null) {
-            chatManager.clearCache();
-            bot.shutdown();
-            */
+        if (bot != null) {
+            if(bot.stop()) {
+            }
         }
+    }
 	
     private void start() {
         //initInstances();
@@ -28,6 +30,7 @@ public class Main extends JavaPlugin{
             if (true /*mcbConfigsManager.setupConfigurations()*/ ) {
                 //bot = new Bot(this, eventWaiter);
             	System.out.println("Musik Bot wird gestartet");
+            	bot = new Bot();
             } else {
                 this.getServer().shutdown();
             }
