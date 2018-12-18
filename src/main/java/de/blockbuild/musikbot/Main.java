@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	Bot bot;
+	private Bot bot;
 
 	@Override
 	public void onEnable() {
@@ -34,5 +34,9 @@ public class Main extends JavaPlugin {
 				this.getServer().shutdown();
 			}
 		}, 1L);
+	}
+
+	public Bot getBot() {
+		return bot;
 	}
 }

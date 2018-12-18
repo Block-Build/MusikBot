@@ -10,6 +10,7 @@ import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
+import de.blockbuild.musikbot.commands.VolumeCommand;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -28,7 +29,7 @@ public class Bot {
 			Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE,
 			Permission.MESSAGE_TTS };
 	private Main main;
-	//updateable map
+	// updateable map
 
 	public Bot(Main main) {
 		this.main = main;
@@ -41,10 +42,9 @@ public class Bot {
 	public boolean start() {
 		try {
 			String token = "NTIzOTI3MzY3NDY3NjYzNDAx.Dvh6cg.r6rrETJfOYRBJp2Xc3l-zPn_BuY";
-			jda = new JDABuilder(AccountType.BOT)
-					.setToken(token)
-					.setGame(Game.of(GameType.DEFAULT, "starting...")).setAudioEnabled(true)
-					.setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(new ReadyListener()).build();
+			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
+					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(new ReadyListener())
+					.build();
 			jda.awaitReady();
 			return true;
 		} catch (LoginException e) {
@@ -66,38 +66,35 @@ public class Bot {
 		jda.addEventListener(new MessageListener());
 		jda.addEventListener(new ReadyListener());
 	}
-	
+
 	public void initCommandClient() {
 		String ownerID = "240566179880501250";
 		String trigger = "!";
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
-		ccb.useHelpBuilder(false); //maybe later
+		ccb.useHelpBuilder(false); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule();
+		registerCommandModule(new VolumeCommand(main));
 		client = ccb.build();
 		jda.addEventListener(client);
 	}
-	
-	public void registerCommandModule(Command...commands) {
+
+	public void registerCommandModule(Command... commands) {
 		for (Command c : commands) {
-            ccb.addCommand(c);
-        }
+			ccb.addCommand(c);
+		}
 	}
-	
-	
-	
 
-    public CommandClient getClient() {
-        return client;
-    }
+	public CommandClient getClient() {
+		return client;
+	}
 
-    public JDA getJda() {
-        return jda;
-    }
+	public JDA getJda() {
+		return jda;
+	}
 
-    public Main getMain() {
-        return main;
-    }
+	public Main getMain() {
+		return main;
+	}
 }
