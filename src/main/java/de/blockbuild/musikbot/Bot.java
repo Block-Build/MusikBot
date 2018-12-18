@@ -1,7 +1,5 @@
 package de.blockbuild.musikbot;
 
-import java.util.Map;
-
 import javax.security.auth.login.LoginException;
 
 import com.jagrosh.jdautilities.commandclient.Command;
