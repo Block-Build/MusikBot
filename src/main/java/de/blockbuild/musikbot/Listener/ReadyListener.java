@@ -10,6 +10,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
+import de.blockbuild.musikbot.Main;
 import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
 import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.JDA;
@@ -22,6 +23,11 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class ReadyListener extends ListenerAdapter {
+	Main main;
+
+	public ReadyListener(Main main) {
+		this.main = main;
+	}
 
 	@Override
 	public void onReady(ReadyEvent event) {
@@ -41,10 +47,14 @@ public class ReadyListener extends ListenerAdapter {
 
 		joinDiscord(jda);
 		AudioSourceManagers.registerRemoteSources(playerManager);
+		AudioSourceManagers.registerLocalSource(playerManager);
 		player = playerManager.createPlayer();
 		TrackScheduler trackScheduler = new TrackScheduler(player);
 		AudioSendHandler sendHandler = new AudioPlayerSendHandler(player);
 		player.addListener(trackScheduler);
+		System.out.println(main.getBot().toString());
+		main.getBot().setScheduler(trackScheduler);
+		main.getBot().setPlayerManager(playerManager);
 
 		jda.getGuilds().forEach((guild) -> {
 			try {
@@ -58,15 +68,13 @@ public class ReadyListener extends ListenerAdapter {
 		playerManager.loadItem("https://www.youtube.com/watch?v=UQnFHwz_mUg", new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack track) {
-				// trackScheduler.queue(track);
-				trackScheduler.playTrack(track);
+				trackScheduler.queue(track);
 			}
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist) {
 				for (AudioTrack track : playlist.getTracks()) {
-					// trackScheduler.queue(track);
-					trackScheduler.playTrack(track);
+					trackScheduler.queue(track);
 				}
 			}
 

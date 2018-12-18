@@ -5,10 +5,13 @@ import javax.security.auth.login.LoginException;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
+import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
+import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -27,10 +30,13 @@ public class Bot {
 			Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE,
 			Permission.MESSAGE_TTS };
 	private Main main;
+	private TrackScheduler ts;
+	private AudioPlayerManager playerManager;
 	// updateable map
 
 	public Bot(Main main) {
 		this.main = main;
+		main.setBot(this);
 		ccb = new CommandClientBuilder();
 		start();
 		initListeners();
@@ -41,8 +47,8 @@ public class Bot {
 		try {
 			String token = "NTIzOTI3MzY3NDY3NjYzNDAx.Dvh6cg.r6rrETJfOYRBJp2Xc3l-zPn_BuY";
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
-					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(new ReadyListener())
-					.build();
+					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB)
+					.addEventListener(new ReadyListener(main)).build();
 			jda.awaitReady();
 			return true;
 		} catch (LoginException e) {
@@ -62,7 +68,7 @@ public class Bot {
 
 	public void initListeners() {
 		jda.addEventListener(new MessageListener());
-		jda.addEventListener(new ReadyListener());
+		// jda.addEventListener(new ReadyListener(main));
 	}
 
 	public void initCommandClient() {
@@ -73,7 +79,7 @@ public class Bot {
 		ccb.useHelpBuilder(false); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule(new VolumeCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main));
 		client = ccb.build();
 		jda.addEventListener(client);
 	}
@@ -94,5 +100,21 @@ public class Bot {
 
 	public Main getMain() {
 		return main;
+	}
+
+	public TrackScheduler getScheduler() {
+		return ts;
+	}
+
+	public void setScheduler(TrackScheduler trackScheduler) {
+		this.ts = trackScheduler;
+	}
+
+	public AudioPlayerManager getPlayerManager() {
+		return playerManager;
+	}
+
+	public void setPlayerManager(AudioPlayerManager playerManager) {
+		this.playerManager = playerManager;
 	}
 }
