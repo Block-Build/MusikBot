@@ -20,19 +20,20 @@ public class VolumeCommand extends MBCommand {
 		AudioPlayerSendHandler apsh = (AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler();
 		if (event.getArgs().isEmpty()) {
 			event.reply("Current volume is '" + apsh.getPlayer().getVolume() + "'");
-		}
-		int volume;
-		try {
-			volume = Integer.parseInt(event.getArgs());
-		} catch (NumberFormatException e) {
-			volume = -1;
-			System.err.println(e);
-		}
-		if (volume < 0 || volume > 100) {
-			event.reply(event.getClient().getError() + "Volume must be a valid integer between 0 and 150!");
 		} else {
-			apsh.getPlayer().setVolume(volume);
-			event.reply("Volume now set to '" + volume + "'");
+			int volume;
+			try {
+				volume = Integer.parseInt(event.getArgs());
+			} catch (NumberFormatException e) {
+				volume = -1;
+				System.err.println(e);
+			}
+			if (volume < 0 || volume > 100) {
+				event.reply(event.getClient().getError() + "Volume must be a valid integer between 0 and 150!");
+			} else {
+				apsh.getPlayer().setVolume(volume);
+				event.reply("Volume now set to '" + volume + "'");
+			}
 		}
 	}
 }
