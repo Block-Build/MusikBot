@@ -15,18 +15,19 @@ import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
 import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.audio.AudioSendHandler;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class ReadyListener extends ListenerAdapter {
 	Main main;
+	Bot bot;
 
-	public ReadyListener(Main main) {
+	public ReadyListener(Main main, Bot bot) {
 		this.main = main;
+		this.bot = bot;
+
 	}
 
 	@Override
@@ -45,20 +46,21 @@ public class ReadyListener extends ListenerAdapter {
 		 * "| ID: " + voice.getId().toString()); } });
 		 */
 
-		joinDiscord(jda);
+		bot.joinDiscordTextChannel(jda, null);
+		bot.joinDiscordVoiceChannel(jda, null);
+
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 		player = playerManager.createPlayer();
-		TrackScheduler trackScheduler = new TrackScheduler(player);
-		AudioSendHandler sendHandler = new AudioPlayerSendHandler(player);
+		TrackScheduler trackScheduler = new TrackScheduler(bot.getDefaultTextChannel(), player);
+		// AudioSendHandler sendHandler = new AudioPlayerSendHandler(player);
 		player.addListener(trackScheduler);
-		System.out.println(main.getBot().toString());
 		main.getBot().setScheduler(trackScheduler);
 		main.getBot().setPlayerManager(playerManager);
 
 		jda.getGuilds().forEach((guild) -> {
 			try {
-				guild.getAudioManager().setSendingHandler(sendHandler);
+				guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
 				// guild.getAudioManager().setSendingHandler(this);
 			} catch (Exception ex) {
 				System.err.println(ex);
@@ -68,14 +70,17 @@ public class ReadyListener extends ListenerAdapter {
 		playerManager.loadItem("https://www.youtube.com/watch?v=UQnFHwz_mUg", new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack track) {
-				trackScheduler.queue(track);
+				trackScheduler.playTrack(track, null);
 			}
 
 			@Override
 			public void playlistLoaded(AudioPlaylist playlist) {
-				for (AudioTrack track : playlist.getTracks()) {
-					trackScheduler.queue(track);
+				AudioTrack firstTrack = playlist.getSelectedTrack();
+
+				if (firstTrack == null) {
+					firstTrack = playlist.getTracks().get(0);
 				}
+				trackScheduler.playTrack(firstTrack, null);
 			}
 
 			@Override
@@ -86,25 +91,6 @@ public class ReadyListener extends ListenerAdapter {
 			@Override
 			public void loadFailed(FriendlyException throwable) {
 				// Notify the user that everything exploded
-			}
-		});
-	}
-
-	private void joinDiscord(JDA jda) {
-		jda.getGuilds().forEach((guild) -> {
-			try {
-				// guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById("253303928345722880"));
-				// guild.getAudioManager()
-				// .openAudioConnection((VoiceChannel) guild.getVoiceChannelsByName("Sprechstube
-				// 1", true).get(0));
-				guild.getAudioManager().openAudioConnection(guild.getVoiceChannels().get(2));
-			} catch (IllegalArgumentException e) {
-				System.out.println("no VoiceChannel");
-			} catch (InsufficientPermissionException e) {
-				System.out.println("Missing permission: " + e.getPermission() + " to join '"
-						+ guild.getVoiceChannels().get(2).getName() + "'");
-			} catch (Exception e) {
-				System.err.println(e);
 			}
 		});
 	}

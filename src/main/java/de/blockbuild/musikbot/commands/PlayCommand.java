@@ -19,6 +19,7 @@ public class PlayCommand extends MBCommand {
 		this.name = "play";
 		this.aliases = new String[] { "p" };
 		this.help = "Plays given track";
+		this.arguments = "<URL|title>";
 	}
 
 	@Override
@@ -26,41 +27,47 @@ public class PlayCommand extends MBCommand {
 		TrackScheduler ts = main.getBot().getScheduler();
 		AudioPlayer player = ts.getPlayer();
 		if (e.getArgs().isEmpty()) {
-			e.reply("Currently playing: " + player.getPlayingTrack().getInfo().title + "\n"
-					+ player.getPlayingTrack().getInfo().author);
+			e.reply("Currently playing: " + player.getPlayingTrack().getInfo().title);
 		} else {
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
-			playerManager.loadItem(e.getArgs(), new ResultHandler(ts));
+			playerManager.loadItem(e.getArgs(), new ResultHandler(ts, e));
 		}
 	}
 
 	private class ResultHandler implements AudioLoadResultHandler {
 
 		private TrackScheduler ts;
+		private CommandEvent event;
 
-		public ResultHandler(TrackScheduler trackScheduler) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
 			this.ts = trackScheduler;
+			this.event = event;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			ts.playTrack(track);
+			ts.playTrack(track, event);
 		}
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			for (AudioTrack track : playlist.getTracks()) {
-				ts.playTrack(track);
+			AudioTrack firstTrack = playlist.getSelectedTrack();
+
+			if (firstTrack == null) {
+				firstTrack = playlist.getTracks().get(0);
 			}
+			ts.playTrack(firstTrack, event);
 		}
 
 		@Override
 		public void noMatches() {
+			System.out.println("no results found: " + event.getArgs());
 			// Notify the user that we've got nothing
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
+			System.out.println("faild to load: " + event.getArgs());
 			// Notify the user that everything exploded
 		}
 	}

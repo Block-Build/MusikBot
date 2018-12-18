@@ -19,6 +19,9 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class Bot {
 	private JDA jda;
@@ -32,6 +35,7 @@ public class Bot {
 	private Main main;
 	private TrackScheduler ts;
 	private AudioPlayerManager playerManager;
+	private TextChannel defaultChannel = null;
 	// updateable map
 
 	public Bot(Main main) {
@@ -48,7 +52,7 @@ public class Bot {
 			String token = "NTIzOTI3MzY3NDY3NjYzNDAx.Dvh6cg.r6rrETJfOYRBJp2Xc3l-zPn_BuY";
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB)
-					.addEventListener(new ReadyListener(main)).build();
+					.addEventListener(new ReadyListener(main, this)).build();
 			jda.awaitReady();
 			return true;
 		} catch (LoginException e) {
@@ -90,6 +94,110 @@ public class Bot {
 		}
 	}
 
+	public void joinDiscordVoiceChannel(JDA jda, String nameOrID) {
+		int name = -1;
+		try {
+			name = Integer.parseInt(nameOrID);
+		} catch (NumberFormatException e) {
+			// No err, just a string
+		}
+		if (nameOrID == null) {
+			jda.getGuilds().forEach((guild) -> {
+				try {
+					guild.getAudioManager().openAudioConnection(guild.getVoiceChannels().get(0));
+				} catch (IllegalArgumentException e) {
+					System.out.println("no VoiceChannel");
+				} catch (InsufficientPermissionException e) {
+					System.out.println("Missing permission: " + e.getPermission() + " to join '"
+							+ guild.getVoiceChannels().get(2).getName() + "'");
+				} catch (Exception e) {
+					System.err.println(e);
+				}
+			});
+		} else if (name == -1) {
+			jda.getGuilds().forEach((guild) -> {
+				try {
+					guild.getAudioManager()
+							.openAudioConnection((VoiceChannel) guild.getVoiceChannelsByName(nameOrID, true).get(0));
+				} catch (IllegalArgumentException e) {
+					System.out.println("no VoiceChannel");
+				} catch (InsufficientPermissionException e) {
+					System.out.println("Missing permission: " + e.getPermission() + " to join '"
+							+ guild.getVoiceChannels().get(2).getName() + "'");
+				} catch (Exception e) {
+					System.err.println(e);
+				}
+			});
+		} else {
+			jda.getGuilds().forEach((guild) -> {
+				try {
+					guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(nameOrID));
+				} catch (IllegalArgumentException e) {
+					System.out.println("no VoiceChannel");
+				} catch (InsufficientPermissionException e) {
+					System.out.println("Missing permission: " + e.getPermission() + " to join '"
+							+ guild.getVoiceChannels().get(2).getName() + "'");
+				} catch (Exception e) {
+					System.err.println(e);
+				}
+			});
+		}
+	}
+
+	public void joinDiscordTextChannel(JDA jda, String nameOrID) {
+		int name = -1;
+		try {
+			name = Integer.parseInt(nameOrID);
+		} catch (NumberFormatException e) {
+			// No err, just a string
+		}
+		if (nameOrID == null) {
+			jda.getGuilds().forEach((guild) -> {
+				TextChannel textChannel = null;
+				for (TextChannel tc : guild.getTextChannels()) {
+					if (tc.canTalk(guild.getMemberById("523927367467663401"))) {
+						textChannel = tc;
+						break;
+					}
+				}
+
+				if (textChannel == null) {
+					System.out.println("No read an write permission on '" + guild.getName() + "'");
+				} else {
+					this.defaultChannel = textChannel;
+				}
+			});
+		} else if (name == -1) {
+			jda.getGuilds().forEach((guild) -> {
+				TextChannel textChannel = null;
+
+				for (TextChannel tc : guild.getTextChannelsByName(nameOrID, true)) {
+					if (tc.canTalk(guild.getMemberById("523927367467663401"))) {
+						textChannel = tc;
+						break;
+					}
+				}
+
+				if (textChannel == null) {
+					System.out.println("No permissions or no matching TextChannel was found with '" + nameOrID + "' on '"+ guild.getName() + "'");
+				} else {
+					this.defaultChannel = textChannel;
+				}
+			});
+		} else {
+			jda.getGuilds().forEach((guild) -> {
+				TextChannel textChannel = guild.getTextChannelById(nameOrID);
+				if (textChannel == null) {
+					System.out.println("No TextChannel with ID '" + nameOrID + "' found!");
+				} else {
+					this.defaultChannel = textChannel;
+				}
+			});
+		}
+	}
+
+	// Get and set
+
 	public CommandClient getClient() {
 		return client;
 	}
@@ -116,5 +224,9 @@ public class Bot {
 
 	public void setPlayerManager(AudioPlayerManager playerManager) {
 		this.playerManager = playerManager;
+	}
+
+	public TextChannel getDefaultTextChannel() {
+		return this.defaultChannel;
 	}
 }
