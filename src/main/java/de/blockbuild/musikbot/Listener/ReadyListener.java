@@ -53,7 +53,6 @@ public class ReadyListener extends ListenerAdapter {
 		AudioSourceManagers.registerLocalSource(playerManager);
 		player = playerManager.createPlayer();
 		TrackScheduler trackScheduler = new TrackScheduler(bot.getDefaultTextChannel(), player);
-		// AudioSendHandler sendHandler = new AudioPlayerSendHandler(player);
 		player.addListener(trackScheduler);
 		main.getBot().setScheduler(trackScheduler);
 		main.getBot().setPlayerManager(playerManager);
@@ -61,7 +60,6 @@ public class ReadyListener extends ListenerAdapter {
 		jda.getGuilds().forEach((guild) -> {
 			try {
 				guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
-				// guild.getAudioManager().setSendingHandler(this);
 			} catch (Exception ex) {
 				System.err.println(ex);
 			}
