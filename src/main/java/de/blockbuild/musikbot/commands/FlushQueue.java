@@ -18,26 +18,31 @@ public class FlushQueue extends MBCommand {
 	@Override
 	protected void doCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = main.getBot().getScheduler();
-		StringBuilder builder = new StringBuilder();
 		if (event.getArgs().isEmpty()) {
 			trackScheduler.flushQueue();
+			StringBuilder builder = new StringBuilder();
 			builder.append(event.getClient().getSuccess()).append(" Queue flushed!");
+			event.reply(builder.toString());
 		} else {
 			int i = 0;
 			try {
 				i = Integer.parseInt(event.getArgs());
 			} catch (Exception e) {
-				builder.append(event.getClient().getError()).append(" `").append(event.getArgs())
-						.append("` isn't a vaild Number.");
+				//no integer
 			}
 			if (i > 0) {
 				trackScheduler.flushQueue(i);
+				StringBuilder builder = new StringBuilder();
 				builder.append(event.getClient().getSuccess()).append(" ").append(i).append(" tracks got flushed!");
 				if (!(trackScheduler.getNextTrack() == null)) {
 					builder.append("\nNext track: `").append(trackScheduler.getNextTrack().getInfo().title).append("`");
 				}
 				event.reply(builder.toString());
 			}
+			StringBuilder builder = new StringBuilder();
+			builder.append(event.getClient().getError()).append(" `").append(event.getArgs())
+					.append("` isn't a vaild Number.");
+			event.reply(builder.toString());
 		}
 	}
 }
