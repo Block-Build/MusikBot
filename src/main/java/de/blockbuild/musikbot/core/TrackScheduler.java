@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.core;
 
+import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,13 +35,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 		if (!player.startTrack(track, true)) {
 			// seems not to work
+			// System.out.println("TrackScheduler queue " + track.getIdentifier());
 			if (!queue.contains(track)) {
 				queue.offer(track);
-
-				/*
-				 * int i = 0; for(String s : queue.toString().split(",")) {
-				 * System.out.println(++i + " " + s); } System.out.println("\n");
-				 */
 
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
@@ -91,6 +88,22 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		// StringBuilder builder = new StringBuilder("Now Playing:
 		// ").append(track.getInfo().title);
 		// textChannel.sendMessage(builder.toString()).queue();
+	}
+
+	public String getPlaylist() {
+		StringBuilder builder = new StringBuilder();
+		if (queue.isEmpty()) {
+			builder.append("Queue is empty.");
+		} else {
+			int i = 0;
+			Iterator<AudioTrack> x = queue.iterator();
+			while (x.hasNext()) {
+				AudioTrack track = x.next();
+				builder.append(++i).append(". ").append(track.getInfo().title).append("\n");
+			}
+		}
+
+		return builder.toString();
 	}
 
 	public AudioPlayer getPlayer() {

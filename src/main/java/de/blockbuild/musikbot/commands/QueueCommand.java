@@ -2,7 +2,6 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -25,14 +24,13 @@ public class QueueCommand extends MBCommand {
 	@Override
 	protected void doCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = main.getBot().getScheduler();
-		AudioPlayer player = trackScheduler.getPlayer();
 		if (event.getArgs().isEmpty()) {
-			event.reply(
-					event.getClient().getWarning() + "Currently playing: " + player.getPlayingTrack().getInfo().title);
+			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+			builder.append("Tracks in Queue:\n`").append(trackScheduler.getPlaylist()).append("`");
+			event.reply(builder.toString());
 		} else {
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 			playerManager.loadItem(event.getArgs(), new ResultHandler(trackScheduler, event));
-			System.out.println("QueueCommand Args " + event.getArgs());
 		}
 	}
 
