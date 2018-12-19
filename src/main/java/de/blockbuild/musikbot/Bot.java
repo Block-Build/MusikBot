@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
+import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -84,17 +85,17 @@ public class Bot {
 		ccb.useHelpBuilder(false); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main));
 		
 		/*missing commands:
 		 * ##Playback commands##
 		 * skip (how many??)
-		 * flush (only flush the queue)
 		 * next
 		 * stop (stop and flush)
 		 * pause (just stops playback)
 		 * resume
 		 * jump to time?
+		 * auto pause?
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel

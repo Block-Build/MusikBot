@@ -106,6 +106,20 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return builder.toString();
 	}
 
+	public AudioTrack getNextTrack() {
+		return queue.peek();
+	}
+
+	public void flushQueue() {
+		queue.clear();
+	}
+
+	public void flushQueue(int amount) {
+		for (int i = 1; i < amount; i++) {
+			queue.poll();
+		}
+	}
+
 	public AudioPlayer getPlayer() {
 		return player;
 	}
