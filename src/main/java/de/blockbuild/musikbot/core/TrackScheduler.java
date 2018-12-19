@@ -99,7 +99,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			Iterator<AudioTrack> x = queue.iterator();
 			while (x.hasNext()) {
 				AudioTrack track = x.next();
-				builder.append(++i).append(". ").append(track.getInfo().title).append("\n");
+				builder.append("`").append(++i).append(". ").append(track.getInfo().title).append("`\n");
 			}
 		}
 
