@@ -10,6 +10,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
 import de.blockbuild.musikbot.commands.PlayCommand;
+import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.AccountType;
@@ -72,7 +73,6 @@ public class Bot {
 
 	public void initListeners() {
 		jda.addEventListener(new MessageListener());
-		// jda.addEventListener(new ReadyListener(main));
 	}
 
 	public void initCommandClient() {
@@ -83,7 +83,7 @@ public class Bot {
 		ccb.useHelpBuilder(false); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main));
 		client = ccb.build();
 		jda.addEventListener(client);
 	}
@@ -179,7 +179,8 @@ public class Bot {
 				}
 
 				if (textChannel == null) {
-					System.out.println("No permissions or no matching TextChannel was found with '" + nameOrID + "' on '"+ guild.getName() + "'");
+					System.out.println("No permissions or no matching TextChannel was found with '" + nameOrID
+							+ "' on '" + guild.getName() + "'");
 				} else {
 					this.defaultChannel = textChannel;
 				}
