@@ -89,7 +89,6 @@ public class Bot {
 		
 		/*missing commands:
 		 * ##Playback commands##
-		 * skip (how many??)
 		 * next
 		 * stop (stop and flush)
 		 * pause (just stops playback)
