@@ -103,7 +103,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			}
 		}
 
-		return queue.isEmpty() ? null : builder.toString();
+		return builder.toString();
 	}
 
 	public AudioTrack getNextTrack() {
