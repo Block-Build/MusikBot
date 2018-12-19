@@ -29,7 +29,7 @@ public class VolumeCommand extends MBCommand {
 				System.err.println(e);
 			}
 			if (volume < 0 || volume > 100) {
-				event.reply(event.getClient().getError() + "Volume must be a valid integer between 0 and 150!");
+				event.reply(event.getClient().getError() + "Volume must be a valid integer between 0 and 100!");
 			} else {
 				apsh.getPlayer().setVolume(volume);
 				event.reply("Volume now set to '" + volume + "'");
