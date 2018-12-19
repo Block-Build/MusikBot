@@ -9,8 +9,6 @@ import net.dv8tion.jda.core.Permission;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
-	protected static final long RESPONSE_DURATION = 5;
-
 	protected Main main;
 
 	public MBCommand(Main main) {
