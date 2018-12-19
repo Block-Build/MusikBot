@@ -84,6 +84,29 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main));
+		
+		/*missing commands:
+		 * ##Playback commands##
+		 * skip
+		 * flush (only flush the queue)
+		 * next
+		 * stop (stop and flush)
+		 * pause (just stops playback)
+		 * resume
+		 * 
+		 * ##setup commands##
+		 * defaultTextChannel
+		 * defaultVoiceCannel
+		 * setDefaultVolume? or just save volume
+		 * defaultPlaylist?
+		 * setName?
+		 * setIcon?
+		 * join
+		 * quit
+		 * 
+		 * ##other##
+		 * help
+		 */
 		client = ccb.build();
 		jda.addEventListener(client);
 	}
