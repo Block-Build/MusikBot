@@ -11,6 +11,7 @@ import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
 import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
+import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.AccountType;
@@ -83,16 +84,17 @@ public class Bot {
 		ccb.useHelpBuilder(false); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main));
 		
 		/*missing commands:
 		 * ##Playback commands##
-		 * skip
+		 * skip (how many??)
 		 * flush (only flush the queue)
 		 * next
 		 * stop (stop and flush)
 		 * pause (just stops playback)
 		 * resume
+		 * jump to time?
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel

@@ -60,10 +60,15 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	public void nextTrack(CommandEvent event) {
-		// StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-		// builder.append(" Successfully added: ").append(track.getInfo().title);
-		// event.reply(builder.toString());
-		player.startTrack(queue.poll(), false);
+		StringBuilder builder = new StringBuilder();
+		if (queue.isEmpty()) {
+			builder.append("Queue is empty.");
+		} else {
+			builder.append(event.getClient().getSuccess());
+			builder.append("Now Playing: `").append(queue.peek().getInfo().title).append("`.");
+			player.startTrack(queue.poll(), false);
+		}
+		event.reply(builder.toString());
 	}
 
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
@@ -72,7 +77,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (queue.isEmpty()) {
 			player.playTrack(null);
 			// may close audio connection?
-		} else {
+		}
+
+		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
 	}
