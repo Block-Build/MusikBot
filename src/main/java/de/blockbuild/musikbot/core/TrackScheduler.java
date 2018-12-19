@@ -115,7 +115,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	public void flushQueue(int amount) {
-		for (int i = 1; i < amount; i++) {
+		for (int i = 0; i < amount; i++) {
 			queue.poll();
 		}
 	}
