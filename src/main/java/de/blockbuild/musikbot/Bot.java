@@ -94,7 +94,10 @@ public class Bot {
 		 * ##Playback commands##
 		 * stop (stop and flush) disconnect?
 		 * jump to time?
-		 * auto pause?
+		 * shufle?
+		 * get?? (URL/Link|title|author|time|duration)
+		 * speed?
+		 * ping
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel
@@ -108,6 +111,13 @@ public class Bot {
 		 * 
 		 * ##other##
 		 * help
+		 * auto pause?
+		 * 
+		 * RauteMusik!!!!!
+		 * http://main-high.rautemusik.fm/listen.pls
+		 * http://main-high.rautemusik.fm/listen.m3u
+		 * http://main-high.rautemusik.fm/listen.mp3
+		 * https://www.rautemusik.fm/guide/direkte-rautemusik-einschaltadressen/
 		 */
 		client = ccb.build();
 		jda.addEventListener(client);
