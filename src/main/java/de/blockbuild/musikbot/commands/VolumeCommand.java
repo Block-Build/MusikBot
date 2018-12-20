@@ -22,7 +22,9 @@ public class VolumeCommand extends MBCommand {
 	protected void doCommand(CommandEvent event) {
 		AudioPlayerSendHandler apsh = (AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler();
 		if (event.getArgs().isEmpty()) {
-			event.reply("Current volume is '" + apsh.getPlayer().getVolume() + "'");
+			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+			builder.append(" Current volume is `").append(apsh.getPlayer().getVolume()).append("`");
+			event.reply(builder.toString());
 		} else {
 			int volume;
 			try {
