@@ -31,7 +31,7 @@ public class RautemusikCommand extends MBCommand {
 						new ResultHandler(trackScheduler, event));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(this.arguments);
+				builder.append(" ").append(this.arguments);
 				event.reply(builder.toString());
 			}
 		} else {
