@@ -16,7 +16,7 @@ public class RautemusikCommand extends MBCommand {
 	public RautemusikCommand(Main main) {
 		super(main);
 		this.name = "rautemusik";
-		this.aliases = new String[] { "raute", "main" };
+		this.aliases = new String[] { "raute", "main", "#" };
 		this.help = "Plays Rautemusik!";
 		this.arguments = "<12punks | 90s | BigCityBeats | BreakZ.FM | ChartHits | Christmas | Club | DAS Coachingradio | Country | Deutschrap | Goldies | Globalize Yourself Stereo/gyr | Happy | HappyHardcore | HardeR | House | JaM | Kids | Klassik | Lounge | LoveHits | Main | Oriental | PartyHits | Rock | Salsa | Schlager | Sex | Solo Piano | Study | TechHouse | Top40 | Trance | Trap | Traurig | Volksmusik | Wacken Radio | Weihnachten | Workout>";
 		this.joinOnCommand = true;
