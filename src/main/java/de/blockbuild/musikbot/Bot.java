@@ -19,6 +19,7 @@ import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
+import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 import net.dv8tion.jda.core.AccountType;
@@ -92,11 +93,10 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		ccb.setAlternativePrefix("-");
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main));
 		
 		/*missing commands:
 		 * ##Playback commands##
-		 * stop (stop and flush) disconnect?
 		 * jump to time?
 		 * shuffle?
 		 * get?? (URL/Link|title|author|time|duration)
@@ -116,12 +116,6 @@ public class Bot {
 		 * ##other##
 		 * help
 		 * auto pause?
-		 * 
-		 * RauteMusik!!!!!
-		 * http://main-high.rautemusik.fm/listen.pls
-		 * http://main-high.rautemusik.fm/listen.m3u
-		 * http://main-high.rautemusik.fm/listen.mp3
-		 * https://www.rautemusik.fm/guide/direkte-rautemusik-einschaltadressen/
 		 */
 		client = ccb.build();
 		jda.addEventListener(client);

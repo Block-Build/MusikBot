@@ -127,6 +127,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void flushQueue() {
 		queue.clear();
 	}
+	
+	public void stopTrack() {
+		player.playTrack(null);
+	}
 
 	public void flushQueue(int amount) {
 		for (int i = 0; i < amount; i++) {
