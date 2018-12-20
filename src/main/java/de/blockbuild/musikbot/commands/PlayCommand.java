@@ -20,8 +20,10 @@ public class PlayCommand extends MBCommand {
 		super(main);
 		this.name = "play";
 		this.aliases = new String[] { "p" };
-		this.help = "Plays given track";
-		this.arguments = "<URL|title>";
+		this.help = "Shows current track or plays given track";
+		this.arguments = "[URL|title]";
+		this.joinOnCommand = true;
+		this.category = MUSIC;
 	}
 
 	@Override

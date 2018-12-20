@@ -11,7 +11,8 @@ public class QuitCommand extends MBCommand {
 		super(main);
 		this.name = "quit";
 		this.help = "Triggers the Bot to quit the voice channel!";
-		this.arguments = "<ChannelName>";
+		this.joinOnCommand = false;
+		this.category = CONNECTION;
 	}
 
 	@Override

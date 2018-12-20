@@ -16,6 +16,8 @@ public class PauseCommand extends MBCommand{
 		super(main);
 		this.name = "pause";
 		this.help = "Pause playback.";
+		this.joinOnCommand = false;
+		this.category = MUSIC;
 	}
 
 	@Override

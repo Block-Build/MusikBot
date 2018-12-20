@@ -16,6 +16,8 @@ public class ResumeCommand extends MBCommand {
 		super(main);
 		this.name = "resume";
 		this.help = "Resume playback.";
+		this.joinOnCommand = true;
+		this.category = MUSIC;
 	}
 
 	@Override

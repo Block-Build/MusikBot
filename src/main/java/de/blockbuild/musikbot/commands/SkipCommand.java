@@ -13,6 +13,9 @@ public class SkipCommand extends MBCommand {
 		this.name = "skip";
 		this.aliases = new String[] { "s", "sk" };
 		this.help = "Skips the track";
+		this.arguments = "[Amount]";
+		this.joinOnCommand = true;
+		this.category = MUSIC;
 	}
 
 	@Override

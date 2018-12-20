@@ -17,8 +17,10 @@ public class QueueCommand extends MBCommand {
 		super(main);
 		this.name = "queue";
 		this.aliases = new String[] { "q" };
-		this.help = "Adds the given track to queue";
-		this.arguments = "<URL|title>";
+		this.help = "Returns the playlist or adds the given track to queue.";
+		this.arguments = "[URL|title]";
+		this.joinOnCommand = true;
+		this.category = MUSIC;
 	}
 
 	@Override

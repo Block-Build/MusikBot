@@ -13,6 +13,8 @@ public class NextCommand extends MBCommand {
 		this.name = "next";
 		this.aliases = new String[] { "n" };
 		this.help = "Returns the next tracks title.";
+		this.joinOnCommand = true;
+		this.category = MUSIC;
 	}
 
 	@Override
