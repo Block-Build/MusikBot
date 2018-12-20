@@ -24,19 +24,23 @@ public class SkipCommand extends MBCommand {
 			try {
 				i = Integer.parseInt(event.getArgs());
 			} catch (Exception e) {
-				//no integer
+				// no integer
+			} finally {
+				if (i > 0) {
+					trackScheduler.flushQueue(i);
+					StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+					builder.append(" ").append(i).append(" tracks got flushed!");
+					event.reply(builder.toString());
+					trackScheduler.nextTrack(event);
+				} else {
+					StringBuilder builder = new StringBuilder(event.getClient().getError());
+					builder.append(" `").append(event.getArgs()).append("` isn't a vaild Number.");
+					event.reply(builder.toString());
+				}
 			}
-			if (i > 0) {
-				trackScheduler.flushQueue(i);
-				StringBuilder builder = new StringBuilder();
-				builder.append(event.getClient().getSuccess()).append(" ").append(i).append(" tracks got flushed!");
-				event.reply(builder.toString());
-			}
-			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" `").append(event.getArgs()).append("` isn't a vaild Number.");
-			event.reply(builder.toString());
+		} else {
+			trackScheduler.nextTrack(event);
 		}
-		trackScheduler.nextTrack(event);
 
 	}
 

@@ -28,21 +28,24 @@ public class FlushQueue extends MBCommand {
 			try {
 				i = Integer.parseInt(event.getArgs());
 			} catch (Exception e) {
-				//no integer
-			}
-			if (i > 0) {
-				trackScheduler.flushQueue(i);
-				StringBuilder builder = new StringBuilder();
-				builder.append(event.getClient().getSuccess()).append(" ").append(i).append(" tracks got flushed!");
-				if (!(trackScheduler.getNextTrack() == null)) {
-					builder.append("\nNext track: `").append(trackScheduler.getNextTrack().getInfo().title).append("`");
+				// no integer
+			} finally {
+				if (i > 0) {
+					trackScheduler.flushQueue(i);
+					StringBuilder builder = new StringBuilder();
+					builder.append(event.getClient().getSuccess()).append(" ").append(i).append(" tracks got flushed!");
+					if (!(trackScheduler.getNextTrack() == null)) {
+						builder.append("\nNext track: `").append(trackScheduler.getNextTrack().getInfo().title)
+								.append("`");
+					}
+					event.reply(builder.toString());
+				} else {
+					StringBuilder builder = new StringBuilder();
+					builder.append(event.getClient().getError()).append(" `").append(event.getArgs())
+							.append("` isn't a vaild Number.");
+					event.reply(builder.toString());
 				}
-				event.reply(builder.toString());
 			}
-			StringBuilder builder = new StringBuilder();
-			builder.append(event.getClient().getError()).append(" `").append(event.getArgs())
-					.append("` isn't a vaild Number.");
-			event.reply(builder.toString());
 		}
 	}
 }
