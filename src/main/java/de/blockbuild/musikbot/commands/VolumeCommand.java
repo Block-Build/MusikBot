@@ -23,7 +23,7 @@ public class VolumeCommand extends MBCommand {
 		AudioPlayerSendHandler apsh = (AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append(" Current volume is `").append(apsh.getPlayer().getVolume()).append("`");
+			builder.append(" Current volume is `").append(apsh.getPlayer().getVolume()).append("`.");
 			event.reply(builder.toString());
 		} else {
 			int volume;
@@ -40,7 +40,7 @@ public class VolumeCommand extends MBCommand {
 			} else {
 				apsh.getPlayer().setVolume(volume);
 				StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-				builder.append(" Volume now set to `").append(volume).append("`");
+				builder.append(" Volume now set to `").append(volume).append("`.");
 				event.reply(builder.toString());
 			}
 		}

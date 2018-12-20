@@ -24,7 +24,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	private final TextChannel textChannel;
 	private final JDA jda;
 
-	public TrackScheduler(TextChannel textChannel,JDA jda , AudioPlayer player) {
+	public TrackScheduler(TextChannel textChannel, JDA jda, AudioPlayer player) {
 		this.player = player;
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
 		this.textChannel = textChannel;
@@ -52,8 +52,8 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 		for (AudioTrack track : playlist.getTracks()) {
 			queue.offer(track);
-			builder.append("`").append(track.getInfo().title)
-					.append("` on position: ").append(queue.size()).append("\n");
+			builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
+					.append("\n");
 		}
 
 		if (!(event == null)) {
@@ -100,7 +100,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
 		System.out.println("onTrackStart");
 		System.out.println("textChannel " + textChannel.getName());
-		
+		if (player.isPaused()) {
+			player.setPaused(false);
+		}
 		jda.getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 
@@ -127,7 +129,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void flushQueue() {
 		queue.clear();
 	}
-	
+
 	public void stopTrack() {
 		player.playTrack(null);
 	}

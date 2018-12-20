@@ -6,7 +6,7 @@ import de.blockbuild.musikbot.Main;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class StopCommand extends MBCommand{
+public class StopCommand extends MBCommand {
 
 	public StopCommand(Main main) {
 		super(main);
