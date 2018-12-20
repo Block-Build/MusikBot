@@ -27,18 +27,24 @@ public class PlayCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent e) {
-		TrackScheduler ts = main.getBot().getScheduler();
-		AudioPlayer player = ts.getPlayer();
-		if (e.getArgs().isEmpty()) {
-			StringBuilder builder = new StringBuilder(e.getClient().getSuccess());
-			builder.append(" Playing: `").append(player.getPlayingTrack().getInfo().title).append("`. Left time: `")
-					.append(getTime(player.getPlayingTrack().getDuration() - player.getPlayingTrack().getPosition()))
-					.append("` Minutes.");
-			e.reply(builder.toString());
+	protected void doCommand(CommandEvent event) {
+		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		AudioPlayer player = trackScheduler.getPlayer();
+		if (event.getArgs().isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			if (player.getPlayingTrack() == null) {
+				builder.append(event.getClient().getWarning()).append(" `Queue is empty`");
+			} else {
+				builder.append(event.getClient().getSuccess()).append(" Playing: `")
+						.append(player.getPlayingTrack().getInfo().title).append("`. Left time: `")
+						.append(getTime(
+								player.getPlayingTrack().getDuration() - player.getPlayingTrack().getPosition()))
+						.append("` Minutes.");
+			}
+			event.reply(builder.toString());
 		} else {
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
-			playerManager.loadItem(e.getArgs(), new ResultHandler(ts, e));
+			playerManager.loadItem(event.getArgs(), new ResultHandler(trackScheduler, event));
 		}
 	}
 
