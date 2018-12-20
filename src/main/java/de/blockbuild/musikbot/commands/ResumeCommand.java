@@ -30,6 +30,6 @@ public class ResumeCommand extends MBCommand {
 		AudioPlayer player = main.getBot().getScheduler().getPlayer();
 		player.setPaused(false);
 		event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
-		event.getJDA().getPresence().setGame(Game.of(GameType.DEFAULT, player.getPlayingTrack().getInfo().title));
+		event.getJDA().getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 }

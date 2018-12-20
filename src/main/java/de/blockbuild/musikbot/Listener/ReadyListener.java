@@ -43,12 +43,12 @@ public class ReadyListener extends ListenerAdapter {
 		 */
 
 		bot.joinDiscordTextChannel(jda, null);
-		//bot.joinDiscordVoiceChannel(jda, null);
+		// bot.joinDiscordVoiceChannel(jda, null);
 
 		AudioSourceManagers.registerRemoteSources(playerManager);
-		//AudioSourceManagers.registerLocalSource(playerManager);
+		AudioSourceManagers.registerLocalSource(playerManager);
 		player = playerManager.createPlayer();
-		TrackScheduler trackScheduler = new TrackScheduler(bot.getDefaultTextChannel(), player);
+		TrackScheduler trackScheduler = new TrackScheduler(bot.getDefaultTextChannel(), jda, player);
 		player.addListener(trackScheduler);
 		main.getBot().setScheduler(trackScheduler);
 		main.getBot().setPlayerManager(playerManager);

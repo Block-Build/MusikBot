@@ -12,18 +12,23 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.Game.GameType;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
 	private final TextChannel textChannel;
+	private final JDA jda;
 
-	public TrackScheduler(TextChannel textChannel, AudioPlayer player) {
+	public TrackScheduler(TextChannel textChannel,JDA jda , AudioPlayer player) {
 		this.player = player;
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
 		this.textChannel = textChannel;
+		this.jda = jda;
 		player.setVolume(10); // ;-)
 	}
 
@@ -82,6 +87,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 		if (queue.isEmpty() && player.getPlayingTrack() == null) {
 			player.playTrack(null);
+			jda.getPresence().setGame(Game.of(GameType.DEFAULT, "Ready for playing music. !Play"));
 			// may close audio connection?
 		}
 
@@ -94,9 +100,8 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
 		System.out.println("onTrackStart");
 		System.out.println("textChannel " + textChannel.getName());
-		// StringBuilder builder = new StringBuilder("Now Playing:
-		// ").append(track.getInfo().title);
-		// textChannel.sendMessage(builder.toString()).queue();
+		
+		jda.getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 
 	public String getPlaylist() {
