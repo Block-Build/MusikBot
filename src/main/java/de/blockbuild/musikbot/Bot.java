@@ -10,10 +10,12 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.ReadyListener;
 import de.blockbuild.musikbot.commands.FlushQueue;
+import de.blockbuild.musikbot.commands.JoinCommand;
 import de.blockbuild.musikbot.commands.NextCommand;
 import de.blockbuild.musikbot.commands.PauseCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
+import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -86,19 +88,22 @@ public class Bot {
 		String trigger = "!";
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
-		ccb.useHelpBuilder(false); // maybe later
+		ccb.useHelpBuilder(true); // maybe later
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main));
+		ccb.setAlternativePrefix("-");
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main));
 		
 		/*missing commands:
 		 * ##Playback commands##
 		 * stop (stop and flush) disconnect?
 		 * jump to time?
-		 * shufle?
+		 * shuffle?
 		 * get?? (URL/Link|title|author|time|duration)
 		 * speed?
 		 * ping
+		 * 
+		 * arguments schreiben
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel
@@ -107,8 +112,6 @@ public class Bot {
 		 * defaultPlaylist?
 		 * setName?
 		 * setIcon?
-		 * join
-		 * quit
 		 * 
 		 * ##other##
 		 * help

@@ -1,13 +1,9 @@
 package de.blockbuild.musikbot.Listener;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.Main;
@@ -47,10 +43,10 @@ public class ReadyListener extends ListenerAdapter {
 		 */
 
 		bot.joinDiscordTextChannel(jda, null);
-		bot.joinDiscordVoiceChannel(jda, null);
+		//bot.joinDiscordVoiceChannel(jda, null);
 
 		AudioSourceManagers.registerRemoteSources(playerManager);
-		AudioSourceManagers.registerLocalSource(playerManager);
+		//AudioSourceManagers.registerLocalSource(playerManager);
 		player = playerManager.createPlayer();
 		TrackScheduler trackScheduler = new TrackScheduler(bot.getDefaultTextChannel(), player);
 		player.addListener(trackScheduler);
@@ -62,33 +58,6 @@ public class ReadyListener extends ListenerAdapter {
 				guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
 			} catch (Exception ex) {
 				System.err.println(ex);
-			}
-		});
-
-		playerManager.loadItem("https://www.youtube.com/watch?v=UQnFHwz_mUg", new AudioLoadResultHandler() {
-			@Override
-			public void trackLoaded(AudioTrack track) {
-				trackScheduler.playTrack(track, null);
-			}
-
-			@Override
-			public void playlistLoaded(AudioPlaylist playlist) {
-				AudioTrack firstTrack = playlist.getSelectedTrack();
-
-				if (firstTrack == null) {
-					firstTrack = playlist.getTracks().get(0);
-				}
-				trackScheduler.playTrack(firstTrack, null);
-			}
-
-			@Override
-			public void noMatches() {
-				// Notify the user that we've got nothing
-			}
-
-			@Override
-			public void loadFailed(FriendlyException throwable) {
-				// Notify the user that everything exploded
 			}
 		});
 	}
