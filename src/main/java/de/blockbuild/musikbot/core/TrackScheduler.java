@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
@@ -27,23 +28,31 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	public void queue(AudioTrack track, CommandEvent event) {
+		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+
+		if (!player.startTrack(track, true)) {
+			queue.offer(track);
+			builder.append(" Successfully added: `").append(track.getInfo().title).append("` on position: ")
+					.append(queue.size());
+		}
+
 		if (!(event == null)) {
-			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append(" Successfully added: ").append(track.getInfo().title).append(" on position: ")
-					.append(queue.size() + 1);
 			event.reply(builder.toString());
 		}
-		if (!player.startTrack(track, true)) {
-			// seems not to work
-			// System.out.println("TrackScheduler queue " + track.getIdentifier());
-			if (!queue.contains(track)) {
-				queue.offer(track);
+	}
 
-			} else {
-				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(" '").append(track.getInfo().title).append("' is already in the queue");
-				event.reply(builder.toString());
-			}
+	public void queue(AudioPlaylist playlist, CommandEvent event) {
+		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+		builder.append(" Successfully added: \n");
+
+		for (AudioTrack track : playlist.getTracks()) {
+			queue.offer(track);
+			builder.append("`").append(track.getInfo().title)
+					.append("` on position: ").append(queue.size()).append("\n");
+		}
+
+		if (!(event == null)) {
+			event.reply(builder.toString());
 		}
 	}
 
@@ -59,10 +68,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void nextTrack(CommandEvent event) {
 		StringBuilder builder = new StringBuilder();
 		if (queue.isEmpty()) {
-			builder.append("Queue is empty.");
+			builder.append(event.getClient().getWarning()).append(" Queue is empty.");
 		} else {
 			builder.append(event.getClient().getSuccess());
-			builder.append("Now Playing: `").append(queue.peek().getInfo().title).append("`.");
+			builder.append(" Now Playing: `").append(queue.peek().getInfo().title).append("`.");
 			player.startTrack(queue.poll(), false);
 		}
 		event.reply(builder.toString());
@@ -93,7 +102,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public String getPlaylist() {
 		StringBuilder builder = new StringBuilder();
 		if (queue.isEmpty()) {
-			builder.append("Queue is empty.");
+			builder.append("`Queue is empty.`");
 		} else {
 			int i = 0;
 			Iterator<AudioTrack> x = queue.iterator();

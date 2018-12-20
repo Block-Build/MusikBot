@@ -51,9 +51,7 @@ public class QueueCommand extends MBCommand {
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			for (AudioTrack track : playlist.getTracks()) {
-				trackScheduler.queue(track, event);
-			}
+			trackScheduler.queue(playlist, event);
 		}
 
 		@Override
