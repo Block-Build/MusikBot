@@ -80,7 +80,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		System.out.println("onTrackEnd endReason " + endReason.toString());
 
-		if (queue.isEmpty()) {
+		if (queue.isEmpty() && player.getPlayingTrack() == null) {
 			player.playTrack(null);
 			// may close audio connection?
 		}
