@@ -105,21 +105,15 @@ public class Bot {
 		 * ##Playback commands##
 		 * jump to time?
 		 * shuffle?
-		 * get?? (URL/Link|title|author|time|duration)
-		 * speed?
-		 * 
-		 * arguments schreiben
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel
 		 * defaultVoiceCannel
 		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
-		 * setName?
 		 * setIcon?
 		 * 
 		 * ##other##
-		 * help
 		 * auto pause?
 		 */
 		client = ccb.build();
