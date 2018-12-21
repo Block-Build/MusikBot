@@ -13,6 +13,7 @@ import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.JoinCommand;
 import de.blockbuild.musikbot.commands.NextCommand;
 import de.blockbuild.musikbot.commands.PauseCommand;
+import de.blockbuild.musikbot.commands.PingCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
@@ -94,7 +95,7 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		ccb.setAlternativePrefix("-");
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main), new RadioBonnRheinSiegCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main), new RadioBonnRheinSiegCommand(main), new PingCommand(main));
 		
 		/*missing commands:
 		 * ##Playback commands##

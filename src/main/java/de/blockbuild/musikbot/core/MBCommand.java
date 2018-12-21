@@ -57,8 +57,14 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			}
 		}
 		if (this.getCategory().getName() == CONNECTION.getName()) {
+			if(this.guildOnly == false) {
+				doCommand(event);
+				return;
+			}
 			if (event.getMember().getVoiceState().inVoiceChannel()) {
 				doCommand(event);
+				return;
+			}else {
 				return;
 			}
 		}
@@ -71,7 +77,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		}
 	}
 
-	protected abstract void doCommand(CommandEvent e);
+	protected abstract void doCommand(CommandEvent event);
 
 	@Override
 	public int compareTo(Command o) {
