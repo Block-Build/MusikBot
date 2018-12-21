@@ -44,6 +44,9 @@ public class Bot {
 			Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI,
 			Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE,
 			Permission.MESSAGE_TTS };
+	public static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
+			Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
+			Permission.MESSAGE_TTS };
 	private Main main;
 	private TrackScheduler ts;
 	private AudioPlayerManager playerManager;
@@ -95,7 +98,7 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		ccb.setAlternativePrefix("-");
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main), new RadioBonnRheinSiegCommand(main), new PingCommand(main));
+		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main), new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main), new ResumeCommand(main), new RautemusikCommand(main), new RadioBonnRheinSiegCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main), new PingCommand(main));
 		
 		/*missing commands:
 		 * ##Playback commands##
@@ -103,7 +106,6 @@ public class Bot {
 		 * shuffle?
 		 * get?? (URL/Link|title|author|time|duration)
 		 * speed?
-		 * ping
 		 * 
 		 * arguments schreiben
 		 * 

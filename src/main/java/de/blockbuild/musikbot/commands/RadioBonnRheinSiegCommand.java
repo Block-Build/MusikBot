@@ -17,7 +17,7 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 		super(main);
 		this.name = "RadioBonnRheinSieg";
 		this.aliases = new String[] { "rbrs" };
-		this.help = "Plays Rautemusik!";
+		this.help = "Plays RadioBonnRheinSieg!";
 		this.joinOnCommand = true;
 		this.category = MUSIC;
 	}

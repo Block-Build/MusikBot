@@ -33,6 +33,10 @@ public class ReadyListener extends ListenerAdapter {
 		AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 
 		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, "Ready for playing music. !Play"));
+		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
+			jda.getSelfUser().getManager().setName("MusikBot").queue();
+		}
+
 		System.out.println("Invite Token:");
 		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
 
