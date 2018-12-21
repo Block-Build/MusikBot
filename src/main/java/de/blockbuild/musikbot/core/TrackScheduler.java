@@ -13,6 +13,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Game.GameType;
@@ -103,6 +104,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}
+		jda.getPresence().setStatus(OnlineStatus.ONLINE);
 		jda.getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 
