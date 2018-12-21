@@ -37,6 +37,15 @@ public class ReadyListener extends ListenerAdapter {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
 
+		/*
+		 * File dir = new File("."); String[] files = dir.list(
+		 * DirectoryFileFilter.DIRECTORY ); for ( int i = 0; i < files.length; i++ ) {
+		 * System.out.println(files[i]); } try {
+		 * jda.getSelfUser().getManager().setAvatar(Icon.from(new
+		 * File("plugins/MusikBot/64.png"))).queue(); } catch (IOException e) {
+		 * e.printStackTrace(); }
+		 */
+
 		System.out.println("Invite Token:");
 		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
 
@@ -46,7 +55,8 @@ public class ReadyListener extends ListenerAdapter {
 		 * "| ID: " + voice.getId().toString()); } });
 		 */
 
-		bot.joinDiscordTextChannel(jda, null);
+		//bot.joinDiscordTextChannel(jda, null);
+		bot.joinDiscordDefaultTextChannel(jda);
 		// bot.joinDiscordVoiceChannel(jda, null);
 
 		AudioSourceManagers.registerRemoteSources(playerManager);

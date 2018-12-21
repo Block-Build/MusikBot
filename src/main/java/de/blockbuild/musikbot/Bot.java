@@ -175,6 +175,12 @@ public class Bot {
 			});
 		}
 	}
+	
+	public void joinDiscordDefaultTextChannel(JDA jda) {
+		jda.getGuilds().forEach((guild) -> {
+			this.defaultChannel = guild.getSystemChannel();
+		});
+	}
 
 	public void joinDiscordTextChannel(JDA jda, String nameOrID) {
 		int name = -1;
