@@ -1,0 +1,27 @@
+package de.blockbuild.musikbot.commands;
+
+import com.jagrosh.jdautilities.commandclient.CommandEvent;
+
+import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.MBCommand;
+import de.blockbuild.musikbot.core.TrackScheduler;
+
+public class StopCommand extends MBCommand {
+
+	public StopCommand(Main main) {
+		super(main);
+		this.name = "stop";
+		this.help = "Change the volume";
+		this.arguments = "[0-100]";
+		this.joinOnCommand = false;
+		this.category = CONNECTION;
+	}
+
+	@Override
+	protected void doCommand(CommandEvent event) {
+		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		trackScheduler.flushQueue();
+		trackScheduler.stopTrack();
+		event.getSelfMember().getGuild().getAudioManager().closeAudioConnection();
+	}
+}
