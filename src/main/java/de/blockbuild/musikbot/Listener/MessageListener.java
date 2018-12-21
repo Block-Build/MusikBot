@@ -50,6 +50,10 @@ public class MessageListener extends ListenerAdapter {
 			} else if (msg.equals("!v100")) {
 				apsh.getPlayer().setVolume(100);
 			}
+
+			System.out.println("User: " + event.getAuthor().getName());
+			System.out.println("MSG: " + event.getMessage().getContentDisplay());
+			System.out.println("Channel: " + event.getChannel().getName() + "\n");
 		}
 
 		if (msg.equals("!ping")) {
