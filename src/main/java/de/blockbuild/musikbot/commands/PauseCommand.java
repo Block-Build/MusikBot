@@ -23,8 +23,15 @@ public class PauseCommand extends MBCommand{
 	@Override
 	protected void doCommand(CommandEvent event) {
 		AudioPlayer player = main.getBot().getScheduler().getPlayer();
-		player.setPaused(true);
-		event.getJDA().getPresence().setStatus(OnlineStatus.IDLE);
-		event.getJDA().getPresence().setGame(Game.of(GameType.DEFAULT, "Paused! | Type '!Resume'"));
+		if (!(player.getPlayingTrack() == null)) {
+			player.setPaused(true);
+			event.getJDA().getPresence().setStatus(OnlineStatus.IDLE);
+			event.getJDA().getPresence().setGame(Game.of(GameType.DEFAULT, "Paused! | Type '!Resume'"));
+		}else {
+			StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+			builder.append(" Currently there is no track playing. Use `!Play` to start a track.");
+			event.reply(builder.toString());
+		}
+		
 	}
 }
