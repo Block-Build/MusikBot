@@ -56,17 +56,17 @@ public class PlayCommand extends MBCommand {
 
 	private class ResultHandler implements AudioLoadResultHandler {
 
-		private TrackScheduler ts;
+		private TrackScheduler trackScheduler;
 		private CommandEvent event;
 
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
-			this.ts = trackScheduler;
+			this.trackScheduler = trackScheduler;
 			this.event = event;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			ts.playTrack(track, event);
+			trackScheduler.playTrack(track, event);
 		}
 
 		@Override
@@ -76,7 +76,7 @@ public class PlayCommand extends MBCommand {
 			if (firstTrack == null) {
 				firstTrack = playlist.getTracks().get(0);
 			}
-			ts.playTrack(firstTrack, event);
+			trackScheduler.playTrack(firstTrack, event);
 		}
 
 		@Override
