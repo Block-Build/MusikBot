@@ -8,6 +8,7 @@ import javax.security.auth.login.LoginException;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -29,6 +30,7 @@ import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
+
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -51,11 +53,11 @@ public class Bot {
 			Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
 			Permission.MESSAGE_TTS };
 	private final Main main;
+	private final AudioPlayerManager playerManager;
+	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	private CommandClientBuilder ccb;
 	private CommandClient commandClient;
-	private AudioPlayerManager playerManager;
-	private Map<Long, GuildMusicManager> musicManagers;
 
 	public Bot(Main main) {
 		this.main = main;
@@ -92,9 +94,9 @@ public class Bot {
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
-		jda.getGuilds().forEach((guild) -> {
-			getGuildAudioPlayer(guild);
-		});
+		//jda.getGuilds().forEach((guild) -> {
+		//	getGuildAudioPlayer(guild);
+		//});
 		return true;
 	}
 
