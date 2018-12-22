@@ -77,14 +77,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		event.reply(builder.toString());
 	}
 
+	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		System.out.println("onTrackEnd endReason " + endReason.toString());
-
-		if (queue.isEmpty() && player.getPlayingTrack() == null) {
-			player.playTrack(null);
-			// jda.getPresence().setGame(Game.of(GameType.DEFAULT, "Ready for playing music. !Play"));
-			// may close audio connection?
-		}
 
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
@@ -98,9 +93,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}
-		// jda.getPresence().setStatus(OnlineStatus.ONLINE);
-		// jda.getPresence().setGame(Game.of(GameType.LISTENING,
-		// player.getPlayingTrack().getInfo().title));
 	}
 
 	public String getPlaylist() {
