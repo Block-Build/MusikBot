@@ -20,7 +20,7 @@ public class SkipCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 
 		if (!(event.getArgs().isEmpty())) {
 			int i = 0;

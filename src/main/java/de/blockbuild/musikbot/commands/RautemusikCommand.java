@@ -25,7 +25,7 @@ public class RautemusikCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 		if (event.getArgs().isEmpty()) {
 			if (event.getMessage().getContentDisplay().toLowerCase().startsWith("main", 1)) {
@@ -196,7 +196,7 @@ public class RautemusikCommand extends MBCommand {
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			//should never called
+			// should never called
 		}
 
 		@Override

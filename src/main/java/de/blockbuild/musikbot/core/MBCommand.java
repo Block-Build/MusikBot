@@ -35,7 +35,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			}
 			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
-					main.getBot().joinDiscordVoiceChannel(event.getJDA(),
+					main.getBot().joinDiscordVoiceChannel(event.getGuild(),
 							event.getMember().getVoiceState().getChannel().getName());
 					doCommand(event);
 					return;
@@ -57,14 +57,14 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			}
 		}
 		if (this.getCategory().getName() == CONNECTION.getName()) {
-			if(this.guildOnly == false) {
+			if (this.guildOnly == false) {
 				doCommand(event);
 				return;
 			}
 			if (event.getMember().getVoiceState().inVoiceChannel()) {
 				doCommand(event);
 				return;
-			}else {
+			} else {
 				return;
 			}
 		}

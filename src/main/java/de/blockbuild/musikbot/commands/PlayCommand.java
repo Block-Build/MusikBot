@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
@@ -28,8 +29,9 @@ public class PlayCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
-		AudioPlayer player = trackScheduler.getPlayer();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		AudioPlayer player = musicManager.getAudioPlayer();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder();
 			if (player.getPlayingTrack() == null) {

@@ -24,7 +24,7 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 
 		playerManager.loadItem("http://stream.lokalradio.nrw/rbrs", new ResultHandler(trackScheduler, event));

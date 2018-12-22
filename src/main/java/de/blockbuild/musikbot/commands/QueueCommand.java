@@ -25,7 +25,7 @@ public class QueueCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 			builder.append("Tracks in Queue:\n").append(trackScheduler.getPlaylist());

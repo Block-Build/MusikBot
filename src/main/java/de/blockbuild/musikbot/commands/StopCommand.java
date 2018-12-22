@@ -19,7 +19,7 @@ public class StopCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		trackScheduler.flushQueue();
 		trackScheduler.stopTrack();
 		event.getSelfMember().getGuild().getAudioManager().closeAudioConnection();
