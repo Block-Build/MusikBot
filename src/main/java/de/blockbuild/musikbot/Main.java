@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	Bot bot;
+	private Bot bot;
 
 	@Override
 	public void onEnable() {
@@ -29,10 +29,18 @@ public class Main extends JavaPlugin {
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			if (true /* load config */ ) {
 				System.out.println("Music Bot get started");
-				bot = new Bot();
+				bot = new Bot(this);
 			} else {
 				this.getServer().shutdown();
 			}
 		}, 1L);
+	}
+
+	public Bot getBot() {
+		return bot;
+	}
+
+	public void setBot(Bot bot) {
+		this.bot = bot;
 	}
 }
