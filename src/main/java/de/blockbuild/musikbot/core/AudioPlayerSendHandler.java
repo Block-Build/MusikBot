@@ -32,5 +32,4 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
 	public AudioPlayer getPlayer(){
 		return player;
 	}
-
 }
