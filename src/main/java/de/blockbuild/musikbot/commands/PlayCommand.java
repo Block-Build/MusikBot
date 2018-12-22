@@ -45,8 +45,12 @@ public class PlayCommand extends MBCommand {
 			}
 			event.reply(builder.toString());
 		} else {
+			String TrackUrl = event.getArgs();
+			if(!event.getArgs().startsWith("http")) {
+				TrackUrl = "ytsearch:" + TrackUrl;
+			}
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
-			playerManager.loadItem(event.getArgs(), new ResultHandler(trackScheduler, event));
+			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
 
@@ -84,7 +88,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" No result found: ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("no results found: " + event.getArgs());
 		}
 
 		@Override
@@ -92,7 +95,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("faild to load: " + event.getArgs());
 		}
 	}
 }
