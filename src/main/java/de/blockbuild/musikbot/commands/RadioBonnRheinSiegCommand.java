@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
@@ -24,10 +25,12 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 
-		playerManager.loadItem("http://stream.lokalradio.nrw/rbrs", new ResultHandler(trackScheduler, event));
+		playerManager.loadItemOrdered(musicManager, "http://stream.lokalradio.nrw/rbrs",
+				new ResultHandler(trackScheduler, event));
 	}
 
 	private class ResultHandler implements AudioLoadResultHandler {
@@ -55,7 +58,6 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" No result found: ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("no results found: " + event.getArgs());
 		}
 
 		@Override
@@ -63,7 +65,6 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("faild to load: " + event.getArgs());
 		}
 	}
 }

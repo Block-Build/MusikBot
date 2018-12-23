@@ -20,7 +20,7 @@ public class FlushQueue extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		if (event.getArgs().isEmpty()) {
 			trackScheduler.flushQueue();
 			StringBuilder builder = new StringBuilder();

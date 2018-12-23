@@ -20,7 +20,7 @@ public class SkipCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 
 		if (!(event.getArgs().isEmpty())) {
 			int i = 0;
@@ -30,14 +30,14 @@ public class SkipCommand extends MBCommand {
 				// no integer
 			} finally {
 				if (i > 0) {
-					trackScheduler.flushQueue(i);
+					trackScheduler.flushQueue(i - 1);
 					StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 					builder.append(" ").append(i).append(" tracks got flushed!");
 					event.reply(builder.toString());
 					trackScheduler.nextTrack(event);
 				} else {
 					StringBuilder builder = new StringBuilder(event.getClient().getError());
-					builder.append(" `").append(event.getArgs()).append("` isn't a vaild Number.");
+					builder.append(" `").append(event.getArgs()).append("` isn't a number.");
 					event.reply(builder.toString());
 				}
 			}

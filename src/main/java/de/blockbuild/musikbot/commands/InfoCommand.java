@@ -7,6 +7,7 @@ import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class InfoCommand extends MBCommand {
@@ -22,15 +23,16 @@ public class InfoCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		if(!(main.getBot().getScheduler().getPlayer().getPlayingTrack() == null)) {
-			AudioTrackInfo trackInfo = main.getBot().getScheduler().getPlayer().getPlayingTrack().getInfo();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		if (!(musicManager.getAudioPlayer().getPlayingTrack() == null)) {
+			AudioTrackInfo trackInfo = musicManager.getAudioPlayer().getPlayingTrack().getInfo();
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess()).append("\n");
 			builder.append("Title: `").append(trackInfo.title).append("`\n");
 			builder.append("Author: `").append(trackInfo.author).append("`\n");
 			builder.append("Duration: `").append(getTime(trackInfo.length)).append("`\n");
 			builder.append("URL: `").append(trackInfo.uri).append("`\n");
 			event.reply(builder.toString());
-		}else {
+		} else {
 			StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 			builder.append(" Currently there is no track playing. Use `!Play` to start a track.");
 			event.reply(builder.toString());

@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
@@ -28,8 +29,9 @@ public class PlayCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
-		AudioPlayer player = trackScheduler.getPlayer();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		AudioPlayer player = musicManager.getAudioPlayer();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder();
 			if (player.getPlayingTrack() == null) {
@@ -43,8 +45,12 @@ public class PlayCommand extends MBCommand {
 			}
 			event.reply(builder.toString());
 		} else {
+			String TrackUrl = event.getArgs();
+			if(!event.getArgs().startsWith("http")) {
+				TrackUrl = "ytsearch:" + TrackUrl;
+			}
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
-			playerManager.loadItem(event.getArgs(), new ResultHandler(trackScheduler, event));
+			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
 
@@ -54,17 +60,17 @@ public class PlayCommand extends MBCommand {
 
 	private class ResultHandler implements AudioLoadResultHandler {
 
-		private TrackScheduler ts;
+		private TrackScheduler trackScheduler;
 		private CommandEvent event;
 
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
-			this.ts = trackScheduler;
+			this.trackScheduler = trackScheduler;
 			this.event = event;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			ts.playTrack(track, event);
+			trackScheduler.playTrack(track, event);
 		}
 
 		@Override
@@ -74,7 +80,7 @@ public class PlayCommand extends MBCommand {
 			if (firstTrack == null) {
 				firstTrack = playlist.getTracks().get(0);
 			}
-			ts.playTrack(firstTrack, event);
+			trackScheduler.playTrack(firstTrack, event);
 		}
 
 		@Override
@@ -82,7 +88,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" No result found: ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("no results found: " + event.getArgs());
 		}
 
 		@Override
@@ -90,7 +95,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("faild to load: " + event.getArgs());
 		}
 	}
 }
