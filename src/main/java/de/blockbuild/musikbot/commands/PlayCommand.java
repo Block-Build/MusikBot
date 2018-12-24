@@ -85,7 +85,7 @@ public class PlayCommand extends MBCommand {
 				musicManager.tracks = new ArrayList<>();
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-				builder.append(" Use !Choose <1-5> to choose one of the search results: \n");
+				builder.append(" Use `!Choose <1-5>` to choose one of the search results: \n");
 				for (int i = 0; i < 5; i++) {
 					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title)
 							.append("`\n");
