@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
@@ -25,11 +26,12 @@ public class RautemusikCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 		if (event.getArgs().isEmpty()) {
 			if (event.getMessage().getContentDisplay().toLowerCase().startsWith("main", 1)) {
-				playerManager.loadItem("http://main-high.rautemusik.fm/listen.mp3",
+				playerManager.loadItemOrdered(musicManager, "http://main-high.rautemusik.fm/listen.mp3",
 						new ResultHandler(trackScheduler, event));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
@@ -167,13 +169,10 @@ public class RautemusikCommand extends MBCommand {
 			}
 
 			if (!(link == null)) {
-				playerManager.loadItem(link, new ResultHandler(trackScheduler, event));
-				// StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-				// builder.append(" Stream started");
-				// event.reply(builder.toString());
+				playerManager.loadItemOrdered(playerManager, link, new ResultHandler(trackScheduler, event));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(" `").append(event.getArgs()).append("` Isn't a vaild Stram");
+				builder.append(" `").append(event.getArgs()).append("` Isn't a vaild radio station");
 				event.reply(builder.toString());
 			}
 		}
@@ -196,7 +195,7 @@ public class RautemusikCommand extends MBCommand {
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			//should never called
+			// should never called
 		}
 
 		@Override
@@ -204,7 +203,6 @@ public class RautemusikCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" No result found: ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("no results found: " + event.getArgs());
 		}
 
 		@Override
@@ -212,7 +210,6 @@ public class RautemusikCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("faild to load: " + event.getArgs());
 		}
 	}
 

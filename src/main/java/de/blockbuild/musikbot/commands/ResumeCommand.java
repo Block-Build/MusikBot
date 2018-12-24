@@ -27,7 +27,7 @@ public class ResumeCommand extends MBCommand {
 			event.getGuild().getAudioManager().openAudioConnection(event.getSelfMember().getVoiceState().getChannel());
 		}
 
-		AudioPlayer player = main.getBot().getScheduler().getPlayer();
+		AudioPlayer player = main.getBot().getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
 		player.setPaused(false);
 		event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
 		event.getJDA().getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));

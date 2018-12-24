@@ -12,24 +12,18 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.Game.GameType;
+import net.dv8tion.jda.core.entities.Guild;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
-	private final TextChannel textChannel;
-	private final JDA jda;
+	private final Guild guild;
 
-	public TrackScheduler(TextChannel textChannel, JDA jda, AudioPlayer player) {
+	public TrackScheduler(Guild guild, AudioPlayer player) {
 		this.player = player;
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
-		this.textChannel = textChannel;
-		this.jda = jda;
+		this.guild = guild;
 		player.setVolume(10); // ;-)
 	}
 
@@ -40,6 +34,8 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			queue.offer(track);
 			builder.append(" Successfully added: `").append(track.getInfo().title).append("` on position: ")
 					.append(queue.size());
+		}else {
+			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
 		}
 
 		if (!(event == null)) {
@@ -65,7 +61,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public void playTrack(AudioTrack track, CommandEvent event) {
 		if (!(event == null)) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append(" Successfully added: ").append(track.getInfo().title);
+			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
 			event.reply(builder.toString());
 		}
 		player.startTrack(track, false);
@@ -83,14 +79,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		event.reply(builder.toString());
 	}
 
+	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		System.out.println("onTrackEnd endReason " + endReason.toString());
-
-		if (queue.isEmpty() && player.getPlayingTrack() == null) {
-			player.playTrack(null);
-			jda.getPresence().setGame(Game.of(GameType.DEFAULT, "Ready for playing music. !Play"));
-			// may close audio connection?
-		}
 
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
@@ -100,12 +91,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
 		System.out.println("onTrackStart");
-		System.out.println("textChannel " + textChannel.getName());
+		System.out.println("textChannel " + guild.getSystemChannel().getName());
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}
-		jda.getPresence().setStatus(OnlineStatus.ONLINE);
-		jda.getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 
 	public String getPlaylist() {
@@ -140,9 +129,5 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		for (int i = 0; i < amount; i++) {
 			queue.poll();
 		}
-	}
-
-	public AudioPlayer getPlayer() {
-		return player;
 	}
 }

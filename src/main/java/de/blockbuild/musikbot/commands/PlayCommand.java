@@ -1,6 +1,7 @@
 package de.blockbuild.musikbot.commands;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -11,10 +12,13 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class PlayCommand extends MBCommand {
+
+	private Boolean isSearch;
 
 	public PlayCommand(Main main) {
 		super(main);
@@ -28,8 +32,9 @@ public class PlayCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getScheduler();
-		AudioPlayer player = trackScheduler.getPlayer();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		AudioPlayer player = musicManager.getAudioPlayer();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder();
 			if (player.getPlayingTrack() == null) {
@@ -43,8 +48,13 @@ public class PlayCommand extends MBCommand {
 			}
 			event.reply(builder.toString());
 		} else {
+			String TrackUrl = event.getArgs();
+			if (!event.getArgs().startsWith("http")) {
+				TrackUrl = "ytsearch:" + TrackUrl;
+				isSearch = true;
+			}
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
-			playerManager.loadItem(event.getArgs(), new ResultHandler(trackScheduler, event));
+			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
 
@@ -54,27 +64,42 @@ public class PlayCommand extends MBCommand {
 
 	private class ResultHandler implements AudioLoadResultHandler {
 
-		private TrackScheduler ts;
+		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		private GuildMusicManager musicManager;
 
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
-			this.ts = trackScheduler;
+			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			ts.playTrack(track, event);
+			trackScheduler.playTrack(track, event);
 		}
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			AudioTrack firstTrack = playlist.getSelectedTrack();
+			if (isSearch) {
+				musicManager.tracks = new ArrayList<>();
 
-			if (firstTrack == null) {
-				firstTrack = playlist.getTracks().get(0);
+				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+				builder.append(" Use !Choose <1-5> to choose one of the search results: \n");
+				for (int i = 0; i < 5; i++) {
+					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title)
+							.append("`\n");
+					musicManager.tracks.add(playlist.getTracks().get(i));
+					musicManager.isQueue = false;
+				}
+				event.reply(builder.toString());
+			} else {
+				AudioTrack firstTrack = playlist.getSelectedTrack();
+				if (firstTrack == null) {
+					firstTrack = playlist.getTracks().get(0);
+				}
+				trackScheduler.playTrack(firstTrack, event);
 			}
-			ts.playTrack(firstTrack, event);
 		}
 
 		@Override
@@ -82,7 +107,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" No result found: ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("no results found: " + event.getArgs());
 		}
 
 		@Override
@@ -90,7 +114,6 @@ public class PlayCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
 			builder.append(" faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
-			System.out.println("faild to load: " + event.getArgs());
 		}
 	}
 }
