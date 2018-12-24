@@ -1,5 +1,7 @@
 package de.blockbuild.musikbot.commands;
 
+import java.util.ArrayList;
+
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -13,6 +15,8 @@ import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class QueueCommand extends MBCommand {
+
+	private Boolean isSearch;
 
 	public QueueCommand(Main main) {
 		super(main);
@@ -34,8 +38,9 @@ public class QueueCommand extends MBCommand {
 			event.reply(builder.toString());
 		} else {
 			String TrackUrl = event.getArgs();
-			if(!event.getArgs().startsWith("http")) {
+			if (!event.getArgs().startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
+				isSearch = true;
 			}
 			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
@@ -46,10 +51,12 @@ public class QueueCommand extends MBCommand {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		private GuildMusicManager musicManager;
 
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
 		}
 
 		@Override
@@ -59,7 +66,20 @@ public class QueueCommand extends MBCommand {
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			trackScheduler.queue(playlist, event);
+			if (isSearch) {
+				musicManager.tracks = new ArrayList<>();
+
+				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+				builder.append(" Use !Choose <1-5> to choose one of the search results: \n");
+				for (int i = 0; i < 5; i++) {
+					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title).append("`\n");
+					musicManager.tracks.add(playlist.getTracks().get(i));
+					musicManager.isQueue = true;
+				}
+				event.reply(builder.toString());
+			} else {
+				trackScheduler.queue(playlist, event);
+			}
 		}
 
 		@Override
