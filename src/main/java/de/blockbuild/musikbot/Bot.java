@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
+import de.blockbuild.musikbot.commands.ChooseCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
 import de.blockbuild.musikbot.commands.JoinCommand;
@@ -94,9 +95,9 @@ public class Bot {
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
-		//jda.getGuilds().forEach((guild) -> {
-		//	getGuildAudioPlayer(guild);
-		//});
+		// jda.getGuilds().forEach((guild) -> {
+		// getGuildAudioPlayer(guild);
+		// });
 		return true;
 	}
 
@@ -136,8 +137,8 @@ public class Bot {
 		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main),
 				new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main),
 				new ResumeCommand(main), new RautemusikCommand(main), new RadioBonnRheinSiegCommand(main),
-				new InfoCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main),
-				new PingCommand(main));
+				new ChooseCommand(main), new InfoCommand(main), new JoinCommand(main), new QuitCommand(main),
+				new StopCommand(main), new PingCommand(main));
 		commandClient = ccb.build();
 		jda.addEventListener(commandClient);
 

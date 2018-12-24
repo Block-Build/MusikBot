@@ -9,7 +9,10 @@ import net.dv8tion.jda.core.Permission;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
-	protected Main main;
+	protected final Category MUSIC = new Category("Music");
+	protected final Category CONNECTION = new Category("Connection");
+	protected final Category OTHER = new Category("Other");
+	protected final Main main;
 	protected Boolean joinOnCommand;
 
 	public MBCommand(Main main) {
@@ -17,10 +20,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		this.guildOnly = true;
 		this.botPermissions = RECOMMENDED_PERMS();
 	}
-
-	public final Category MUSIC = new Category("Music");
-	public final Category CONNECTION = new Category("Connection");
-	public final Category OTHER = new Category("Other");
 
 	private Permission[] RECOMMENDED_PERMS() {
 		return Bot.RECOMMENDED_PERMS;
@@ -68,9 +67,8 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				return;
 			}
 		}
-		try
 
-		{
+		try {
 			doCommand(event);
 		} catch (Exception e) {
 			System.err.print(e);
