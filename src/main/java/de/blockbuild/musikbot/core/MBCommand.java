@@ -51,7 +51,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" You must be in the same channel as me to use that command!");
 				event.reply(builder.toString());
-				doCommand(event);
 				return;
 			}
 		}
@@ -60,10 +59,16 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				doCommand(event);
 				return;
 			}
-			if (event.getMember().getVoiceState().inVoiceChannel()) {
-				doCommand(event);
+			if (!event.getMember().getVoiceState().inVoiceChannel()) {
+				// Should not be triggered!
 				return;
-			} else {
+			}
+			if (!event.getMember().getVoiceState().getChannel()
+					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
+				// in different channels
+				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+				builder.append(" You must be in the same channel as me to use that command!");
+				event.reply(builder.toString());
 				return;
 			}
 		}
