@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
+import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.ChooseCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
@@ -123,6 +124,7 @@ public class Bot {
 
 	public void initListeners() {
 		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new VoiceChannelListener());
 	}
 
 	public void initCommandClient() {

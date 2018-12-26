@@ -86,6 +86,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
+		
+		//close audio connection if nothing to play
+		//selfMember.getGuild().getAudioManager().closeAudioConnection();
 	}
 
 	@Override
