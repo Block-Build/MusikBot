@@ -34,7 +34,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			queue.offer(track);
 			builder.append(" Successfully added: `").append(track.getInfo().title).append("` on position: ")
 					.append(queue.size());
-		}else {
+		} else {
 			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
 		}
 
@@ -48,9 +48,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		builder.append(" Successfully added: \n");
 
 		for (AudioTrack track : playlist.getTracks()) {
-			if(player.getPlayingTrack() == null) {
+			if (player.getPlayingTrack() == null) {
 				this.playTrack(track, event);
-			}else {
+			} else {
 				queue.offer(track);
 				builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
 						.append("\n");
@@ -90,9 +90,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
-		
-		//close audio connection if nothing to play
-		//selfMember.getGuild().getAudioManager().closeAudioConnection();
+
+		// close audio connection if nothing to play
+		// selfMember.getGuild().getAudioManager().closeAudioConnection();
 	}
 
 	@Override
@@ -116,7 +116,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 				builder.append("`").append(++i).append(". ").append(track.getInfo().title).append("`\n");
 			}
 		}
-
 		return builder.toString();
 	}
 
