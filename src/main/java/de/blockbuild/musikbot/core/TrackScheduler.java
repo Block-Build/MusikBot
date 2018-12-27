@@ -48,9 +48,13 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		builder.append(" Successfully added: \n");
 
 		for (AudioTrack track : playlist.getTracks()) {
-			queue.offer(track);
-			builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
-					.append("\n");
+			if(player.getPlayingTrack() == null) {
+				this.playTrack(track, event);
+			}else {
+				queue.offer(track);
+				builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
+						.append("\n");
+			}
 		}
 
 		if (!(event == null)) {
