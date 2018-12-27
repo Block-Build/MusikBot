@@ -78,6 +78,7 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
+			//jda.getSelfUser().getManager().setAvatar(null).queue();
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
