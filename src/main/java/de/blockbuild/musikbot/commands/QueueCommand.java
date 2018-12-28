@@ -26,6 +26,7 @@ public class QueueCommand extends MBCommand {
 		this.arguments = "[URL|title]";
 		this.joinOnCommand = true;
 		this.category = MUSIC;
+		this.isSearch = false;
 	}
 
 	@Override
