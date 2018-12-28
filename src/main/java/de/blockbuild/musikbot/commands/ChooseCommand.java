@@ -12,7 +12,7 @@ public class ChooseCommand extends MBCommand {
 	public ChooseCommand(Main main) {
 		super(main);
 		this.name = "choose";
-		this.aliases = new String[] { "cho" };
+		this.aliases = new String[] { "c", "cho" };
 		this.help = "Chosse one of fife search results";
 		this.arguments = "<1-5>";
 		this.joinOnCommand = false;

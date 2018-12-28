@@ -1,6 +1,9 @@
 package de.blockbuild.musikbot.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -81,6 +84,20 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			player.startTrack(queue.poll(), false);
 		}
 		event.reply(builder.toString());
+	}
+	
+	public void shuffle() {
+		List<AudioTrack> q = new ArrayList<AudioTrack>();
+		Iterator<AudioTrack> x = queue.iterator();
+		while (x.hasNext()) {
+			AudioTrack track = x.next();
+			q.add(track);
+		}
+		Collections.shuffle((List<AudioTrack>)q);
+		queue.clear();
+		for (AudioTrack track : q) {
+			queue.offer(track);
+		}
 	}
 
 	@Override
