@@ -32,6 +32,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				// Should not be triggered!
 				return;
 			}
+
 			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
 					main.getBot().joinDiscordVoiceChannel(event.getGuild(),
@@ -45,25 +46,39 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 					return;
 				}
 			}
+
 			if (!event.getMember().getVoiceState().getChannel()
 					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
 				// in different channels
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" You must be in the same channel as me to use that command!");
 				event.reply(builder.toString());
-				doCommand(event);
 				return;
 			}
 		}
+
 		if (this.getCategory().getName() == CONNECTION.getName()) {
 			if (this.guildOnly == false) {
 				doCommand(event);
 				return;
 			}
-			if (event.getMember().getVoiceState().inVoiceChannel()) {
+
+			if (!event.getMember().getVoiceState().inVoiceChannel()) {
+				// Should not be triggered!
+				return;
+			}
+
+			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 				doCommand(event);
 				return;
-			} else {
+			}
+
+			if (!event.getMember().getVoiceState().getChannel()
+					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
+				// in different channels
+				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+				builder.append(" You must be in the same channel as me to use that command!");
+				event.reply(builder.toString());
 				return;
 			}
 		}

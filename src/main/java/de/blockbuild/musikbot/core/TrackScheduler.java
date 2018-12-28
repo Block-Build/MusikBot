@@ -1,6 +1,9 @@
 package de.blockbuild.musikbot.core;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -34,7 +37,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			queue.offer(track);
 			builder.append(" Successfully added: `").append(track.getInfo().title).append("` on position: ")
 					.append(queue.size());
-		}else {
+		} else {
 			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
 		}
 
@@ -48,9 +51,13 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		builder.append(" Successfully added: \n");
 
 		for (AudioTrack track : playlist.getTracks()) {
-			queue.offer(track);
-			builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
-					.append("\n");
+			if (player.getPlayingTrack() == null) {
+				this.playTrack(track, event);
+			} else {
+				queue.offer(track);
+				builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
+						.append("\n");
+			}
 		}
 
 		if (!(event == null)) {
@@ -78,6 +85,20 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 		event.reply(builder.toString());
 	}
+	
+	public void shuffle() {
+		List<AudioTrack> q = new ArrayList<AudioTrack>();
+		Iterator<AudioTrack> x = queue.iterator();
+		while (x.hasNext()) {
+			AudioTrack track = x.next();
+			q.add(track);
+		}
+		Collections.shuffle((List<AudioTrack>)q);
+		queue.clear();
+		for (AudioTrack track : q) {
+			queue.offer(track);
+		}
+	}
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
@@ -86,6 +107,9 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
+
+		// close audio connection if nothing to play
+		// selfMember.getGuild().getAudioManager().closeAudioConnection();
 	}
 
 	@Override
@@ -109,7 +133,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 				builder.append("`").append(++i).append(". ").append(track.getInfo().title).append("`\n");
 			}
 		}
-
 		return builder.toString();
 	}
 

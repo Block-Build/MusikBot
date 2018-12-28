@@ -3,14 +3,18 @@ package de.blockbuild.musikbot.core;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 
+import de.blockbuild.musikbot.Main;
+
 import net.dv8tion.jda.core.audio.AudioSendHandler;
 
 public class AudioPlayerSendHandler implements AudioSendHandler {
-	AudioPlayer player;
-	AudioFrame lastFrame;
+	public final Main main;
+	public final AudioPlayer player;
+	public AudioFrame lastFrame;
 
-	public AudioPlayerSendHandler(AudioPlayer player) {
+	public AudioPlayerSendHandler(AudioPlayer player, Main main) {
 		this.player = player;
+		this.main = main;
 	}
 
 	@Override
