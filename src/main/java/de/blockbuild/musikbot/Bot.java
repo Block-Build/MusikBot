@@ -8,11 +8,13 @@ import javax.security.auth.login.LoginException;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
+import de.blockbuild.musikbot.commands.ChooseCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
 import de.blockbuild.musikbot.commands.JoinCommand;
@@ -25,10 +27,12 @@ import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
+import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
+
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -51,11 +55,11 @@ public class Bot {
 			Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
 			Permission.MESSAGE_TTS };
 	private final Main main;
+	private final AudioPlayerManager playerManager;
+	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	private CommandClientBuilder ccb;
 	private CommandClient commandClient;
-	private AudioPlayerManager playerManager;
-	private Map<Long, GuildMusicManager> musicManagers;
 
 	public Bot(Main main) {
 		this.main = main;
@@ -74,6 +78,7 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
+			// jda.getSelfUser().getManager().setAvatar(null).queue();
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -92,9 +97,9 @@ public class Bot {
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
-		jda.getGuilds().forEach((guild) -> {
-			getGuildAudioPlayer(guild);
-		});
+		// jda.getGuilds().forEach((guild) -> {
+		// getGuildAudioPlayer(guild);
+		// });
 		return true;
 	}
 
@@ -109,7 +114,7 @@ public class Bot {
 		GuildMusicManager musicManager = musicManagers.get(guildId);
 
 		if (musicManager == null) {
-			musicManager = new GuildMusicManager(playerManager, guild);
+			musicManager = new GuildMusicManager(playerManager, guild, main);
 			musicManagers.put(guildId, musicManager);
 		}
 
@@ -131,11 +136,31 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		ccb.setAlternativePrefix("-");
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main),
-				new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main),
-				new ResumeCommand(main), new RautemusikCommand(main), new RadioBonnRheinSiegCommand(main),
-				new InfoCommand(main), new JoinCommand(main), new QuitCommand(main), new StopCommand(main),
+		registerCommandModule(
+				//Music
+				new PlayCommand(main), 
+				new QueueCommand(main),
+				new NextCommand(main), 
+				new SkipCommand(main),
+				new ChooseCommand(main),
+				new FlushQueue(main),
+				new ShuffleCommand(main),
+  
+				//Radio
+				new RadioBonnRheinSiegCommand(main), 
+				new RautemusikCommand(main), 
+				
+				new VolumeCommand(main),
+				new InfoCommand(main),  
+				new PauseCommand(main),
+				new ResumeCommand(main),
+				
+				//Connection
+				new JoinCommand(main), 
+				new QuitCommand(main),
+				new StopCommand(main), 
 				new PingCommand(main));
+    
 		commandClient = ccb.build();
 		jda.addEventListener(commandClient);
 
@@ -143,7 +168,6 @@ public class Bot {
 		 * missing commands:
 		 * #Playback commands##
 		 * jump to time?
-		 * shuffle?
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel
@@ -151,9 +175,6 @@ public class Bot {
 		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
 		 * setIcon?
-		 * 
-		 * ##other##
-		 * auto pause?
 		 */
 	}
 

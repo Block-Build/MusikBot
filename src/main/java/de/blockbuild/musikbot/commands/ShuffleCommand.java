@@ -6,21 +6,23 @@ import de.blockbuild.musikbot.Main;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class StopCommand extends MBCommand {
+public class ShuffleCommand extends MBCommand{
 
-	public StopCommand(Main main) {
+	public ShuffleCommand(Main main) {
 		super(main);
-		this.name = "stop";
-		this.help = "Disconnect and delete queue";
+		this.name = "shuffle";
+		this.help = "Shuffles the playlist";
 		this.joinOnCommand = false;
-		this.category = CONNECTION;
+		this.category = MUSIC;
 	}
 
 	@Override
 	protected void doCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
-		trackScheduler.flushQueue();
-		trackScheduler.stopTrack();
-		event.getSelfMember().getGuild().getAudioManager().closeAudioConnection();
+		trackScheduler.shuffle();
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+		builder.append(" Playlist shuffled!");
+		event.reply(builder.toString());
 	}
+
 }

@@ -9,7 +9,10 @@ import net.dv8tion.jda.core.Permission;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
-	protected Main main;
+	protected final Category MUSIC = new Category("Music");
+	protected final Category CONNECTION = new Category("Connection");
+	protected final Category OTHER = new Category("Other");
+	protected final Main main;
 	protected Boolean joinOnCommand;
 
 	public MBCommand(Main main) {
@@ -17,10 +20,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		this.guildOnly = true;
 		this.botPermissions = RECOMMENDED_PERMS();
 	}
-
-	public final Category MUSIC = new Category("Music");
-	public final Category CONNECTION = new Category("Connection");
-	public final Category OTHER = new Category("Other");
 
 	private Permission[] RECOMMENDED_PERMS() {
 		return Bot.RECOMMENDED_PERMS;
@@ -33,6 +32,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				// Should not be triggered!
 				return;
 			}
+
 			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
 					main.getBot().joinDiscordVoiceChannel(event.getGuild(),
@@ -46,31 +46,44 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 					return;
 				}
 			}
+
 			if (!event.getMember().getVoiceState().getChannel()
 					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
 				// in different channels
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" You must be in the same channel as me to use that command!");
 				event.reply(builder.toString());
-				doCommand(event);
 				return;
 			}
 		}
+
 		if (this.getCategory().getName() == CONNECTION.getName()) {
 			if (this.guildOnly == false) {
 				doCommand(event);
 				return;
 			}
-			if (event.getMember().getVoiceState().inVoiceChannel()) {
+
+			if (!event.getMember().getVoiceState().inVoiceChannel()) {
+				// Should not be triggered!
+				return;
+			}
+
+			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 				doCommand(event);
 				return;
-			} else {
+			}
+
+			if (!event.getMember().getVoiceState().getChannel()
+					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
+				// in different channels
+				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+				builder.append(" You must be in the same channel as me to use that command!");
+				event.reply(builder.toString());
 				return;
 			}
 		}
-		try
 
-		{
+		try {
 			doCommand(event);
 		} catch (Exception e) {
 			System.err.print(e);
