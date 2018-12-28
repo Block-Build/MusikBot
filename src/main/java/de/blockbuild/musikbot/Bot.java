@@ -78,6 +78,7 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
+			//jda.getSelfUser().getManager().setAvatar(null).queue();
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -113,7 +114,7 @@ public class Bot {
 		GuildMusicManager musicManager = musicManagers.get(guildId);
 
 		if (musicManager == null) {
-			musicManager = new GuildMusicManager(playerManager, guild);
+			musicManager = new GuildMusicManager(playerManager, guild, main);
 			musicManagers.put(guildId, musicManager);
 		}
 
@@ -135,11 +136,31 @@ public class Bot {
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
 		ccb.setAlternativePrefix("-");
-		registerCommandModule(new VolumeCommand(main), new PlayCommand(main), new QueueCommand(main),
-				new SkipCommand(main), new FlushQueue(main), new NextCommand(main), new PauseCommand(main),
-				new ResumeCommand(main), new RautemusikCommand(main), new RadioBonnRheinSiegCommand(main),
-				new ChooseCommand(main), new ShuffleCommand(main), new InfoCommand(main), new JoinCommand(main), new QuitCommand(main),
-				new StopCommand(main), new PingCommand(main));
+		registerCommandModule(
+				//Music
+				new PlayCommand(main), 
+				new QueueCommand(main),
+				new NextCommand(main), 
+				new SkipCommand(main),
+				new ChooseCommand(main),
+				new FlushQueue(main),
+        new ShuffleCommand(main),
+  
+				//Radio
+				new RadioBonnRheinSiegCommand(main), 
+				new RautemusikCommand(main), 
+				
+				new VolumeCommand(main),
+				new InfoCommand(main),  
+				new PauseCommand(main),
+				new ResumeCommand(main),
+				
+				//Connection
+				new JoinCommand(main), 
+				new QuitCommand(main),
+				new StopCommand(main), 
+				new PingCommand(main));
+    
 		commandClient = ccb.build();
 		jda.addEventListener(commandClient);
 
