@@ -147,7 +147,6 @@ public class Bot {
 		 * missing commands:
 		 * #Playback commands##
 		 * jump to time?
-		 * shuffle?
 		 * 
 		 * ##setup commands##
 		 * defaultTextChannel
@@ -155,9 +154,6 @@ public class Bot {
 		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
 		 * setIcon?
-		 * 
-		 * ##other##
-		 * auto pause?
 		 */
 	}
 
