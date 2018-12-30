@@ -1,8 +1,8 @@
 package de.blockbuild.musikbot;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.security.auth.login.LoginException;
 
 import com.jagrosh.jdautilities.commandclient.Command;
@@ -41,6 +41,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Icon;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
@@ -78,7 +79,13 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
-			// jda.getSelfUser().getManager().setAvatar(null).queue();
+
+			try {
+				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -96,10 +103,6 @@ public class Bot {
 		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
-
-		// jda.getGuilds().forEach((guild) -> {
-		// getGuildAudioPlayer(guild);
-		// });
 		return true;
 	}
 
