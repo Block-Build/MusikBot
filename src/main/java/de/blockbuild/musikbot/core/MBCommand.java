@@ -34,6 +34,13 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		VoiceChannel channel = member.getVoiceState().getChannel();
 		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
 
+		if (main.getBot().getGuildAudioPlayer(event.getGuild()).isBlockedUser(member.getUser().getIdLong())) {
+			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+			builder.append(" You're not allowed to interact with me!");
+			event.reply(builder.toString());
+			return;
+		}
+
 		if (this.getCategory().getName() == MUSIC.getName()) {
 			if (!member.getVoiceState().inVoiceChannel()) {
 				// Should not be triggered!
@@ -78,7 +85,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				return;
 			}
 
-			if (!event.getMember().getVoiceState().getChannel()
 			if (!channel.equals(selfChannel)) {
 				// in different channels
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
