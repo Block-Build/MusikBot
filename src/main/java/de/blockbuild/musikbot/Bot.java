@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
+import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.ChooseCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
@@ -27,9 +28,12 @@ import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
+import de.blockbuild.musikbot.commands.SaveCommand;
+import de.blockbuild.musikbot.commands.BlockUserCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
+import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.BotConfiguration;
@@ -134,6 +138,7 @@ public class Bot {
 
 	public void initListeners() {
 		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new VoiceChannelListener());
 	}
 
 	public void initCommandClient() {
@@ -168,7 +173,12 @@ public class Bot {
 				new JoinCommand(main), 
 				new QuitCommand(main),
 				new StopCommand(main), 
-				new PingCommand(main));
+				new PingCommand(main),
+				
+				//Setup
+				new BlockUserCommand(main),
+				new SaveCommand(main),
+				new VersionCommand(main));
     
 		commandClient = ccb.build();
 		jda.addEventListener(commandClient);
@@ -239,5 +249,13 @@ public class Bot {
 
 	public AudioPlayerManager getPlayerManager() {
 		return playerManager;
+	}
+
+	public String getUserByID(long id) {
+		if (main.getBot().jda.getUserById(id) == null) {
+			return "UNKNOWN";
+		} else {
+			return main.getBot().jda.getUserById(id).getName();
+		}
 	}
 }

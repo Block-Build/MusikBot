@@ -8,9 +8,10 @@ import de.blockbuild.musikbot.Main;
 public class BotConfiguration {
 	private final File file;
 	public String token, trigger, game, ownerID;
-	
+
 	// Avatar
 	// Name
+	// Success, Warning, Error: Emojis
 
 	public BotConfiguration(Main main) {
 		this.file = new File(main.getDataFolder(), "BotConfig.yml");
@@ -19,7 +20,7 @@ public class BotConfiguration {
 		writeConfig();
 	}
 
-	public void writeConfig() {
+	public synchronized void writeConfig() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
@@ -34,7 +35,7 @@ public class BotConfiguration {
 		}
 	}
 
-	public void loadConfig() {
+	public synchronized void loadConfig() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
