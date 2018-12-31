@@ -5,7 +5,6 @@ plugins {
 
 mainClassName = 'de.blockbuild.musikbot.Main'
 version = '0.0.5'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 

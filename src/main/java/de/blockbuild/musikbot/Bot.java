@@ -32,6 +32,7 @@ import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
+import de.blockbuild.musikbot.core.BotConfiguration;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -61,21 +62,26 @@ public class Bot {
 	private JDA jda;
 	private CommandClientBuilder ccb;
 	private CommandClient commandClient;
+	public final BotConfiguration config;
 
 	public Bot(Main main) {
 		this.main = main;
 		musicManagers = new HashMap<>();
 		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
+		config = new BotConfiguration(main);
 
-		start();
-		initListeners();
-		initCommandClient();
+		if (start()) {
+			initListeners();
+			initCommandClient();
+		}else {
+			stop();
+		}
 	}
 
 	public boolean start() {
 		try {
-			String token = "NTIzOTI3MzY3NDY3NjYzNDAx.Dv8rBg.J4FC1KUk6xrRVzL1LFIiDdFIMAk";
+			String token = config.token;
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
@@ -93,7 +99,7 @@ public class Bot {
 			// Should never triggered!
 			e.printStackTrace();
 		}
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, "Ready for playing music. !Play"));
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.game));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
@@ -131,8 +137,8 @@ public class Bot {
 	}
 
 	public void initCommandClient() {
-		String ownerID = "240566179880501250";
-		String trigger = "!";
+		String ownerID = config.ownerID;
+		String trigger = config.trigger;
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
