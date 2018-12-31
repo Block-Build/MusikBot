@@ -6,6 +6,8 @@ import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.Main;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
@@ -28,16 +30,27 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 	@Override
 	protected void execute(CommandEvent event) {
+		Member member = event.getMember();
+		Member selfMember = event.getSelfMember();
+		VoiceChannel channel = member.getVoiceState().getChannel();
+		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
+
+		if (main.getBot().getGuildAudioPlayer(event.getGuild()).isBlockedUser(member.getUser().getIdLong())) {
+			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+			builder.append(" You're not allowed to interact with me!");
+			event.reply(builder.toString());
+			return;
+		}
+
 		if (this.getCategory().getName() == MUSIC.getName()) {
-			if (!event.getMember().getVoiceState().inVoiceChannel()) {
+			if (!member.getVoiceState().inVoiceChannel()) {
 				// Should not be triggered!
 				return;
 			}
 
-			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
+			if (!selfMember.getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
-					main.getBot().joinDiscordVoiceChannel(event.getGuild(),
-							event.getMember().getVoiceState().getChannel().getName());
+					main.getBot().joinDiscordVoiceChannel(event.getGuild(), channel.getName());
 					doCommand(event);
 					return;
 				} else {
@@ -48,8 +61,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				}
 			}
 
-			if (!event.getMember().getVoiceState().getChannel()
-					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
+			if (!channel.equals(selfChannel)) {
 				// in different channels
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" You must be in the same channel as me to use that command!");
@@ -64,18 +76,17 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				return;
 			}
 
-			if (!event.getMember().getVoiceState().inVoiceChannel()) {
+			if (!member.getVoiceState().inVoiceChannel()) {
 				// Should not be triggered!
 				return;
 			}
 
-			if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
+			if (!selfMember.getVoiceState().inVoiceChannel()) {
 				doCommand(event);
 				return;
 			}
 
-			if (!event.getMember().getVoiceState().getChannel()
-					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
+			if (!channel.equals(selfChannel)) {
 				// in different channels
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" You must be in the same channel as me to use that command!");
