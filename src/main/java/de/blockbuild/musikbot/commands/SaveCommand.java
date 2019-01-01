@@ -19,8 +19,15 @@ public class SaveCommand extends MBCommand {
 	@Override
 	protected void doCommand(CommandEvent event) {
 		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		StringBuilder builder = new StringBuilder();
 
-		musicManager.config.writeConfig();
+		if (musicManager.config.writeConfig()) {
+			builder.append(event.getClient().getSuccess()).append(" Config saved successfully");
+		} else {
+			builder.append(event.getClient().getError()).append(" Faild to save config");
+		}
+
+		event.reply(builder.toString());
 	}
 
 }

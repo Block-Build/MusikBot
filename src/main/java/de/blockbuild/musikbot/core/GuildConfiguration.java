@@ -25,7 +25,7 @@ public class GuildConfiguration {
 		writeConfig();
 	}
 
-	public synchronized void writeConfig() {
+	public synchronized Boolean writeConfig() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
@@ -37,8 +37,10 @@ public class GuildConfiguration {
 			// config.set("", );
 
 			config.save(file);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
