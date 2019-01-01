@@ -28,7 +28,7 @@ import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
-import de.blockbuild.musikbot.commands.SaveCommand;
+import de.blockbuild.musikbot.commands.ConfigCommand;
 import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -183,7 +183,7 @@ public class Bot {
 				new BlacklistCommand(main),
 				new WhitelistCommand(main),
 				new AutoDisconnectCommand(main),
-				new SaveCommand(main),
+				new ConfigCommand(main),
 				new VersionCommand(main));
     
 		jda.addEventListener(ccb.build());

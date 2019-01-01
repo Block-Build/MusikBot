@@ -48,7 +48,7 @@ public class GuildConfiguration {
 		}
 	}
 
-	public synchronized void loadConfig() {
+	public synchronized Boolean loadConfig() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
@@ -70,12 +70,14 @@ public class GuildConfiguration {
 			// default voice channel
 			// auto connect
 			// auto play
-
+			
+			initConfig();
+			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't load GuildConfig!");
 			e.printStackTrace();
+			return false;
 		}
-		initConfig();
 	}
 
 	private void initConfig() {
