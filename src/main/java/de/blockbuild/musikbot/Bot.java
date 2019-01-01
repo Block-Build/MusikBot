@@ -79,7 +79,7 @@ public class Bot {
 		if (start()) {
 			initListeners();
 			initCommandClient();
-		}else {
+		} else {
 			stop();
 		}
 	}
