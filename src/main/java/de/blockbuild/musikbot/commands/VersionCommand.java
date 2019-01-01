@@ -18,7 +18,7 @@ public class VersionCommand extends MBCommand {
 	@Override
 	protected void doCommand(CommandEvent event) {
 		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-		builder.append(main.getDescription().getFullName());
+		builder.append(" ").append(main.getDescription().getFullName());
 		event.reply(builder.toString());
 	}
 }
