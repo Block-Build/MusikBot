@@ -29,12 +29,12 @@ public class BlacklistCommand extends MBCommand {
 
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" ").append(this.arguments);
+			builder.append(" !").append(this.name).append(" ").append(this.arguments);
 			event.reply(builder.toString());
 			return;
 		}
 
-		if (event.getArgs().startsWith("add")) {
+		if (event.getArgs().startsWith("add ")) {
 			Long l = this.getLong(event.getArgs().substring(4), event);
 			if (l == null)
 				return;
@@ -46,7 +46,7 @@ public class BlacklistCommand extends MBCommand {
 					.append("' to blacklist.");
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("remove")) {
+		} else if (event.getArgs().startsWith("remove ")) {
 			Long l = this.getLong(event.getArgs().substring(7), event);
 			if (l == null)
 				return;
@@ -83,7 +83,7 @@ public class BlacklistCommand extends MBCommand {
 
 		} else {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" ").append(this.arguments);
+			builder.append(" !").append(this.name).append(" ").append(this.arguments);
 			event.reply(builder.toString());
 		}
 	}
