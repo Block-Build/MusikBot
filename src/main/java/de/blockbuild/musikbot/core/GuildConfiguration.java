@@ -31,9 +31,9 @@ public class GuildConfiguration {
 
 			config.set("Guild_Name", this.guildName);
 			config.set("Volume", this.volume);
-			config.set("Use_Whitelist", this.useWhitelist);
-			config.set("Whitelisted_Users", this.whitelist);
-			config.set("Blocked_Users", this.blacklist);
+			config.set("Whitelist_Enabled", this.useWhitelist);
+			config.set("Whitelist", this.whitelist);
+			config.set("Blacklist", this.blacklist);
 			// config.set("", );
 
 			config.save(file);
@@ -56,11 +56,10 @@ public class GuildConfiguration {
 			this.guildName = guild.getName();
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
 					: 100;
-			this.useWhitelist = config.getBoolean("Use_Whitelist", false);
-			this.whitelist = config.getLongList("Whitelisted_Users");
-			this.blacklist = config.getLongList("Blocked_Users");
+			this.useWhitelist = config.getBoolean("Whitelist_Enabled", false);
+			this.whitelist = config.getLongList("Whitelist");
+			this.blacklist = config.getLongList("Blacklist");
 			// Playlist
-			// Blocked User
 			// auto disconnect
 			// disconnect after last track
 			// default text channel
