@@ -12,13 +12,15 @@ import net.dv8tion.jda.core.entities.Guild;
 public class GuildConfiguration {
 	private final File file;
 	private final Guild guild;
+	private final GuildMusicManager musicManager;
 	public String guildName;
 	public int volume;
 	public List<Long> blacklist, whitelist;
 	public Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
 
-	public GuildConfiguration(Main main, Guild guild) {
-		this.guild = guild;
+	public GuildConfiguration(Main main, GuildMusicManager musicManager) {
+		this.musicManager = musicManager;
+		this.guild = musicManager.getGuild();
 		this.file = new File(main.getDataFolder(), "/Guilds/" + guild.getId() + ".yml");
 
 		loadConfig();
@@ -71,5 +73,10 @@ public class GuildConfiguration {
 			System.out.println("Couldn't load GuildConfig!");
 			e.printStackTrace();
 		}
+		initConfig();
+	}
+
+	private void initConfig() {
+		musicManager.getAudioPlayer().setVolume(this.volume);
 	}
 }

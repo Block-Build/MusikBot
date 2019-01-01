@@ -15,23 +15,21 @@ public class GuildMusicManager {
 	private final TrackScheduler trackScheduler;
 	public final GuildConfiguration config;
 	public final Main main;
-	// private final Guild guild;
+	private final Guild guild;
 	public List<AudioTrack> tracks;
 	public Boolean isQueue;
 
 	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Main main) {
-		this.config = new GuildConfiguration(main, guild);
+		this.main = main;
+		this.guild = guild;
 		this.player = playerManager.createPlayer();
 		this.trackScheduler = new TrackScheduler(guild, player);
-		this.main = main;
-		// this.guild = guild;
 		player.addListener(trackScheduler);
-
-		initConfig();
+		this.config = new GuildConfiguration(main, this);
 	}
 
-	private void initConfig() {
-		player.setVolume(config.volume);
+	public Guild getGuild() {
+		return this.guild;
 	}
 
 	public AudioPlayerSendHandler getSendHandler() {
