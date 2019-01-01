@@ -28,9 +28,7 @@ public class BlacklistCommand extends MBCommand {
 		}
 
 		if (event.getArgs().isEmpty()) {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" !").append(this.name).append(" ").append(this.arguments);
-			event.reply(builder.toString());
+			sendCommandInfo(event);
 			return;
 		}
 
@@ -82,9 +80,7 @@ public class BlacklistCommand extends MBCommand {
 			event.reply(builder.toString());
 
 		} else {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" !").append(this.name).append(" ").append(this.arguments);
-			event.reply(builder.toString());
+			sendCommandInfo(event);
 		}
 	}
 }
