@@ -28,7 +28,7 @@ import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.SaveCommand;
-import de.blockbuild.musikbot.commands.BlockUserCommand;
+import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
@@ -174,7 +174,7 @@ public class Bot {
 				new PingCommand(main),
 				
 				//Setup
-				new BlockUserCommand(main),
+				new BlacklistCommand(main),
 				new SaveCommand(main),
 				new VersionCommand(main));
     

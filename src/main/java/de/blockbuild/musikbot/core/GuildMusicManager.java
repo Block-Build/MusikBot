@@ -47,7 +47,7 @@ public class GuildMusicManager {
 	}
 
 	public boolean isBlockedUser(long ID) {
-		return config.blockedUser.contains(ID);
+		return config.blacklist.contains(ID);
 	}
 
 	public void setVolume(int volume) {
