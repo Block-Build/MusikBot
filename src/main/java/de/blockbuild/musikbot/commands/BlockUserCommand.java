@@ -31,6 +31,7 @@ public class BlockUserCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" ").append(this.arguments);
 			event.reply(builder.toString());
+			return;
 		}
 
 		if (event.getArgs().startsWith("add")) {
