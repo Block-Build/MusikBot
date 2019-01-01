@@ -36,18 +36,20 @@ public class BlockUserCommand extends MBCommand {
 
 		if (event.getArgs().startsWith("add")) {
 			Long l = this.getLong(event.getArgs().substring(4), event);
-			if (l == null) return;
+			if (l == null)
+				return;
 
 			musicManager.config.blockedUser.add(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully added '").append(main.getBot().getUserByID(l)).append(" ").append(l)
+			builder.append(" Successfully added '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
 					.append("' to blocked list.");
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("remove")) {
 			Long l = this.getLong(event.getArgs().substring(7), event);
-			if (l == null) return;
+			if (l == null)
+				return;
 
 			if (!musicManager.isBlockedUser(l)) {
 				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
@@ -59,7 +61,7 @@ public class BlockUserCommand extends MBCommand {
 			musicManager.config.blockedUser.remove(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully removed '").append(main.getBot().getUserByID(l)).append(" ").append(l)
+			builder.append(" Successfully removed '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
 					.append("' from blocked list.");
 			event.reply(builder.toString());
 
@@ -74,8 +76,8 @@ public class BlockUserCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Blocked Users:**\n");
 			for (Long l : musicManager.config.blockedUser) {
-				builder.append("").append(main.getBot().getUserByID(l)).append("");
-				builder.append(" `").append(l).append("`").append("\n");
+				builder.append("").append(main.getBot().getUserNameById(l)).append(" `").append(l).append("`")
+						.append("\n");
 			}
 			event.reply(builder.toString());
 

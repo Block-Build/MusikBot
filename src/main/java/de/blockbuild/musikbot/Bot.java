@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.security.auth.login.LoginException;
 
 import com.jagrosh.jdautilities.commandclient.Command;
-import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -47,6 +46,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
@@ -65,7 +65,6 @@ public class Bot {
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	private CommandClientBuilder ccb;
-	private CommandClient commandClient;
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
@@ -93,7 +92,6 @@ public class Bot {
 			try {
 				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 
 		} catch (LoginException e) {
@@ -180,8 +178,7 @@ public class Bot {
 				new SaveCommand(main),
 				new VersionCommand(main));
     
-		commandClient = ccb.build();
-		jda.addEventListener(commandClient);
+		jda.addEventListener(ccb.build());
 
 		/*
 		 * missing commands:
@@ -251,11 +248,29 @@ public class Bot {
 		return playerManager;
 	}
 
-	public String getUserByID(long id) {
-		if (main.getBot().jda.getUserById(id) == null) {
+	public User getUserById(String id) {
+		return main.getBot().jda.getUserById(id);
+	}
+
+	public User getUserById(Long id) {
+		return main.getBot().jda.getUserById(id);
+	}
+
+	public String getUserNameById(String id) {
+		User user = getUserById(id);
+		if (user == null) {
 			return "UNKNOWN";
 		} else {
-			return main.getBot().jda.getUserById(id).getName();
+			return user.getName();
+		}
+	}
+
+	public String getUserNameById(Long id) {
+		User user = getUserById(id);
+		if (user == null) {
+			return "UNKNOWN";
+		} else {
+			return user.getName();
 		}
 	}
 }
