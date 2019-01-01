@@ -19,12 +19,14 @@ import net.dv8tion.jda.core.entities.Guild;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 
+	private final GuildMusicManager musicManager;
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
 	private final Guild guild;
 
-	public TrackScheduler(Guild guild, AudioPlayer player) {
-		this.player = player;
+	public TrackScheduler(Guild guild, GuildMusicManager musicManager) {
+		this.musicManager = musicManager;
+		this.player = musicManager.getAudioPlayer();
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
 		this.guild = guild;
 	}
@@ -84,7 +86,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 		event.reply(builder.toString());
 	}
-	
+
 	public void shuffle() {
 		List<AudioTrack> q = new ArrayList<AudioTrack>();
 		Iterator<AudioTrack> x = queue.iterator();
@@ -92,7 +94,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			AudioTrack track = x.next();
 			q.add(track);
 		}
-		Collections.shuffle((List<AudioTrack>)q);
+		Collections.shuffle((List<AudioTrack>) q);
 		queue.clear();
 		for (AudioTrack track : q) {
 			queue.offer(track);
@@ -107,8 +109,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			player.playTrack(queue.poll());
 		}
 
-		// close audio connection if nothing to play
-		// selfMember.getGuild().getAudioManager().closeAudioConnection();
+		if (player.getPlayingTrack() == null && queue.isEmpty() && musicManager.config.disconnectAfterLastTrack) {
+			guild.getAudioManager().closeAudioConnection();
+			return;
+		}
 	}
 
 	@Override

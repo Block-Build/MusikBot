@@ -1,8 +1,7 @@
 package de.blockbuild.musikbot.Listener;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-
 import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
@@ -16,53 +15,61 @@ public class VoiceChannelListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-		VoiceChannel channel = event.getChannelLeft();
-		//Member member = event.getMember();
-		Member selfMember = event.getGuild().getSelfMember();
-		
-		if (!selfMember.getVoiceState().inVoiceChannel()) {
-			return;
-		}
-		
-		if (!(channel == selfMember.getVoiceState().getChannel())) {
-			return;
-		}
-		
-		if (channel.getMembers().size() > 1) {
-			return;
-		}
+		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
+				.getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild());
 
-		AudioPlayer player = ((AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
-		if(!(player.getPlayingTrack() == null)) {
-			player.stopTrack();
+		if (musicManager.config.disconnectIfAlone) {
+			VoiceChannel channel = event.getChannelLeft();
+			// Member member = event.getMember();
+			Member selfMember = event.getGuild().getSelfMember();
+
+			if (!selfMember.getVoiceState().inVoiceChannel()) {
+				return;
+			}
+
+			if (!(channel == selfMember.getVoiceState().getChannel())) {
+				return;
+			}
+
+			if (channel.getMembers().size() > 1) {
+				return;
+			}
+
+			if (!(musicManager.getAudioPlayer().getPlayingTrack() == null)) {
+				musicManager.getAudioPlayer().stopTrack();
+			}
+			// close audio connection
+			selfMember.getGuild().getAudioManager().closeAudioConnection();
 		}
-		// close audio connection
-		selfMember.getGuild().getAudioManager().closeAudioConnection();
 	}
-	
+
 	@Override
 	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-		VoiceChannel channel = event.getChannelLeft();
-		//Member member = event.getMember();
-		Member selfMember = event.getGuild().getSelfMember();
-		
-		if (!selfMember.getVoiceState().inVoiceChannel()) {
-			return;
-		}
-		
-		if (!(channel == selfMember.getVoiceState().getChannel())) {
-			return;
-		}
-		
-		if (channel.getMembers().size() > 1) {
-			return;
-		}
+		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
+				.getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild());
 
-		AudioPlayer player = ((AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
-		if(!(player.getPlayingTrack() == null)) {
-			player.stopTrack();
+		if (musicManager.config.disconnectIfAlone) {
+			VoiceChannel channel = event.getChannelLeft();
+			// Member member = event.getMember();
+			Member selfMember = event.getGuild().getSelfMember();
+
+			if (!selfMember.getVoiceState().inVoiceChannel()) {
+				return;
+			}
+
+			if (!(channel == selfMember.getVoiceState().getChannel())) {
+				return;
+			}
+
+			if (channel.getMembers().size() > 1) {
+				return;
+			}
+
+			if (!(musicManager.getAudioPlayer().getPlayingTrack() == null)) {
+				musicManager.getAudioPlayer().stopTrack();
+			}
+			// close audio connection
+			selfMember.getGuild().getAudioManager().closeAudioConnection();
 		}
-		// close audio connection
-		selfMember.getGuild().getAudioManager().closeAudioConnection();
 	}
 }

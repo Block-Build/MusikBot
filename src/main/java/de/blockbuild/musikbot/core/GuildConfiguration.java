@@ -36,6 +36,8 @@ public class GuildConfiguration {
 			config.set("Whitelist_Enabled", this.useWhitelist);
 			config.set("Whitelist", this.whitelist);
 			config.set("Blacklist", this.blacklist);
+			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
+			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 			// config.set("", );
 
 			config.save(file);
@@ -61,9 +63,9 @@ public class GuildConfiguration {
 			this.useWhitelist = config.getBoolean("Whitelist_Enabled", false);
 			this.whitelist = config.getLongList("Whitelist");
 			this.blacklist = config.getLongList("Blacklist");
+			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone", false);
+			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track", false);
 			// Playlist
-			// auto disconnect
-			// disconnect after last track
 			// default text channel
 			// default voice channel
 			// auto connect

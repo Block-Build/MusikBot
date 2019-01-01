@@ -127,6 +127,12 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		}
 		return l;
 	}
+	
+	public void sendCommandInfo(CommandEvent event) {
+		StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+		builder.append(" !").append(this.name).append(" ").append(this.arguments);
+		event.reply(builder.toString());
+	}
 
 	protected abstract void doCommand(CommandEvent event);
 

@@ -23,7 +23,7 @@ public class GuildMusicManager {
 		this.main = main;
 		this.guild = guild;
 		this.player = playerManager.createPlayer();
-		this.trackScheduler = new TrackScheduler(guild, player);
+		this.trackScheduler = new TrackScheduler(guild, this);
 		player.addListener(trackScheduler);
 		this.config = new GuildConfiguration(main, this);
 	}
