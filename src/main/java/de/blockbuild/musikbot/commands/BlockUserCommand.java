@@ -34,7 +34,8 @@ public class BlockUserCommand extends MBCommand {
 		}
 
 		if (event.getArgs().startsWith("add")) {
-			Long l = Long.valueOf(event.getArgs().substring(4));
+			Long l = this.getLong(event.getArgs().substring(4), event);
+			if (l == null) return;
 
 			musicManager.config.blockedUser.add(l);
 
@@ -44,7 +45,8 @@ public class BlockUserCommand extends MBCommand {
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("remove")) {
-			Long l = Long.valueOf(event.getArgs().substring(7));
+			Long l = this.getLong(event.getArgs().substring(7), event);
+			if (l == null) return;
 
 			if (!musicManager.isBlockedUser(l)) {
 				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
@@ -75,6 +77,7 @@ public class BlockUserCommand extends MBCommand {
 				builder.append(" `").append(l).append("`").append("\n");
 			}
 			event.reply(builder.toString());
+
 		} else {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" ").append(this.arguments);
