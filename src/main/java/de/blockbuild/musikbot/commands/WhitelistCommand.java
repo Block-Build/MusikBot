@@ -52,9 +52,7 @@ public class WhitelistCommand extends MBCommand {
 				return;
 
 			if (!musicManager.isBlockedUser(l)) {
-				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-				builder.append(" ").append(l).append(" is not whitelisted.");
-				event.reply(builder.toString());
+				sendCommandInfo(event);
 				return;
 			}
 
@@ -85,20 +83,18 @@ public class WhitelistCommand extends MBCommand {
 			musicManager.setWhitelistEnabled(true);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Whitelist now is Enabled");
+			builder.append(" Whitelist now is `Enabled`");
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("disable")) {
 			musicManager.setWhitelistEnabled(false);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Whitelist now is Disabled");
+			builder.append(" Whitelist now is `Disabled`");
 			event.reply(builder.toString());
 
 		} else {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" !").append(this.name).append(" ").append(this.arguments);
-			event.reply(builder.toString());
+			sendCommandInfo(event);
 		}
 	}
 }
