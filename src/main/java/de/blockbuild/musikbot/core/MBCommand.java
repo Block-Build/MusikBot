@@ -7,6 +7,7 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.Main;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
@@ -34,10 +35,18 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		Member selfMember = event.getSelfMember();
 		VoiceChannel channel = member.getVoiceState().getChannel();
 		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
+		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
 
-		if (main.getBot().getGuildAudioPlayer(event.getGuild()).isBlockedUser(member.getUser().getIdLong())) {
+		if (!event.isOwner() && musicManager.isBlockedUser(member.getUser().getIdLong())
+				|| (!event.isOwner() && (musicManager.isWhitelistEnabled()
+						&& !(musicManager.isWhitelistedUser(member.getUser().getIdLong()))))) {
+			User owner = main.getBot().getUserById(main.getBot().config.ownerID);
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" You're not allowed to interact with me!");
+			if (!(owner == null)) {
+				builder.append("\nFor additional info, contact ").append(owner.getName()).append("#")
+						.append(owner.getDiscriminator());
+			}
 			event.reply(builder.toString());
 			return;
 		}
@@ -107,9 +116,14 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		try {
 			l = Long.valueOf(string);
 		} catch (Exception e) {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getError());
-			builder.append(" `").append(string).append("` isn't a vaild format.\n").append(this.arguments);
-			event.reply(builder.toString());
+			// nothing
+		} finally {
+			if (l == null) {
+				StringBuilder builder = new StringBuilder().append(event.getClient().getError());
+				builder.append(" `").append(string).append("` isn't a vaild format.\n");
+				builder.append(" !").append(this.name).append(" ").append(this.arguments);
+				event.reply(builder.toString());
+			}
 		}
 		return l;
 	}

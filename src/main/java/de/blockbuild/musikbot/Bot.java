@@ -34,6 +34,7 @@ import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
+import de.blockbuild.musikbot.commands.WhitelistCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.BotConfiguration;
 
@@ -175,6 +176,7 @@ public class Bot {
 				
 				//Setup
 				new BlacklistCommand(main),
+				new WhitelistCommand(main),
 				new SaveCommand(main),
 				new VersionCommand(main));
     
