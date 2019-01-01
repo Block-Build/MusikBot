@@ -14,8 +14,7 @@ public class GuildConfiguration {
 	private final Guild guild;
 	public String guildName;
 	public int volume;
-	public List<Long> blockedUser;
-	public List<Long> whitelist;
+	public List<Long> blockedUser, whitelist;
 	public Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
 
 	public GuildConfiguration(Main main, Guild guild) {
@@ -53,7 +52,8 @@ public class GuildConfiguration {
 			config.load(file);
 
 			this.guildName = guild.getName();
-			this.volume = config.getInt("Volume", 10);
+			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
+					: 100;
 			this.useWhitelist = config.getBoolean("Use_Whitelist", false);
 			this.whitelist = config.getLongList("Whitelisted_Users");
 			this.blockedUser = config.getLongList("Blocked_Users");

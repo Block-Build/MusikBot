@@ -3,7 +3,7 @@ package de.blockbuild.musikbot.commands;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
 import de.blockbuild.musikbot.Main;
-import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class VolumeCommand extends MBCommand {
@@ -20,10 +20,11 @@ public class VolumeCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		AudioPlayerSendHandler apsh = (AudioPlayerSendHandler) event.getGuild().getAudioManager().getSendingHandler();
+		GuildMusicManager musicManager = this.main.getBot().getGuildAudioPlayer(event.getGuild());
+
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append(" Current volume is `").append(apsh.getPlayer().getVolume()).append("`.");
+			builder.append(" Current volume is `").append(musicManager.getVolume()).append("`.");
 			event.reply(builder.toString());
 		} else {
 			int volume;
@@ -31,14 +32,13 @@ public class VolumeCommand extends MBCommand {
 				volume = Integer.parseInt(event.getArgs());
 			} catch (NumberFormatException e) {
 				volume = -1;
-				System.err.println(e);
 			}
 			if (volume < 0 || volume > 100) {
 				StringBuilder builder = new StringBuilder(event.getClient().getError());
 				builder.append(" Volume must be a valid integer between `0` and `100`!");
 				event.reply(builder.toString());
 			} else {
-				apsh.getPlayer().setVolume(volume);
+				musicManager.setVolume(volume);
 				StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 				builder.append(" Volume now set to `").append(volume).append("`.");
 				event.reply(builder.toString());

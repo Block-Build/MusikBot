@@ -26,6 +26,12 @@ public class GuildMusicManager {
 		this.main = main;
 		// this.guild = guild;
 		player.addListener(trackScheduler);
+
+		initConfig();
+	}
+
+	private void initConfig() {
+		player.setVolume(config.volume);
 	}
 
 	public AudioPlayerSendHandler getSendHandler() {
@@ -42,5 +48,14 @@ public class GuildMusicManager {
 
 	public boolean isBlockedUser(long ID) {
 		return config.blockedUser.contains(ID);
+	}
+
+	public void setVolume(int volume) {
+		player.setVolume(volume);
+		config.volume = volume;
+	}
+
+	public int getVolume() {
+		return player.getVolume();
 	}
 }

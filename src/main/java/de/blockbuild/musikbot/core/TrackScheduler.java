@@ -27,7 +27,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		this.player = player;
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
 		this.guild = guild;
-		player.setVolume(10); // ;-)
 	}
 
 	public void queue(AudioTrack track, CommandEvent event) {
