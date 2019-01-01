@@ -112,6 +112,10 @@ public class Bot {
 		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
+
+		jda.getGuilds().forEach((guild) -> {
+			getGuildAudioPlayer(guild);
+		});
 		return true;
 	}
 
