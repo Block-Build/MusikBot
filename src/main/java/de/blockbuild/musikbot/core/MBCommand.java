@@ -108,7 +108,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			l = Long.valueOf(string);
 		} catch (Exception e) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getError());
-			builder.append(" ").append(string).append(" isn't the vaild format.\n").append(this.arguments);
+			builder.append(" `").append(string).append("` isn't a vaild format.\n").append(this.arguments);
 			event.reply(builder.toString());
 		}
 		return l;
