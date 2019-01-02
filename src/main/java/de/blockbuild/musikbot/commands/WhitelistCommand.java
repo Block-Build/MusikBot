@@ -21,17 +21,8 @@ public class WhitelistCommand extends MBCommand {
 	protected void doCommand(CommandEvent event) {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
-		if (!event.isOwner()) {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" Only the Owner is permitted to use this command");
-			event.reply(builder.toString());
-			return;
-		}
-
 		if (event.getArgs().isEmpty()) {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" !").append(this.name).append(" ").append(this.arguments);
-			event.reply(builder.toString());
+			sendCommandInfo(event);
 			return;
 		}
 
