@@ -103,6 +103,17 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			}
 		}
 
+		if (this.getCategory().getName() == SETUP.getName()) {
+			if (!event.isOwner()) {
+				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+				builder.append(" Only the Owner is permitted to use this command");
+				event.reply(builder.toString());
+			} else {
+				doCommand(event);
+			}
+			return;
+		}
+
 		try {
 			doCommand(event);
 		} catch (Exception e) {
@@ -126,7 +137,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		}
 		return l;
 	}
-	
+
 	public void sendCommandInfo(CommandEvent event) {
 		StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 		builder.append(" !").append(this.name).append(" ").append(this.arguments);

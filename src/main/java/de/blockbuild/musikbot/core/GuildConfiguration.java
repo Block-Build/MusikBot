@@ -108,4 +108,16 @@ public class GuildConfiguration {
 	public String getAutoConnectTrack() {
 		return (String) autoConnect.get("Track");
 	}
+
+	public void setAutoConnectEnabled(Boolean bool) {
+		autoConnect.replace("Enabled", bool);
+	}
+
+	public void setAutoConnectVoiceChannelId(Long voiceChannelId) {
+		autoConnect.replace("VoiceChannelId", voiceChannelId);
+	}
+
+	public void setAutoConnectTrack(String track) {
+		autoConnect.replace("Track", track);
+	}
 }

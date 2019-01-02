@@ -15,6 +15,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.ChooseCommand;
+import de.blockbuild.musikbot.commands.AutoConnectCommand;
 import de.blockbuild.musikbot.commands.AutoDisconnectCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
@@ -183,6 +184,7 @@ public class Bot {
 				new BlacklistCommand(this),
 				new WhitelistCommand(this),
 				new AutoDisconnectCommand(this),
+				new AutoConnectCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
     
