@@ -151,7 +151,7 @@ public class Bot {
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
-		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
+		ccb.setEmojis(config.emojis.get("Success"), config.emojis.get("Warning"), config.emojis.get("Error"));
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
 		registerCommandModule(
