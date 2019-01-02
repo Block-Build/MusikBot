@@ -12,7 +12,7 @@ public class AutoConnectCommand extends MBCommand {
 		super(bot);
 		this.name = "autoconnect";
 		this.help = "set's auto connect option's in config";
-		this.arguments = "<enable|disable|channel|track> [voicechannelid|URL]";
+		this.arguments = "<enable|disable|channel|track> [voicechannelid|URL|clear]";
 		this.joinOnCommand = false;
 		this.category = SETUP;
 	}
@@ -25,8 +25,6 @@ public class AutoConnectCommand extends MBCommand {
 			sendCommandInfo(event);
 			return;
 		}
-
-		System.out.println(event.getArgs());
 
 		if (event.getArgs().startsWith("enable")) {
 			musicManager.config.setAutoConnectEnabled(true);
@@ -43,6 +41,15 @@ public class AutoConnectCommand extends MBCommand {
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("channel ")) {
+			if (event.getArgs().substring(8).startsWith("clear")) {
+				musicManager.config.setAutoConnectVoiceChannelId(0L);
+
+				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+				builder.append(" 'Auto_Connect_On_Startup' VoiceChannelId removed");
+				event.reply(builder.toString());
+				return;
+			}
+
 			Long l = this.getLong(event.getArgs().substring(8), event);
 			if (l == null)
 				return;
