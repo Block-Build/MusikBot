@@ -19,20 +19,15 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		if (bot != null) {
-			if (bot.stop()) {
-			}
+			bot.stop();
 		}
 	}
 
 	private void start() {
 		// initInstances();
 		Bukkit.getScheduler().runTaskLater(this, () -> {
-			if (true /* load config */ ) {
-				System.out.println("Music Bot get started");
-				bot = new Bot(this);
-			} else {
-				this.getServer().shutdown();
-			}
+			System.out.println("Music Bot get started");
+			bot = new Bot(this);
 		}, 1L);
 	}
 
