@@ -1,8 +1,11 @@
 package de.blockbuild.musikbot.core;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.blockbuild.musikbot.Bot;
@@ -17,6 +20,7 @@ public class GuildConfiguration {
 	public int volume;
 	public List<Long> blacklist, whitelist;
 	public Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
+	public Map<String, Object> autoConnect;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		this.musicManager = musicManager;
@@ -38,6 +42,7 @@ public class GuildConfiguration {
 			config.set("Blacklist", this.blacklist);
 			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
+			config.set("Auto_Connect_On_Startup", this.autoConnect);
 			// config.set("", );
 
 			config.save(file);
@@ -65,11 +70,19 @@ public class GuildConfiguration {
 			this.blacklist = config.getLongList("Blacklist");
 			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone", false);
 			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track", false);
+
+			this.autoConnect = new HashMap<>();
+			if (!config.contains("Auto_Connect_On_Startup")) {
+				config.createSection("Auto_Connect_On_Startup", this.autoConnect);
+			}
+			ConfigurationSection autoConnectList = config.getConfigurationSection("Auto_Connect_On_Startup");
+			autoConnect.put("Enabled", autoConnectList.getBoolean("Enabled", false));
+			autoConnect.put("VoiceChannelId", autoConnectList.getLong("VoiceChannelId"));
+			autoConnect.put("Track", autoConnectList.getString("Track", ""));
+
 			// Playlist
 			// default text channel
 			// default voice channel
-			// auto connect
-			// auto play
 
 			initConfig();
 			return true;
@@ -82,5 +95,17 @@ public class GuildConfiguration {
 
 	private void initConfig() {
 		musicManager.getAudioPlayer().setVolume(this.volume);
+	}
+
+	public Boolean isAutoConnectEnabled() {
+		return (Boolean) autoConnect.get("Enabled");
+	}
+
+	public Long getAutoConnectVoiceChannelId() {
+		return (Long) autoConnect.get("VoiceChannelId");
+	}
+
+	public String getAutoConnectTrack() {
+		return (String) autoConnect.get("Track");
 	}
 }

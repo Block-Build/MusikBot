@@ -26,6 +26,18 @@ public class GuildMusicManager {
 		this.trackScheduler = new TrackScheduler(guild, this);
 		player.addListener(trackScheduler);
 		this.config = new GuildConfiguration(bot, this);
+
+		if (config.isAutoConnectEnabled()) {
+			if (config.getAutoConnectVoiceChannelId() == 0) {
+				bot.joinDiscordVoiceChannel(guild);
+			} else {
+				bot.joinDiscordVoiceChannel(guild, config.getAutoConnectVoiceChannelId());
+			}
+			if (!(config.getAutoConnectTrack() == null)) {
+				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
+						new BasicResultHandler(this.getAudioPlayer()));
+			}
+		}
 	}
 
 	public Guild getGuild() {
