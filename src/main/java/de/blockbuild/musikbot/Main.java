@@ -30,12 +30,4 @@ public class Main extends JavaPlugin {
 			bot = new Bot(this);
 		}, 1L);
 	}
-
-	public Bot getBot() {
-		return bot;
-	}
-
-	public void setBot(Bot bot) {
-		this.bot = bot;
-	}
 }

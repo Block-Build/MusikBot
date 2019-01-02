@@ -1,14 +1,15 @@
 package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import de.blockbuild.musikbot.Main;
+
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class BlacklistCommand extends MBCommand {
 
-	public BlacklistCommand(Main main) {
-		super(main);
+	public BlacklistCommand(Bot bot) {
+		super(bot);
 		this.name = "blacklist";
 		this.help = "edits the blocked users list";
 		this.arguments = "<add|remove|clear|list> [UserID]";
@@ -18,7 +19,7 @@ public class BlacklistCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (!event.isOwner()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
@@ -40,7 +41,7 @@ public class BlacklistCommand extends MBCommand {
 			musicManager.config.blacklist.add(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully added '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
+			builder.append(" Successfully added '").append(bot.getUserNameById(l)).append(" ").append(l)
 					.append("' to blacklist.");
 			event.reply(builder.toString());
 
@@ -59,7 +60,7 @@ public class BlacklistCommand extends MBCommand {
 			musicManager.config.blacklist.remove(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully removed '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
+			builder.append(" Successfully removed '").append(bot.getUserNameById(l)).append(" ").append(l)
 					.append("' from blacklist.");
 			event.reply(builder.toString());
 
@@ -74,7 +75,7 @@ public class BlacklistCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Blacklist:**\n");
 			for (Long l : musicManager.config.blacklist) {
-				builder.append("").append(main.getBot().getUserNameById(l)).append(" `").append(l).append("`")
+				builder.append("").append(bot.getUserNameById(l)).append(" `").append(l).append("`")
 						.append("\n");
 			}
 			event.reply(builder.toString());

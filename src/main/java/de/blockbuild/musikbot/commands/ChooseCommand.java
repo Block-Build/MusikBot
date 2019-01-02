@@ -1,7 +1,8 @@
 package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import de.blockbuild.musikbot.Main;
+
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
@@ -9,8 +10,8 @@ public class ChooseCommand extends MBCommand {
 
 	private int choose = 0;
 
-	public ChooseCommand(Main main) {
-		super(main);
+	public ChooseCommand(Bot bot) {
+		super(bot);
 		this.name = "choose";
 		this.aliases = new String[] { "c", "cho" };
 		this.help = "Chosse one of fife search results";
@@ -21,7 +22,7 @@ public class ChooseCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (musicManager.tracks == null || musicManager.tracks.isEmpty()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());

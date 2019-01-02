@@ -16,7 +16,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 	@Override
 	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
 		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
-				.getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild());
+				.getSendingHandler()).getBot().getGuildAudioPlayer(event.getGuild());
 
 		if (musicManager.config.disconnectIfAlone) {
 			VoiceChannel channel = event.getChannelLeft();
@@ -46,7 +46,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 	@Override
 	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
 		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
-				.getSendingHandler()).main.getBot().getGuildAudioPlayer(event.getGuild());
+				.getSendingHandler()).getBot().getGuildAudioPlayer(event.getGuild());
 
 		if (musicManager.config.disconnectIfAlone) {
 			VoiceChannel channel = event.getChannelLeft();

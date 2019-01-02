@@ -1,14 +1,15 @@
 package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import de.blockbuild.musikbot.Main;
+
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class AutoDisconnectCommand extends MBCommand {
 
-	public AutoDisconnectCommand(Main main) {
-		super(main);
+	public AutoDisconnectCommand(Bot bot) {
+		super(bot);
 		this.name = "autodisconnect";
 		this.help = "set's auto disconnect option in config";
 		this.arguments = "<alone|trackend> <enable|disable>";
@@ -18,7 +19,7 @@ public class AutoDisconnectCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (event.getArgs().startsWith("auto ")) {
 			if (event.getArgs().substring(5).startsWith("enable")) {

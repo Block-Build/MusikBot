@@ -6,14 +6,14 @@ import java.util.Date;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class InfoCommand extends MBCommand {
 
-	public InfoCommand(Main main) {
-		super(main);
+	public InfoCommand(Bot bot) {
+		super(bot);
 		this.name = "info";
 		this.aliases = new String[] { "i" };
 		this.help = "Info of the current Track.";
@@ -23,7 +23,7 @@ public class InfoCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		if (!(musicManager.getAudioPlayer().getPlayingTrack() == null)) {
 			AudioTrackInfo trackInfo = musicManager.getAudioPlayer().getPlayingTrack().getInfo();
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess()).append("\n");

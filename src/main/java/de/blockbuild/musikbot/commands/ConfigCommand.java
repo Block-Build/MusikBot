@@ -2,14 +2,14 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class ConfigCommand extends MBCommand {
 
-	public ConfigCommand(Main main) {
-		super(main);
+	public ConfigCommand(Bot bot) {
+		super(bot);
 		this.name = "config";
 		this.aliases = new String[] { "cfg" };
 		this.help = "To load or save the Config";
@@ -20,7 +20,7 @@ public class ConfigCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		StringBuilder builder = new StringBuilder();
 		if (event.getArgs().startsWith("save")) {

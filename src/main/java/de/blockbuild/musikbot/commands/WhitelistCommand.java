@@ -1,14 +1,15 @@
 package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import de.blockbuild.musikbot.Main;
+
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class WhitelistCommand extends MBCommand {
 
-	public WhitelistCommand(Main main) {
-		super(main);
+	public WhitelistCommand(Bot bot) {
+		super(bot);
 		this.name = "whitelist";
 		this.help = "edits the whitelist";
 		this.arguments = "<add|remove|clear|list|enable|disable> [UserID]";
@@ -18,7 +19,7 @@ public class WhitelistCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (!event.isOwner()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
@@ -42,7 +43,7 @@ public class WhitelistCommand extends MBCommand {
 			musicManager.config.whitelist.add(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully added '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
+			builder.append(" Successfully added '").append(bot.getUserNameById(l)).append(" ").append(l)
 					.append("' to whitelist.");
 			event.reply(builder.toString());
 
@@ -59,7 +60,7 @@ public class WhitelistCommand extends MBCommand {
 			musicManager.config.whitelist.remove(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully removed '").append(main.getBot().getUserNameById(l)).append(" ").append(l)
+			builder.append(" Successfully removed '").append(bot.getUserNameById(l)).append(" ").append(l)
 					.append("' from whitelist.");
 			event.reply(builder.toString());
 
@@ -74,8 +75,7 @@ public class WhitelistCommand extends MBCommand {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Whitelist:**\n");
 			for (Long l : musicManager.config.whitelist) {
-				builder.append("").append(main.getBot().getUserNameById(l)).append(" `").append(l).append("`")
-						.append("\n");
+				builder.append("").append(bot.getUserNameById(l)).append(" `").append(l).append("`\n");
 			}
 			event.reply(builder.toString());
 

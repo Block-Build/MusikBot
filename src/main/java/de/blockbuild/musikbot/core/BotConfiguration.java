@@ -3,7 +3,7 @@ package de.blockbuild.musikbot.core;
 import java.io.File;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration {
 	private final File file;
@@ -13,8 +13,8 @@ public class BotConfiguration {
 	// Name
 	// Success, Warning, Error: Emojis
 
-	public BotConfiguration(Main main) {
-		this.file = new File(main.getDataFolder(), "BotConfig.yml");
+	public BotConfiguration(Bot bot) {
+		this.file = new File(bot.getMain().getDataFolder(), "BotConfig.yml");
 
 		loadConfig();
 		writeConfig();

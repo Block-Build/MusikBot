@@ -2,14 +2,14 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class VolumeCommand extends MBCommand {
 
-	public VolumeCommand(Main main) {
-		super(main);
+	public VolumeCommand(Bot bot) {
+		super(bot);
 		this.name = "volume";
 		this.aliases = new String[] { "vol", "v" };
 		this.help = "Change the volume";
@@ -20,7 +20,7 @@ public class VolumeCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = this.main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());

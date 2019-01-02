@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -18,10 +18,10 @@ public class GuildConfiguration {
 	public List<Long> blacklist, whitelist;
 	public Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
 
-	public GuildConfiguration(Main main, GuildMusicManager musicManager) {
+	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		this.musicManager = musicManager;
 		this.guild = musicManager.getGuild();
-		this.file = new File(main.getDataFolder(), "/Guilds/" + guild.getId() + ".yml");
+		this.file = new File(bot.getMain().getDataFolder(), "/Guilds/" + guild.getId() + ".yml");
 
 		loadConfig();
 		writeConfig();
@@ -70,7 +70,7 @@ public class GuildConfiguration {
 			// default voice channel
 			// auto connect
 			// auto play
-			
+
 			initConfig();
 			return true;
 		} catch (Exception e) {

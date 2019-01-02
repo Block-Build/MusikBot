@@ -6,7 +6,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -14,18 +14,18 @@ public class GuildMusicManager {
 	private final AudioPlayer player;
 	private final TrackScheduler trackScheduler;
 	public final GuildConfiguration config;
-	public final Main main;
+	public final Bot bot;
 	private final Guild guild;
 	public List<AudioTrack> tracks;
 	public Boolean isQueue;
 
-	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Main main) {
-		this.main = main;
+	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Bot bot) {
+		this.bot = bot;
 		this.guild = guild;
 		this.player = playerManager.createPlayer();
 		this.trackScheduler = new TrackScheduler(guild, this);
 		player.addListener(trackScheduler);
-		this.config = new GuildConfiguration(main, this);
+		this.config = new GuildConfiguration(bot, this);
 	}
 
 	public Guild getGuild() {
@@ -33,7 +33,7 @@ public class GuildMusicManager {
 	}
 
 	public AudioPlayerSendHandler getSendHandler() {
-		return new AudioPlayerSendHandler(player, main);
+		return new AudioPlayerSendHandler(player, bot);
 	}
 
 	public TrackScheduler getTrackScheduler() {
@@ -68,6 +68,5 @@ public class GuildMusicManager {
 	public boolean isWhitelistedUser(long ID) {
 		return config.whitelist.contains(ID);
 	}
-	
-	
+
 }

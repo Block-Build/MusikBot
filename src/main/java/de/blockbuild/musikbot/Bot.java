@@ -74,7 +74,7 @@ public class Bot {
 		musicManagers = new HashMap<>();
 		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
-		config = new BotConfiguration(main);
+		config = new BotConfiguration(this);
 
 		if (start()) {
 			initListeners();
@@ -131,7 +131,7 @@ public class Bot {
 		GuildMusicManager musicManager = musicManagers.get(guildId);
 
 		if (musicManager == null) {
-			musicManager = new GuildMusicManager(playerManager, guild, main);
+			musicManager = new GuildMusicManager(playerManager, guild, this);
 			musicManagers.put(guildId, musicManager);
 		}
 
@@ -153,38 +153,38 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 		ccb.setPrefix(trigger);
-		ccb.setAlternativePrefix("-");
+		// ccb.setAlternativePrefix("-");
 		registerCommandModule(
 				//Music
-				new PlayCommand(main), 
-				new QueueCommand(main),
-				new NextCommand(main), 
-				new SkipCommand(main),
-				new ChooseCommand(main),
-				new FlushQueue(main),
-				new ShuffleCommand(main),
+				new PlayCommand(this), 
+				new QueueCommand(this),
+				new NextCommand(this), 
+				new SkipCommand(this),
+				new ChooseCommand(this),
+				new FlushQueue(this),
+				new ShuffleCommand(this),
   
 				//Radio
-				new RadioBonnRheinSiegCommand(main), 
-				new RautemusikCommand(main), 
+				new RadioBonnRheinSiegCommand(this), 
+				new RautemusikCommand(this), 
 				
-				new VolumeCommand(main),
-				new InfoCommand(main),  
-				new PauseCommand(main),
-				new ResumeCommand(main),
+				new VolumeCommand(this),
+				new InfoCommand(this),  
+				new PauseCommand(this),
+				new ResumeCommand(this),
 				
 				//Connection
-				new JoinCommand(main), 
-				new QuitCommand(main),
-				new StopCommand(main), 
-				new PingCommand(main),
+				new JoinCommand(this), 
+				new QuitCommand(this),
+				new StopCommand(this), 
+				new PingCommand(this),
 				
 				//Setup
-				new BlacklistCommand(main),
-				new WhitelistCommand(main),
-				new AutoDisconnectCommand(main),
-				new ConfigCommand(main),
-				new VersionCommand(main));
+				new BlacklistCommand(this),
+				new WhitelistCommand(this),
+				new AutoDisconnectCommand(this),
+				new ConfigCommand(this),
+				new VersionCommand(this));
     
 		jda.addEventListener(ccb.build());
 
@@ -257,11 +257,11 @@ public class Bot {
 	}
 
 	public User getUserById(String id) {
-		return main.getBot().jda.getUserById(id);
+		return this.jda.getUserById(id);
 	}
 
 	public User getUserById(Long id) {
-		return main.getBot().jda.getUserById(id);
+		return this.jda.getUserById(id);
 	}
 
 	public String getUserNameById(String id) {
