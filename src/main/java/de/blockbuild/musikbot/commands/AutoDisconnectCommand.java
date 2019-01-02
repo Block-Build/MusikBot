@@ -21,15 +21,15 @@ public class AutoDisconnectCommand extends MBCommand {
 	protected void doCommand(CommandEvent event) {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
-		if (event.getArgs().startsWith("auto ")) {
-			if (event.getArgs().substring(5).startsWith("enable")) {
+		if (event.getArgs().startsWith("alone ")) {
+			if (event.getArgs().substring(6).startsWith("enable")) {
 				musicManager.config.disconnectIfAlone = true;
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" 'Auto_Disconnect_If_Alone' set to `Enabled`");
 				event.reply(builder.toString());
 
-			} else if (event.getArgs().substring(5).startsWith("disable")) {
+			} else if (event.getArgs().substring(6).startsWith("disable")) {
 				musicManager.config.disconnectIfAlone = false;
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
