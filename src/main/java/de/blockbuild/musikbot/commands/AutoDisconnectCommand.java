@@ -13,7 +13,7 @@ public class AutoDisconnectCommand extends MBCommand {
 		this.name = "autodisconnect";
 		this.help = "set's auto disconnect option in config";
 		this.arguments = "<alone|trackend> <enable|disable>";
-		this.joinOnCommand = true;
+		this.joinOnCommand = false;
 		this.category = SETUP;
 	}
 
