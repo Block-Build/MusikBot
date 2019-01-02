@@ -21,13 +21,6 @@ public class BlacklistCommand extends MBCommand {
 	protected void doCommand(CommandEvent event) {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
-		if (!event.isOwner()) {
-			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append(" Only the Owner is permitted to use this command");
-			event.reply(builder.toString());
-			return;
-		}
-
 		if (event.getArgs().isEmpty()) {
 			sendCommandInfo(event);
 			return;
