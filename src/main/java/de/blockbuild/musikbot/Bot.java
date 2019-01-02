@@ -125,10 +125,9 @@ public class Bot {
 		if (musicManager == null) {
 			musicManager = new GuildMusicManager(playerManager, guild, main);
 			musicManagers.put(guildId, musicManager);
+
+			guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
 		}
-
-		guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
-
 		return musicManager;
 	}
 
