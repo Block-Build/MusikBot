@@ -6,10 +6,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import de.blockbuild.musikbot.Main;
 import de.blockbuild.musikbot.core.MBCommand;
 
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Game.GameType;
-
 public class ResumeCommand extends MBCommand {
 
 	public ResumeCommand(Main main) {
@@ -29,7 +25,7 @@ public class ResumeCommand extends MBCommand {
 
 		AudioPlayer player = main.getBot().getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
 		player.setPaused(false);
-		event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
-		event.getJDA().getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
+		// event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
+		// event.getJDA().getPresence().setGame(Game.of(GameType.LISTENING, player.getPlayingTrack().getInfo().title));
 	}
 }
