@@ -31,7 +31,7 @@ public class WhitelistCommand extends MBCommand {
 			if (l == null)
 				return;
 
-			musicManager.config.whitelist.add(l);
+			musicManager.config.whitelistAdd(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Successfully added '").append(bot.getUserNameById(l)).append(" ").append(l)
@@ -43,12 +43,14 @@ public class WhitelistCommand extends MBCommand {
 			if (l == null)
 				return;
 
-			if (!musicManager.isBlockedUser(l)) {
-				sendCommandInfo(event);
+			if (!musicManager.config.isWhitelistedUser(l)) {
+				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+				builder.append(" ").append(l).append(" is not whitelisted.");
+				event.reply(builder.toString());
 				return;
 			}
 
-			musicManager.config.whitelist.remove(l);
+			musicManager.config.whitelistRemove(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Successfully removed '").append(bot.getUserNameById(l)).append(" ").append(l)
@@ -56,7 +58,7 @@ public class WhitelistCommand extends MBCommand {
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("clear")) {
-			musicManager.config.whitelist.clear();
+			musicManager.config.whitelistClear();
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Whitelist successfully cleard");
@@ -65,25 +67,24 @@ public class WhitelistCommand extends MBCommand {
 		} else if (event.getArgs().startsWith("list")) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Whitelist:**\n");
-			for (Long l : musicManager.config.whitelist) {
+			for (Long l : musicManager.config.getWhitelist()) {
 				builder.append("").append(bot.getUserNameById(l)).append(" `").append(l).append("`\n");
 			}
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("enable")) {
-			musicManager.setWhitelistEnabled(true);
+			musicManager.config.setWhitelistEnabled(true);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Whitelist now is `Enabled`");
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("disable")) {
-			musicManager.setWhitelistEnabled(false);
+			musicManager.config.setWhitelistEnabled(false);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Whitelist now is `Disabled`");
 			event.reply(builder.toString());
-
 		} else {
 			sendCommandInfo(event);
 		}

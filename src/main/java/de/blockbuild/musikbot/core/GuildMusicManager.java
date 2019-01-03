@@ -56,29 +56,12 @@ public class GuildMusicManager {
 		return this.player;
 	}
 
-	public boolean isBlockedUser(long ID) {
-		return config.blacklist.contains(ID);
-	}
-
 	public void setVolume(int volume) {
 		player.setVolume(volume);
-		config.volume = volume;
+		config.setVolume(volume);
 	}
 
 	public int getVolume() {
 		return player.getVolume();
 	}
-
-	public Boolean isWhitelistEnabled() {
-		return config.useWhitelist;
-	}
-
-	public void setWhitelistEnabled(Boolean bool) {
-		config.useWhitelist = bool;
-	}
-
-	public boolean isWhitelistedUser(long ID) {
-		return config.whitelist.contains(ID);
-	}
-
 }

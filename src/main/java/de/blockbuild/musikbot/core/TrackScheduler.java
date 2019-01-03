@@ -109,7 +109,8 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			player.playTrack(queue.poll());
 		}
 
-		if (player.getPlayingTrack() == null && queue.isEmpty() && musicManager.config.disconnectAfterLastTrack) {
+		if (player.getPlayingTrack() == null && queue.isEmpty()
+				&& musicManager.config.isDisconnectAfterLastTrackEnabled()) {
 			guild.getAudioManager().closeAudioConnection();
 			return;
 		}

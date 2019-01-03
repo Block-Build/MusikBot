@@ -23,14 +23,14 @@ public class AutoDisconnectCommand extends MBCommand {
 
 		if (event.getArgs().startsWith("alone ")) {
 			if (event.getArgs().substring(6).startsWith("enable")) {
-				musicManager.config.disconnectIfAlone = true;
+				musicManager.config.setDisconnectIfAlone(true);
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" 'Auto_Disconnect_If_Alone' set to `Enabled`");
 				event.reply(builder.toString());
 
 			} else if (event.getArgs().substring(6).startsWith("disable")) {
-				musicManager.config.disconnectIfAlone = false;
+				musicManager.config.setDisconnectIfAlone(false);
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" 'Auto_Disconnect_If_Alone' set to `Disabled`");
@@ -42,14 +42,14 @@ public class AutoDisconnectCommand extends MBCommand {
 
 		} else if (event.getArgs().startsWith("trackend ")) {
 			if (event.getArgs().substring(9).startsWith("enable")) {
-				musicManager.config.disconnectAfterLastTrack = true;
+				musicManager.config.setDisconnectAfterLastTrack(true);
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" 'Auto_Disconnect_After_Last_Track' set to `Enabled`");
 				event.reply(builder.toString());
 
 			} else if (event.getArgs().substring(9).startsWith("disable")) {
-				musicManager.config.disconnectAfterLastTrack = false;
+				musicManager.config.setDisconnectAfterLastTrack(false);
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" 'Auto_Disconnect_After_Last_Track' set to `Disabled`");

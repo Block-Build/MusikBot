@@ -18,7 +18,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
 				.getSendingHandler()).getBot().getGuildAudioPlayer(event.getGuild());
 
-		if (musicManager.config.disconnectIfAlone) {
+		if (musicManager.config.isDisconnectIfAloneEnabled()) {
 			VoiceChannel channel = event.getChannelLeft();
 			// Member member = event.getMember();
 			Member selfMember = event.getGuild().getSelfMember();
@@ -48,7 +48,7 @@ public class VoiceChannelListener extends ListenerAdapter {
 		GuildMusicManager musicManager = ((AudioPlayerSendHandler) event.getGuild().getAudioManager()
 				.getSendingHandler()).getBot().getGuildAudioPlayer(event.getGuild());
 
-		if (musicManager.config.disconnectIfAlone) {
+		if (musicManager.config.isDisconnectIfAloneEnabled()) {
 			VoiceChannel channel = event.getChannelLeft();
 			// Member member = event.getMember();
 			Member selfMember = event.getGuild().getSelfMember();

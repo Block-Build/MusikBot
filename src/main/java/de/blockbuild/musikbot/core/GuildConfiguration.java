@@ -16,11 +16,11 @@ public class GuildConfiguration {
 	private final File file;
 	private final Guild guild;
 	private final GuildMusicManager musicManager;
-	public String guildName;
-	public int volume;
-	public List<Long> blacklist, whitelist;
-	public Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	public Map<String, Object> autoConnect;
+	private String guildName;
+	private int volume;
+	private List<Long> blacklist, whitelist;
+	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
+	private Map<String, Object> autoConnect;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		this.musicManager = musicManager;
@@ -97,6 +97,30 @@ public class GuildConfiguration {
 		musicManager.getAudioPlayer().setVolume(this.volume);
 	}
 
+	public Boolean isDisconnectIfAloneEnabled() {
+		return disconnectIfAlone;
+	}
+
+	public Boolean isDisconnectAfterLastTrackEnabled() {
+		return disconnectAfterLastTrack;
+	}
+
+	public void setDisconnectIfAlone(Boolean bool) {
+		disconnectIfAlone = bool;
+	}
+
+	public void setDisconnectAfterLastTrack(Boolean bool) {
+		disconnectAfterLastTrack = bool;
+	}
+
+	public Boolean isWhitelistEnabled() {
+		return useWhitelist;
+	}
+
+	public void setWhitelistEnabled(Boolean bool) {
+		useWhitelist = bool;
+	}
+
 	public Boolean isAutoConnectEnabled() {
 		return (Boolean) autoConnect.get("Enabled");
 	}
@@ -119,5 +143,53 @@ public class GuildConfiguration {
 
 	public void setAutoConnectTrack(String track) {
 		autoConnect.replace("Track", track);
+	}
+
+	public int getVolume() {
+		return this.volume;
+	}
+
+	public void setVolume(int volume) {
+		this.volume = volume;
+	}
+
+	public boolean isBlockedUser(long ID) {
+		return this.blacklist.contains(ID);
+	}
+
+	public void blacklistAdd(Long id) {
+		blacklist.add(id);
+	}
+
+	public void blacklistRemove(Long id) {
+		blacklist.remove(id);
+	}
+
+	public void blacklistClear() {
+		blacklist.clear();
+	}
+
+	public List<Long> getBlacklist() {
+		return blacklist;
+	}
+
+	public boolean isWhitelistedUser(long ID) {
+		return this.whitelist.contains(ID);
+	}
+
+	public void whitelistAdd(Long id) {
+		whitelist.add(id);
+	}
+
+	public void whitelistRemove(Long id) {
+		whitelist.remove(id);
+	}
+
+	public void whitelistClear() {
+		whitelist.clear();
+	}
+
+	public List<Long> getWhitelist() {
+		return whitelist;
 	}
 }

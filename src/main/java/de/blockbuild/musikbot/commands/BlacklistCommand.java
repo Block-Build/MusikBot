@@ -31,7 +31,7 @@ public class BlacklistCommand extends MBCommand {
 			if (l == null)
 				return;
 
-			musicManager.config.blacklist.add(l);
+			musicManager.config.blacklistAdd(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Successfully added '").append(bot.getUserNameById(l)).append(" ").append(l)
@@ -43,14 +43,14 @@ public class BlacklistCommand extends MBCommand {
 			if (l == null)
 				return;
 
-			if (!musicManager.isBlockedUser(l)) {
+			if (!musicManager.config.isBlockedUser(l)) {
 				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 				builder.append(" ").append(l).append(" is not blocked.");
 				event.reply(builder.toString());
 				return;
 			}
 
-			musicManager.config.blacklist.remove(l);
+			musicManager.config.blacklistRemove(l);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Successfully removed '").append(bot.getUserNameById(l)).append(" ").append(l)
@@ -58,7 +58,7 @@ public class BlacklistCommand extends MBCommand {
 			event.reply(builder.toString());
 
 		} else if (event.getArgs().startsWith("clear")) {
-			musicManager.config.blacklist.clear();
+			musicManager.config.blacklistClear();
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Blacklist successfully cleard");
@@ -67,12 +67,10 @@ public class BlacklistCommand extends MBCommand {
 		} else if (event.getArgs().startsWith("list")) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Blacklist:**\n");
-			for (Long l : musicManager.config.blacklist) {
-				builder.append("").append(bot.getUserNameById(l)).append(" `").append(l).append("`")
-						.append("\n");
+			for (Long l : musicManager.config.getBlacklist()) {
+				builder.append("").append(bot.getUserNameById(l)).append(" `").append(l).append("`").append("\n");
 			}
 			event.reply(builder.toString());
-
 		} else {
 			sendCommandInfo(event);
 		}

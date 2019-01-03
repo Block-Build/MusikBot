@@ -36,9 +36,9 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
-		if (!event.isOwner() && musicManager.isBlockedUser(member.getUser().getIdLong())
-				|| (!event.isOwner() && (musicManager.isWhitelistEnabled()
-						&& !(musicManager.isWhitelistedUser(member.getUser().getIdLong()))))) {
+		if (!event.isOwner() && musicManager.config.isBlockedUser(member.getUser().getIdLong())
+				|| (!event.isOwner() && (musicManager.config.isWhitelistEnabled()
+						&& !(musicManager.config.isWhitelistedUser(member.getUser().getIdLong()))))) {
 			User owner = bot.getUserById(bot.config.ownerID);
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" You're not allowed to interact with me!");
