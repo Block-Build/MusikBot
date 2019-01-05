@@ -131,7 +131,7 @@ public class Bot {
 		GuildMusicManager musicManager = musicManagers.get(guild.getIdLong());
 
 		if (musicManager == null) {
-			musicManager = new GuildMusicManager(playerManager, guild, main);
+			musicManager = new GuildMusicManager(playerManager, guild, this);
 			musicManagers.put(guild.getIdLong(), musicManager);
 
 			guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
