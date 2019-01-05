@@ -128,16 +128,14 @@ public class Bot {
 	}
 
 	public synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
-		long guildId = Long.parseLong(guild.getId());
-		GuildMusicManager musicManager = musicManagers.get(guildId);
+		GuildMusicManager musicManager = musicManagers.get(guild.getIdLong());
 
 		if (musicManager == null) {
-			musicManager = new GuildMusicManager(playerManager, guild, this);
-			musicManagers.put(guildId, musicManager);
+			musicManager = new GuildMusicManager(playerManager, guild, main);
+			musicManagers.put(guild.getIdLong(), musicManager);
+
+			guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
 		}
-
-		guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
-
 		return musicManager;
 	}
 

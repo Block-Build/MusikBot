@@ -54,6 +54,8 @@ public class PlayCommand extends MBCommand {
 			if (!event.getArgs().startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
+			} else {
+				isSearch = false;
 			}
 			AudioPlayerManager playerManager = bot.getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
