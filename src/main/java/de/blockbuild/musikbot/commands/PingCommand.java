@@ -2,12 +2,12 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class PingCommand extends MBCommand {
-	public PingCommand(Main main) {
-		super(main);
+	public PingCommand(Bot bot) {
+		super(bot);
 		this.name = "ping";
 		this.help = "Displays the responce time";
 		this.joinOnCommand = false;

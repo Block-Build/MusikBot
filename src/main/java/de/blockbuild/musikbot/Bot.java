@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.security.auth.login.LoginException;
 
 import com.jagrosh.jdautilities.commandclient.Command;
-import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -14,7 +13,10 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
+import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.ChooseCommand;
+import de.blockbuild.musikbot.commands.AutoConnectCommand;
+import de.blockbuild.musikbot.commands.AutoDisconnectCommand;
 import de.blockbuild.musikbot.commands.FlushQueue;
 import de.blockbuild.musikbot.commands.InfoCommand;
 import de.blockbuild.musikbot.commands.JoinCommand;
@@ -27,10 +29,14 @@ import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
+import de.blockbuild.musikbot.commands.ConfigCommand;
+import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
 import de.blockbuild.musikbot.commands.StopCommand;
+import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
+import de.blockbuild.musikbot.commands.WhitelistCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.BotConfiguration;
 
@@ -43,6 +49,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
@@ -61,7 +68,6 @@ public class Bot {
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	private CommandClientBuilder ccb;
-	private CommandClient commandClient;
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
@@ -69,12 +75,12 @@ public class Bot {
 		musicManagers = new HashMap<>();
 		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
-		config = new BotConfiguration(main);
+		config = new BotConfiguration(this);
 
 		if (start()) {
 			initListeners();
 			initCommandClient();
-		}else {
+		} else {
 			stop();
 		}
 	}
@@ -89,7 +95,6 @@ public class Bot {
 			try {
 				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 
 		} catch (LoginException e) {
@@ -109,6 +114,10 @@ public class Bot {
 		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
+
+		jda.getGuilds().forEach((guild) -> {
+			getGuildAudioPlayer(guild);
+		});
 		return true;
 	}
 
@@ -132,6 +141,7 @@ public class Bot {
 
 	public void initListeners() {
 		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new VoiceChannelListener());
 	}
 
 	public void initCommandClient() {
@@ -140,36 +150,43 @@ public class Bot {
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
-		ccb.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
+		ccb.setEmojis(config.emojis.get("Success"), config.emojis.get("Warning"), config.emojis.get("Error"));
 		ccb.setPrefix(trigger);
-		ccb.setAlternativePrefix("-");
+		// ccb.setAlternativePrefix("-");
 		registerCommandModule(
 				//Music
-				new PlayCommand(main), 
-				new QueueCommand(main),
-				new NextCommand(main), 
-				new SkipCommand(main),
-				new ChooseCommand(main),
-				new FlushQueue(main),
-				new ShuffleCommand(main),
+				new PlayCommand(this), 
+				new QueueCommand(this),
+				new NextCommand(this), 
+				new SkipCommand(this),
+				new ChooseCommand(this),
+				new FlushQueue(this),
+				new ShuffleCommand(this),
   
 				//Radio
-				new RadioBonnRheinSiegCommand(main), 
-				new RautemusikCommand(main), 
+				new RadioBonnRheinSiegCommand(this), 
+				new RautemusikCommand(this), 
 				
-				new VolumeCommand(main),
-				new InfoCommand(main),  
-				new PauseCommand(main),
-				new ResumeCommand(main),
+				new VolumeCommand(this),
+				new InfoCommand(this),  
+				new PauseCommand(this),
+				new ResumeCommand(this),
 				
 				//Connection
-				new JoinCommand(main), 
-				new QuitCommand(main),
-				new StopCommand(main), 
-				new PingCommand(main));
+				new JoinCommand(this), 
+				new QuitCommand(this),
+				new StopCommand(this), 
+				new PingCommand(this),
+				
+				//Setup
+				new BlacklistCommand(this),
+				new WhitelistCommand(this),
+				new AutoDisconnectCommand(this),
+				new AutoConnectCommand(this),
+				new ConfigCommand(this),
+				new VersionCommand(this));
     
-		commandClient = ccb.build();
-		jda.addEventListener(commandClient);
+		jda.addEventListener(ccb.build());
 
 		/*
 		 * missing commands:
@@ -237,5 +254,31 @@ public class Bot {
 
 	public AudioPlayerManager getPlayerManager() {
 		return playerManager;
+	}
+
+	public User getUserById(String id) {
+		return this.jda.getUserById(id);
+	}
+
+	public User getUserById(Long id) {
+		return this.jda.getUserById(id);
+	}
+
+	public String getUserNameById(String id) {
+		User user = getUserById(id);
+		if (user == null) {
+			return "UNKNOWN";
+		} else {
+			return user.getName();
+		}
+	}
+
+	public String getUserNameById(Long id) {
+		User user = getUserById(id);
+		if (user == null) {
+			return "UNKNOWN";
+		} else {
+			return user.getName();
+		}
 	}
 }

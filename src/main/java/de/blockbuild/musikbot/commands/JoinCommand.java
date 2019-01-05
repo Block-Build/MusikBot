@@ -2,13 +2,13 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class JoinCommand extends MBCommand {
 
-	public JoinCommand(Main main) {
-		super(main);
+	public JoinCommand(Bot bot) {
+		super(bot);
 		this.name = "join";
 		this.help = "Triggers the Bot to join a voice channel!";
 		this.arguments = "[ChannelName]";
@@ -25,12 +25,10 @@ public class JoinCommand extends MBCommand {
 				builder.append(" We are already in the same channel!");
 				event.reply(builder.toString());
 			} else {
-				main.getBot().joinDiscordVoiceChannel(event.getGuild(),
-						event.getMember().getVoiceState().getChannel().getName());
+				bot.joinDiscordVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel().getName());
 			}
-
 		} else {
-			main.getBot().joinDiscordVoiceChannel(event.getGuild(), event.getArgs());
+			bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs());
 		}
 	}
 }

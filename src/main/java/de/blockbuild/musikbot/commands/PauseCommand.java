@@ -3,12 +3,12 @@ package de.blockbuild.musikbot.commands;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class PauseCommand extends MBCommand {
-	public PauseCommand(Main main) {
-		super(main);
+	public PauseCommand(Bot bot) {
+		super(bot);
 		this.name = "pause";
 		this.help = "Pause playback.";
 		this.joinOnCommand = false;
@@ -17,7 +17,7 @@ public class PauseCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		AudioPlayer player = main.getBot().getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
+		AudioPlayer player = bot.getGuildAudioPlayer(event.getGuild()).getAudioPlayer();
 		if (!(player.getPlayingTrack() == null)) {
 			player.setPaused(true);
 			// event.getJDA().getPresence().setStatus(OnlineStatus.IDLE);

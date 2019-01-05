@@ -7,15 +7,15 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class RadioBonnRheinSiegCommand extends MBCommand {
 
-	public RadioBonnRheinSiegCommand(Main main) {
-		super(main);
+	public RadioBonnRheinSiegCommand(Bot bot) {
+		super(bot);
 		this.name = "RadioBonnRheinSieg";
 		this.aliases = new String[] { "rbrs" };
 		this.help = "Plays RadioBonnRheinSieg!";
@@ -25,9 +25,9 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
-		AudioPlayerManager playerManager = main.getBot().getPlayerManager();
+		AudioPlayerManager playerManager = bot.getPlayerManager();
 
 		playerManager.loadItemOrdered(musicManager, "http://stream.lokalradio.nrw/rbrs",
 				new ResultHandler(trackScheduler, event));

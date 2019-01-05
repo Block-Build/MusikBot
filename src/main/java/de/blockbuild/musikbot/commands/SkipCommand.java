@@ -2,14 +2,14 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class SkipCommand extends MBCommand {
 
-	public SkipCommand(Main main) {
-		super(main);
+	public SkipCommand(Bot bot) {
+		super(bot);
 		this.name = "skip";
 		this.aliases = new String[] { "s", "sk" };
 		this.help = "Skips the track";
@@ -20,7 +20,7 @@ public class SkipCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
+		TrackScheduler trackScheduler = bot.getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 
 		if (!(event.getArgs().isEmpty())) {
 			int i = 0;
