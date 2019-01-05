@@ -30,7 +30,7 @@ public class ConfigCommand extends MBCommand {
 				builder.append(event.getClient().getError()).append(" Faild to save config");
 			}
 		} else if (event.getArgs().startsWith("load")) {
-			if (musicManager.config.loadConfig()) {
+			if (musicManager.config.readConfig()) {
 				builder.append(event.getClient().getSuccess()).append(" Config load successfully");
 			} else {
 				builder.append(event.getClient().getError()).append(" Faild to load config");

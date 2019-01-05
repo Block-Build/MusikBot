@@ -12,8 +12,7 @@ import de.blockbuild.musikbot.Bot;
 
 import net.dv8tion.jda.core.entities.Guild;
 
-public class GuildConfiguration {
-	private final File file;
+public class GuildConfiguration extends ConfigurationManager {
 	private final Guild guild;
 	private final GuildMusicManager musicManager;
 	private String guildName;
@@ -23,15 +22,15 @@ public class GuildConfiguration {
 	private Map<String, Object> autoConnect;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
+		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
 		this.musicManager = musicManager;
 		this.guild = musicManager.getGuild();
-		this.file = new File(bot.getMain().getDataFolder(), "/Guilds/" + guild.getId() + ".yml");
 
-		loadConfig();
+		readConfig();
 		writeConfig();
 	}
 
-	public synchronized Boolean writeConfig() {
+	public boolean writeConfig() {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
@@ -45,22 +44,16 @@ public class GuildConfiguration {
 			config.set("Auto_Connect_On_Startup", this.autoConnect);
 			// config.set("", );
 
-			config.save(file);
-			return true;
+			return this.saveConfig(config);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 
-	public synchronized Boolean loadConfig() {
+	public boolean readConfig() {
 		try {
-			YamlConfiguration config = new YamlConfiguration();
-
-			if (!file.exists()) {
-				config.save(file);
-			}
-			config.load(file);
+			YamlConfiguration config = this.loadConfig();
 
 			this.guildName = guild.getName();
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
@@ -87,7 +80,7 @@ public class GuildConfiguration {
 			initConfig();
 			return true;
 		} catch (Exception e) {
-			System.out.println("Couldn't load GuildConfig!");
+			System.out.println("Couldn't read GuildConfiguration!");
 			e.printStackTrace();
 			return false;
 		}
