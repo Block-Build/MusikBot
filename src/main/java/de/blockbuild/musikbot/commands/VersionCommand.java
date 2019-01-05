@@ -4,25 +4,21 @@ import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
-import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class ShuffleCommand extends MBCommand {
+public class VersionCommand extends MBCommand {
 
-	public ShuffleCommand(Bot bot) {
+	public VersionCommand(Bot bot) {
 		super(bot);
-		this.name = "shuffle";
-		this.help = "Shuffles the playlist";
+		this.name = "version";
+		this.help = "MusikBot version.";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
+		this.category = SETUP;
 	}
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = bot.getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
-		trackScheduler.shuffle();
 		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-		builder.append(" Playlist shuffled!");
+		builder.append(" ").append(bot.getMain().getDescription().getFullName());
 		event.reply(builder.toString());
 	}
-
 }

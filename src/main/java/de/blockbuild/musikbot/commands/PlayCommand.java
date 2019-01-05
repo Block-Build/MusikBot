@@ -3,6 +3,7 @@ package de.blockbuild.musikbot.commands;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -11,7 +12,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
@@ -20,8 +21,8 @@ public class PlayCommand extends MBCommand {
 
 	private Boolean isSearch;
 
-	public PlayCommand(Main main) {
-		super(main);
+	public PlayCommand(Bot bot) {
+		super(bot);
 		this.name = "play";
 		this.aliases = new String[] { "p" };
 		this.help = "Shows current track or plays given track";
@@ -33,7 +34,7 @@ public class PlayCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayer player = musicManager.getAudioPlayer();
 		if (event.getArgs().isEmpty()) {
@@ -53,8 +54,10 @@ public class PlayCommand extends MBCommand {
 			if (!event.getArgs().startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
+			} else {
+				isSearch = false;
 			}
-			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
+			AudioPlayerManager playerManager = bot.getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
@@ -72,7 +75,7 @@ public class PlayCommand extends MBCommand {
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
-			this.musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+			this.musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		}
 
 		@Override
