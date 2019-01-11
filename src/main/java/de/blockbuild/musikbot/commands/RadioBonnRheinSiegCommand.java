@@ -16,7 +16,7 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 
 	public RadioBonnRheinSiegCommand(Bot bot) {
 		super(bot);
-		this.name = "RadioBonnRheinSieg";
+		this.name = "radiobonnrheinsieg";
 		this.aliases = new String[] { "rbrs" };
 		this.help = "Plays RadioBonnRheinSieg!";
 		this.joinOnCommand = true;
