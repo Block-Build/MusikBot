@@ -2,14 +2,14 @@ package de.blockbuild.musikbot.commands;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class FlushQueue extends MBCommand {
 
-	public FlushQueue(Main main) {
-		super(main);
+	public FlushQueue(Bot bot) {
+		super(bot);
 		this.name = "flush";
 		this.aliases = new String[] { "f", "fl" };
 		this.help = "Clears the queue";
@@ -20,7 +20,7 @@ public class FlushQueue extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = main.getBot().getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
+		TrackScheduler trackScheduler = bot.getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
 		if (event.getArgs().isEmpty()) {
 			trackScheduler.flushQueue();
 			StringBuilder builder = new StringBuilder();

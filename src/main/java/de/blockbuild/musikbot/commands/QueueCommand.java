@@ -9,7 +9,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import de.blockbuild.musikbot.Main;
+import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
@@ -18,8 +18,8 @@ public class QueueCommand extends MBCommand {
 
 	private Boolean isSearch;
 
-	public QueueCommand(Main main) {
-		super(main);
+	public QueueCommand(Bot bot) {
+		super(bot);
 		this.name = "queue";
 		this.aliases = new String[] { "q" };
 		this.help = "Returns the playlist or adds the given track to queue.";
@@ -31,7 +31,7 @@ public class QueueCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
@@ -43,7 +43,7 @@ public class QueueCommand extends MBCommand {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
 			}
-			AudioPlayerManager playerManager = main.getBot().getPlayerManager();
+			AudioPlayerManager playerManager = bot.getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
@@ -57,7 +57,7 @@ public class QueueCommand extends MBCommand {
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
-			this.musicManager = main.getBot().getGuildAudioPlayer(event.getGuild());
+			this.musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		}
 
 		@Override
@@ -73,7 +73,8 @@ public class QueueCommand extends MBCommand {
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 				builder.append(" Use `!Choose <1-5>` to choose one of the search results: \n");
 				for (int i = 0; i < 5; i++) {
-					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title).append("`\n");
+					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title)
+							.append("`\n");
 					musicManager.tracks.add(playlist.getTracks().get(i));
 					musicManager.isQueue = true;
 				}
