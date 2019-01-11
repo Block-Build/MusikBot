@@ -25,7 +25,7 @@ public class JoinCommand extends MBCommand {
 				builder.append(" We are already in the same channel!");
 				event.reply(builder.toString());
 			} else {
-				bot.joinDiscordVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel().getName());
+				bot.joinDiscordVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel().getIdLong());
 			}
 		} else {
 			bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs());
