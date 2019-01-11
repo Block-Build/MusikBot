@@ -64,7 +64,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 			if (!selfMember.getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
-					bot.joinDiscordVoiceChannel(event.getGuild(), channel.getName());
+					bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
 					doCommand(event);
 					return;
 				} else {
