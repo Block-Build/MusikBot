@@ -36,6 +36,12 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
+		if (musicManager.config.isDefaultTextChannelEnabled()) {
+			if (!(event.getTextChannel().getIdLong() == musicManager.config.getDefaultTextChannel())) {
+				return;
+			}
+		}
+
 		if (!event.isOwner() && musicManager.config.isBlockedUser(member.getUser().getIdLong())
 				|| (!event.isOwner() && (musicManager.config.isWhitelistEnabled()
 						&& !(musicManager.config.isWhitelistedUser(member.getUser().getIdLong()))))) {

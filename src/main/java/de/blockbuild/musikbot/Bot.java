@@ -196,7 +196,6 @@ public class Bot {
 		 * jump to time?
 		 * 
 		 * ##setup commands##
-		 * defaultTextChannel
 		 * defaultVoiceCannel
 		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
