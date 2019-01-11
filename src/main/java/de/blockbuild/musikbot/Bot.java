@@ -31,6 +31,7 @@ import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
+import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
 import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -185,6 +186,7 @@ public class Bot {
 				new WhitelistCommand(this),
 				new AutoDisconnectCommand(this),
 				new AutoConnectCommand(this),
+				new DefaultTextChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
     

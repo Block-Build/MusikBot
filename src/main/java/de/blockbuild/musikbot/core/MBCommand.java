@@ -37,7 +37,8 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 
 		if (musicManager.config.isDefaultTextChannelEnabled()) {
-			if (!(event.getTextChannel().getIdLong() == musicManager.config.getDefaultTextChannel())) {
+			if (!(event.getTextChannel().getIdLong() == musicManager.config.getDefaultTextChannel())
+					&& !(musicManager.config.getDefaultTextChannel() == 0L)) {
 				return;
 			}
 		}
