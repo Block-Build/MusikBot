@@ -19,7 +19,7 @@ public class GuildConfiguration extends ConfigurationManager {
 	private int volume;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect, defaultTextChannel;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
@@ -43,6 +43,7 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 			config.set("Auto_Connect_On_Startup", this.autoConnect);
 			config.set("Default_TextChannel", this.defaultTextChannel);
+			config.set("Default_VoiceChannel", this.defaultVoiceChannel);
 			// config.set("", );
 
 			return this.saveConfig(config);
@@ -80,7 +81,15 @@ public class GuildConfiguration extends ConfigurationManager {
 			}
 			ConfigurationSection defaultTextChannelList = config.getConfigurationSection("Default_TextChannel");
 			defaultTextChannel.put("Enabled", defaultTextChannelList.getBoolean("Enabled", false));
-			defaultTextChannel.put("VoiceChannelId", defaultTextChannelList.getLong("VoiceChannelId"));
+			defaultTextChannel.put("TextChannelId", defaultTextChannelList.getLong("TextChannelId"));
+
+			this.defaultVoiceChannel = new HashMap<>();
+			if (!config.contains("Default_VoiceChannel")) {
+				config.createSection("Default_VoiceChannel", this.defaultVoiceChannel);
+			}
+			ConfigurationSection defaultVoiceChannelList = config.getConfigurationSection("Default_VoiceChannel");
+			defaultVoiceChannel.put("Enabled", defaultVoiceChannelList.getBoolean("Enabled", false));
+			defaultVoiceChannel.put("VoiceChannelId", defaultVoiceChannelList.getLong("VoiceChannelId"));
 
 			// Playlist
 			// default voice channel
@@ -99,6 +108,9 @@ public class GuildConfiguration extends ConfigurationManager {
 
 		if (isDefaultTextChannelEnabled() && getDefaultTextChannel() == 0L)
 			setDefaultTextChannelEnabled(false);
+
+		if (isDefaultVoiceChannelEnabled() && getDefaultVoiceChannel() == 0L)
+			setDefaultVoiceChannelEnabled(false);
 	}
 
 	public Boolean isDisconnectIfAloneEnabled() {
@@ -206,10 +218,26 @@ public class GuildConfiguration extends ConfigurationManager {
 	}
 
 	public long getDefaultTextChannel() {
-		return (long) defaultTextChannel.get("VoiceChannelId");
+		return (long) defaultTextChannel.get("TextChannelId");
 	}
 
 	public void setDefaultTextChannel(long id) {
-		defaultTextChannel.replace("VoiceChannelId", id);
+		defaultTextChannel.replace("TextChannelId", id);
+	}
+
+	public boolean isDefaultVoiceChannelEnabled() {
+		return (Boolean) defaultVoiceChannel.get("Enabled");
+	}
+
+	public void setDefaultVoiceChannelEnabled(boolean bool) {
+		defaultVoiceChannel.replace("Enabled", bool);
+	}
+
+	public long getDefaultVoiceChannel() {
+		return (long) defaultVoiceChannel.get("VoiceChannelId");
+	}
+
+	public void setDefaultVoiceChannel(long id) {
+		defaultVoiceChannel.replace("VoiceChannelId", id);
 	}
 }

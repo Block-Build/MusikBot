@@ -65,8 +65,12 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 			if (!selfMember.getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
-					bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
-					doCommand(event);
+					if (allowedToJoinVoiceChannel(musicManager, channel.getIdLong())) {
+						bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
+						doCommand(event);
+					} else {
+						sendDefaultVoiceChannelInfo(event, musicManager);
+					}
 					return;
 				} else {
 					StringBuilder builder = new StringBuilder(event.getClient().getWarning());
@@ -145,9 +149,42 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		return l;
 	}
 
+	protected boolean allowedToJoinVoiceChannel(GuildMusicManager musicManager, long id) {
+		if (musicManager.config.isDefaultVoiceChannelEnabled()
+				&& !(musicManager.config.getDefaultVoiceChannel() == 0L)) {
+			if (musicManager.config.getDefaultVoiceChannel() == id) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
+
+	protected boolean allowedToJoinVoiceChannel(GuildMusicManager musicManager, String id) {
+		if (musicManager.config.isDefaultVoiceChannelEnabled()
+				&& !(musicManager.config.getDefaultVoiceChannel() == 0L)) {
+			if (String.valueOf(musicManager.config.getDefaultVoiceChannel()) == id) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
+
 	public void sendCommandInfo(CommandEvent event) {
 		StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 		builder.append(" !").append(this.name).append(" ").append(this.arguments);
+		event.reply(builder.toString());
+	}
+
+	public void sendDefaultVoiceChannelInfo(CommandEvent event, GuildMusicManager musicManager) {
+		StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+		builder.append(" Default VoiceChannel is active. I'm only allowed to join `")
+				.append(bot.getVoiceChannelById(musicManager.config.getDefaultVoiceChannel()).getName()).append("`");
 		event.reply(builder.toString());
 	}
 

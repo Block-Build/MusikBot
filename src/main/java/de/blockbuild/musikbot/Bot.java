@@ -32,6 +32,7 @@ import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
 import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
 import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -51,6 +52,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -187,6 +189,7 @@ public class Bot {
 				new AutoDisconnectCommand(this),
 				new AutoConnectCommand(this),
 				new DefaultTextChannelCommand(this),
+				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
     
@@ -198,8 +201,6 @@ public class Bot {
 		 * jump to time?
 		 * 
 		 * ##setup commands##
-		 * defaultVoiceCannel
-		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
 		 * setIcon?
 		 */
@@ -283,5 +284,13 @@ public class Bot {
 		} else {
 			return user.getName();
 		}
+	}
+
+	public TextChannel getTextChannelById(Long id) {
+		return this.jda.getTextChannelById(id);
+	}
+
+	public VoiceChannel getVoiceChannelById(Long id) {
+		return this.jda.getVoiceChannelById(id);
 	}
 }
