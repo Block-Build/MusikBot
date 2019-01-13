@@ -221,7 +221,7 @@ public class Bot {
 				System.out.println("no VoiceChannel");
 			} catch (InsufficientPermissionException e) {
 				System.out.println("Missing permission: " + e.getPermission() + " to join '"
-						+ guild.getVoiceChannels().get(2).getName() + "'");
+						+ guild.getVoiceChannels().get(i).getName() + "'");
 			} catch (Exception e) {
 				System.err.println(e);
 			}
@@ -241,7 +241,7 @@ public class Bot {
 			System.out.println("no VoiceChannel");
 		} catch (InsufficientPermissionException e) {
 			System.out.println("Missing permission: " + e.getPermission() + " to join '"
-					+ guild.getVoiceChannels().get(2).getName() + "'");
+					+ guild.getVoiceChannels().get(0).getName() + "'");
 		} catch (Exception e) {
 			System.err.println(e);
 		}
