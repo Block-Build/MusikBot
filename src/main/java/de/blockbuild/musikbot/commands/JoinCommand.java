@@ -39,7 +39,12 @@ public class JoinCommand extends MBCommand {
 			}
 		} else {
 			if (allowedToJoinVoiceChannel(musikManager, event.getArgs())) {
-				bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs());
+				if (!bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs())) {
+					StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+					builder.append(" Missing permission or there is no channel called `").append(event.getArgs())
+							.append("`.");
+					event.reply(builder.toString());
+				}
 			} else {
 				sendDefaultVoiceChannelInfo(event, musikManager);
 			}

@@ -229,8 +229,18 @@ public class Bot {
 		return false;
 	}
 
-	public void joinDiscordVoiceChannel(Guild guild, Long id) {
-		guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+	public boolean joinDiscordVoiceChannel(Guild guild, Long id) {
+		try {
+			guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+			return true;
+		} catch (IllegalArgumentException e) {
+			System.out.println(id + " is not a VoiceChannel");
+		} catch (InsufficientPermissionException e) {
+			System.out.println("Missing permission: " + e.getPermission() + " to join '" + id + "'");
+		} catch (Exception e) {
+			System.out.println(id + " isn't a vaild VoiceChannel");
+		}
+		return false;
 	}
 
 	public boolean joinDiscordVoiceChannel(Guild guild, String name) {
@@ -238,14 +248,14 @@ public class Bot {
 			guild.getAudioManager().openAudioConnection((VoiceChannel) guild.getVoiceChannelsByName(name, true).get(0));
 			return true;
 		} catch (IllegalArgumentException e) {
-			System.out.println("no VoiceChannel");
+			System.out.println(name + " is not a VoiceChannel");
 		} catch (InsufficientPermissionException e) {
 			System.out.println("Missing permission: " + e.getPermission() + " to join '"
 					+ guild.getVoiceChannels().get(0).getName() + "'");
 		} catch (Exception e) {
-			System.err.println(e);
+			System.out.println(name + " isn't a vaild VoiceChannel");
 		}
-		return joinDiscordVoiceChannel(guild);
+		return false;
 	}
 
 	public JDA getJda() {
