@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
-	private String token, trigger, game, ownerID;
+	private String token, trigger, game, ownerID, inviteURL;
 	private Map<String, String> emojis;
 
 	// Avatar
@@ -30,6 +30,7 @@ public class BotConfiguration extends ConfigurationManager {
 		config.set("Command_Trigger", this.trigger);
 		config.set("Game", this.game);
 		config.createSection("Emojis", this.emojis);
+		config.set("Invite_URL", this.inviteURL);
 
 		return this.saveConfig(config);
 	}
@@ -85,5 +86,10 @@ public class BotConfiguration extends ConfigurationManager {
 
 	public String getError() {
 		return this.emojis.get("Error");
+	}
+
+	public void setInviteLink(String inviteURL) {
+		this.inviteURL = inviteURL;
+		writeConfig();
 	}
 }

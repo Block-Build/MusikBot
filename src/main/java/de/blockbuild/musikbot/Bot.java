@@ -91,12 +91,6 @@ public class Bot {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
-
-			try {
-				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
-			} catch (IOException e) {
-			}
-
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -104,6 +98,13 @@ public class Bot {
 			// Should never triggered!
 			e.printStackTrace();
 		}
+
+		try {
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+
 		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
@@ -111,7 +112,10 @@ public class Bot {
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
+		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		System.out.println(inviteURL);
+		config.setInviteLink(inviteURL);
+		
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
