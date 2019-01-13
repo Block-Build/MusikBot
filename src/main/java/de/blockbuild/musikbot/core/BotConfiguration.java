@@ -58,4 +58,8 @@ public class BotConfiguration extends ConfigurationManager {
 			return false;
 		}
 	}
+
+	public String getRawConfiguration() {
+		return loadConfig().saveToString();
+	}
 }

@@ -92,7 +92,6 @@ public class GuildConfiguration extends ConfigurationManager {
 			defaultVoiceChannel.put("VoiceChannelId", defaultVoiceChannelList.getLong("VoiceChannelId"));
 
 			// Playlist
-			// default voice channel
 
 			initConfig();
 			return true;
@@ -239,5 +238,9 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setDefaultVoiceChannel(long id) {
 		defaultVoiceChannel.replace("VoiceChannelId", id);
+	}
+
+	public String getRawConfiguration() {
+		return loadConfig().saveToString();
 	}
 }
