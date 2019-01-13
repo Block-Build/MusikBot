@@ -39,7 +39,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		if (!event.isOwner() && musicManager.config.isBlockedUser(member.getUser().getIdLong())
 				|| (!event.isOwner() && (musicManager.config.isWhitelistEnabled()
 						&& !(musicManager.config.isWhitelistedUser(member.getUser().getIdLong()))))) {
-			User owner = bot.getUserById(bot.config.ownerID);
+			User owner = bot.getUserById(bot.config.getOwnerID());
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" You're not allowed to interact with me!");
 			if (!(owner == null)) {

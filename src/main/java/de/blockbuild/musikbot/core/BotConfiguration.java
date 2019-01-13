@@ -9,8 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
-	public String token, trigger, game, ownerID;
-	public Map<String, String> emojis;
+	private String token, trigger, game, ownerID;
+	private Map<String, String> emojis;
 
 	// Avatar
 	// Name
@@ -57,5 +57,33 @@ public class BotConfiguration extends ConfigurationManager {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public String getToken() {
+		return this.token;
+	}
+
+	public String getGame() {
+		return this.game;
+	}
+
+	public String getTrigger() {
+		return this.game;
+	}
+
+	public String getOwnerID() {
+		return this.game;
+	}
+
+	public String getSuccess() {
+		return this.emojis.get("Success");
+	}
+
+	public String getWarning() {
+		return this.emojis.get("Warning");
+	}
+
+	public String getError() {
+		return this.emojis.get("Error");
 	}
 }

@@ -1,14 +1,10 @@
 package de.blockbuild.musikbot.core;
 
 import java.io.File;
-import java.util.Map;
-
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public abstract class ConfigurationManager {
 	private final File file;
-	public String token, trigger, game, ownerID;
-	public Map<String, String> emojis;
 
 	public ConfigurationManager(File file) {
 		this.file = file;

@@ -87,7 +87,7 @@ public class Bot {
 
 	public boolean start() {
 		try {
-			String token = config.token;
+			String token = config.getToken();
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
@@ -104,7 +104,7 @@ public class Bot {
 			// Should never triggered!
 			e.printStackTrace();
 		}
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.game));
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
@@ -145,12 +145,12 @@ public class Bot {
 	}
 
 	public void initCommandClient() {
-		String ownerID = config.ownerID;
-		String trigger = config.trigger;
+		String ownerID = config.getOwnerID();
+		String trigger = config.getTrigger();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
-		ccb.setEmojis(config.emojis.get("Success"), config.emojis.get("Warning"), config.emojis.get("Error"));
+		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
 		registerCommandModule(
