@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.core;
+package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
 import org.bukkit.configuration.file.YamlConfiguration;

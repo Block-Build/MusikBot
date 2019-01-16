@@ -37,8 +37,8 @@ import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
-import de.blockbuild.musikbot.core.BotConfiguration;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
