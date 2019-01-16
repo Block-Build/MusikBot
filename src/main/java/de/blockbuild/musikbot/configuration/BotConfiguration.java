@@ -69,11 +69,11 @@ public class BotConfiguration extends ConfigurationManager {
 	}
 
 	public String getTrigger() {
-		return this.game;
+		return this.trigger;
 	}
 
 	public String getOwnerID() {
-		return this.game;
+		return this.ownerID;
 	}
 
 	public String getSuccess() {
