@@ -24,6 +24,7 @@ import de.blockbuild.musikbot.commands.NextCommand;
 import de.blockbuild.musikbot.commands.PauseCommand;
 import de.blockbuild.musikbot.commands.PingCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
+import de.blockbuild.musikbot.commands.PlaylistCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBobCommand;
@@ -40,8 +41,8 @@ import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
-import de.blockbuild.musikbot.core.BotConfiguration;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -88,16 +89,10 @@ public class Bot {
 
 	public boolean start() {
 		try {
-			String token = config.token;
+			String token = config.getToken();
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
-
-			try {
-				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
-			} catch (IOException e) {
-			}
-
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
@@ -105,14 +100,24 @@ public class Bot {
 			// Should never triggered!
 			e.printStackTrace();
 		}
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.game));
+
+		try {
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
+		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		System.out.println(inviteURL);
+		config.setInviteLink(inviteURL);
+		
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
@@ -146,12 +151,12 @@ public class Bot {
 	}
 
 	public void initCommandClient() {
-		String ownerID = config.ownerID;
-		String trigger = config.trigger;
+		String ownerID = config.getOwnerID();
+		String trigger = config.getTrigger();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
-		ccb.setEmojis(config.emojis.get("Success"), config.emojis.get("Warning"), config.emojis.get("Error"));
+		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
 		registerCommandModule(
@@ -163,6 +168,7 @@ public class Bot {
 				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
+				new PlaylistCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
