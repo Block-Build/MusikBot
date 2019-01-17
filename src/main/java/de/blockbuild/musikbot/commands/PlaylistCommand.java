@@ -24,7 +24,7 @@ public class PlaylistCommand extends MBCommand {
 		super(bot);
 		this.name = "playlist";
 		this.aliases = new String[] { "pl" };
-		this.help = "save, load or lode your playlists";
+		this.help = "save, load, delete or list your playlists";
 		this.arguments = "<save|delete|load|list> <name>";
 		this.joinOnCommand = true;
 		this.category = MUSIC;
