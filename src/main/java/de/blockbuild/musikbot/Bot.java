@@ -26,10 +26,13 @@ import de.blockbuild.musikbot.commands.PingCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
+import de.blockbuild.musikbot.commands.RadioBobCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
+import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
 import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -49,6 +52,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -56,13 +60,10 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 public class Bot {
 	public final static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ,
 			Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
-			Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE,
-			Permission.MESSAGE_EXT_EMOJI, Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
-			Permission.NICKNAME_CHANGE, Permission.MESSAGE_TTS };
+			Permission.MESSAGE_EMBED_LINKS, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	public final static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ,
 			Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
-			Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
-			Permission.MESSAGE_TTS };
+			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
@@ -166,6 +167,7 @@ public class Bot {
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
 				new RautemusikCommand(this), 
+				new RadioBobCommand(this),
 				
 				new VolumeCommand(this),
 				new InfoCommand(this),  
@@ -183,6 +185,8 @@ public class Bot {
 				new WhitelistCommand(this),
 				new AutoDisconnectCommand(this),
 				new AutoConnectCommand(this),
+				new DefaultTextChannelCommand(this),
+				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
     
@@ -194,9 +198,6 @@ public class Bot {
 		 * jump to time?
 		 * 
 		 * ##setup commands##
-		 * defaultTextChannel
-		 * defaultVoiceCannel
-		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
 		 * setIcon?
 		 */
@@ -217,7 +218,7 @@ public class Bot {
 				System.out.println("no VoiceChannel");
 			} catch (InsufficientPermissionException e) {
 				System.out.println("Missing permission: " + e.getPermission() + " to join '"
-						+ guild.getVoiceChannels().get(2).getName() + "'");
+						+ guild.getVoiceChannels().get(i).getName() + "'");
 			} catch (Exception e) {
 				System.err.println(e);
 			}
@@ -225,8 +226,18 @@ public class Bot {
 		return false;
 	}
 
-	public void joinDiscordVoiceChannel(Guild guild, Long id) {
-		guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+	public boolean joinDiscordVoiceChannel(Guild guild, Long id) {
+		try {
+			guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+			return true;
+		} catch (IllegalArgumentException e) {
+			System.out.println(id + " is not a VoiceChannel");
+		} catch (InsufficientPermissionException e) {
+			System.out.println("Missing permission: " + e.getPermission() + " to join '" + id + "'");
+		} catch (Exception e) {
+			System.out.println(id + " isn't a vaild VoiceChannel");
+		}
+		return false;
 	}
 
 	public boolean joinDiscordVoiceChannel(Guild guild, String name) {
@@ -234,14 +245,14 @@ public class Bot {
 			guild.getAudioManager().openAudioConnection((VoiceChannel) guild.getVoiceChannelsByName(name, true).get(0));
 			return true;
 		} catch (IllegalArgumentException e) {
-			System.out.println("no VoiceChannel");
+			System.out.println(name + " is not a VoiceChannel");
 		} catch (InsufficientPermissionException e) {
 			System.out.println("Missing permission: " + e.getPermission() + " to join '"
-					+ guild.getVoiceChannels().get(2).getName() + "'");
+					+ guild.getVoiceChannels().get(0).getName() + "'");
 		} catch (Exception e) {
-			System.err.println(e);
+			System.out.println(name + " isn't a vaild VoiceChannel");
 		}
-		return joinDiscordVoiceChannel(guild);
+		return false;
 	}
 
 	public JDA getJda() {
@@ -280,5 +291,13 @@ public class Bot {
 		} else {
 			return user.getName();
 		}
+	}
+
+	public TextChannel getTextChannelById(Long id) {
+		return this.jda.getTextChannelById(id);
+	}
+
+	public VoiceChannel getVoiceChannelById(Long id) {
+		return this.jda.getVoiceChannelById(id);
 	}
 }
