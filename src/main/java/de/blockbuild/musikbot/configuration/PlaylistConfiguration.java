@@ -18,6 +18,8 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	public PlaylistConfiguration(Bot bot, User user, String name) {
 		super(new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
+		this.userName = user.getName();
+		this.playlistName = name;
 
 		readConfig();
 	}
@@ -37,8 +39,6 @@ public class PlaylistConfiguration extends ConfigurationManager {
 	public boolean readConfig() {
 		YamlConfiguration config = this.loadConfig();
 
-		this.userName = config.getString("User_Name", "");
-		this.playlistName = config.getString("Playlist_Name", "Playlist_Name");
 		this.playlist = config.getStringList("Playlist");
 
 		return true;
