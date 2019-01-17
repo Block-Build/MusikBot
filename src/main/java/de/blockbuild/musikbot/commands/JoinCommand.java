@@ -3,7 +3,10 @@ package de.blockbuild.musikbot.commands;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
+
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class JoinCommand extends MBCommand {
 
@@ -18,6 +21,9 @@ public class JoinCommand extends MBCommand {
 
 	@Override
 	protected void doCommand(CommandEvent event) {
+		GuildMusicManager musikManager = bot.getGuildAudioPlayer(event.getGuild());
+		VoiceChannel channel = event.getMember().getVoiceState().getChannel();
+
 		if (event.getArgs().isEmpty()) {
 			if (event.getMember().getVoiceState().getChannel()
 					.equals((event.getSelfMember().getVoiceState().getChannel()))) {
@@ -25,10 +31,23 @@ public class JoinCommand extends MBCommand {
 				builder.append(" We are already in the same channel!");
 				event.reply(builder.toString());
 			} else {
-				bot.joinDiscordVoiceChannel(event.getGuild(), event.getMember().getVoiceState().getChannel().getName());
+				if (allowedToJoinVoiceChannel(musikManager, channel.getIdLong())) {
+					bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
+				} else {
+					sendDefaultVoiceChannelInfo(event, musikManager);
+				}
 			}
 		} else {
-			bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs());
+			if (allowedToJoinVoiceChannel(musikManager, event.getArgs())) {
+				if (!bot.joinDiscordVoiceChannel(event.getGuild(), event.getArgs())) {
+					StringBuilder builder = new StringBuilder(event.getClient().getWarning());
+					builder.append(" Missing permission or there is no channel called `").append(event.getArgs())
+							.append("`.");
+					event.reply(builder.toString());
+				}
+			} else {
+				sendDefaultVoiceChannelInfo(event, musikManager);
+			}
 		}
 	}
 }

@@ -66,6 +66,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
+	public void queueSilent(AudioTrack track) {
+		if (!player.startTrack(track, true)) {
+			queue.offer(track);
+		}
+	}
+
 	public void playTrack(AudioTrack track, CommandEvent event) {
 		if (!(event == null)) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
@@ -142,6 +148,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	public AudioTrack getNextTrack() {
 		return queue.peek();
+	}
+
+	public List<AudioTrack> getQueue() {
+		List<AudioTrack> list = new ArrayList<AudioTrack>();
+		for (AudioTrack track : queue) {
+			list.add(track);
+		}
+		return list;
 	}
 
 	public void flushQueue() {

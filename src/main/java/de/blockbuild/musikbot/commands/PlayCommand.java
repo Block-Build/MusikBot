@@ -11,7 +11,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
@@ -37,9 +36,17 @@ public class PlayCommand extends MBCommand {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayer player = musicManager.getAudioPlayer();
+		AudioPlayerManager playerManager = bot.getPlayerManager();
+
 		if (event.getArgs().isEmpty()) {
 			StringBuilder builder = new StringBuilder();
-			if (player.getPlayingTrack() == null) {
+
+			if (!event.getMessage().getAttachments().isEmpty()) {
+				if (!event.getMessage().getAttachments().get(0).isImage()) {
+					String TrackURL = event.getMessage().getAttachments().get(0).getUrl();
+					playerManager.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event));
+				}
+			} else if (player.getPlayingTrack() == null) {
 				builder.append(event.getClient().getWarning()).append(" `Queue is empty`");
 			} else {
 				builder.append(event.getClient().getSuccess()).append(" Playing: `")
@@ -57,7 +64,6 @@ public class PlayCommand extends MBCommand {
 			} else {
 				isSearch = false;
 			}
-			AudioPlayerManager playerManager = bot.getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}
@@ -116,7 +122,7 @@ public class PlayCommand extends MBCommand {
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(event.getArgs());
+			builder.append(" Faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
 		}
 	}

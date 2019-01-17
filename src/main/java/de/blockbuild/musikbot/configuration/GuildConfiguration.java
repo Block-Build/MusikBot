@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.core;
+package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.blockbuild.musikbot.Bot;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -19,7 +20,7 @@ public class GuildConfiguration extends ConfigurationManager {
 	private int volume;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
@@ -42,6 +43,8 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 			config.set("Auto_Connect_On_Startup", this.autoConnect);
+			config.set("Default_TextChannel", this.defaultTextChannel);
+			config.set("Default_VoiceChannel", this.defaultVoiceChannel);
 			// config.set("", );
 
 			return this.saveConfig(config);
@@ -73,9 +76,23 @@ public class GuildConfiguration extends ConfigurationManager {
 			autoConnect.put("VoiceChannelId", autoConnectList.getLong("VoiceChannelId"));
 			autoConnect.put("Track", autoConnectList.getString("Track", ""));
 
+			this.defaultTextChannel = new HashMap<>();
+			if (!config.contains("Default_TextChannel")) {
+				config.createSection("Default_TextChannel", this.defaultTextChannel);
+			}
+			ConfigurationSection defaultTextChannelList = config.getConfigurationSection("Default_TextChannel");
+			defaultTextChannel.put("Enabled", defaultTextChannelList.getBoolean("Enabled", false));
+			defaultTextChannel.put("TextChannelId", defaultTextChannelList.getLong("TextChannelId"));
+
+			this.defaultVoiceChannel = new HashMap<>();
+			if (!config.contains("Default_VoiceChannel")) {
+				config.createSection("Default_VoiceChannel", this.defaultVoiceChannel);
+			}
+			ConfigurationSection defaultVoiceChannelList = config.getConfigurationSection("Default_VoiceChannel");
+			defaultVoiceChannel.put("Enabled", defaultVoiceChannelList.getBoolean("Enabled", false));
+			defaultVoiceChannel.put("VoiceChannelId", defaultVoiceChannelList.getLong("VoiceChannelId"));
+
 			// Playlist
-			// default text channel
-			// default voice channel
 
 			initConfig();
 			return true;
@@ -88,6 +105,12 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	private void initConfig() {
 		musicManager.getAudioPlayer().setVolume(this.volume);
+
+		if (isDefaultTextChannelEnabled() && getDefaultTextChannel() == 0L)
+			setDefaultTextChannelEnabled(false);
+
+		if (isDefaultVoiceChannelEnabled() && getDefaultVoiceChannel() == 0L)
+			setDefaultVoiceChannelEnabled(false);
 	}
 
 	public Boolean isDisconnectIfAloneEnabled() {
@@ -184,5 +207,41 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public List<Long> getWhitelist() {
 		return whitelist;
+	}
+
+	public boolean isDefaultTextChannelEnabled() {
+		return (Boolean) defaultTextChannel.get("Enabled");
+	}
+
+	public void setDefaultTextChannelEnabled(boolean bool) {
+		defaultTextChannel.replace("Enabled", bool);
+	}
+
+	public long getDefaultTextChannel() {
+		return (long) defaultTextChannel.get("TextChannelId");
+	}
+
+	public void setDefaultTextChannel(long id) {
+		defaultTextChannel.replace("TextChannelId", id);
+	}
+
+	public boolean isDefaultVoiceChannelEnabled() {
+		return (Boolean) defaultVoiceChannel.get("Enabled");
+	}
+
+	public void setDefaultVoiceChannelEnabled(boolean bool) {
+		defaultVoiceChannel.replace("Enabled", bool);
+	}
+
+	public long getDefaultVoiceChannel() {
+		return (long) defaultVoiceChannel.get("VoiceChannelId");
+	}
+
+	public void setDefaultVoiceChannel(long id) {
+		defaultVoiceChannel.replace("VoiceChannelId", id);
+	}
+
+	public String getRawConfiguration() {
+		return loadConfig().saveToString();
 	}
 }

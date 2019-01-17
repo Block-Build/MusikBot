@@ -12,8 +12,8 @@ public class ConfigCommand extends MBCommand {
 		super(bot);
 		this.name = "config";
 		this.aliases = new String[] { "cfg" };
-		this.help = "To load or save the Config";
-		this.arguments = "<save|load>";
+		this.help = "To load, save or show the Config";
+		this.arguments = "<save|load|show>";
 		this.joinOnCommand = false;
 		this.category = SETUP;
 	}
@@ -35,6 +35,14 @@ public class ConfigCommand extends MBCommand {
 			} else {
 				builder.append(event.getClient().getError()).append(" Faild to load config");
 			}
+		} else if (event.getArgs().startsWith("show")) {
+			builder.append(event.getClient().getSuccess()).append(" ");
+
+			builder.append("**Bot Configuration**").append("\n");
+			builder.append(bot.config.getRawConfiguration()).append("\n");
+
+			builder.append("**Guild Configuration**").append("\n");
+			builder.append(musicManager.config.getRawConfiguration()).append("\n");
 		} else {
 			sendCommandInfo(event);
 		}
