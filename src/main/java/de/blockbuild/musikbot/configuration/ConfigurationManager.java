@@ -24,10 +24,10 @@ public abstract class ConfigurationManager {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
-			if (!file.exists()) {
-				config.save(file);
+			if (file.exists()) {
+				config.load(file);
 			}
-			config.load(file);
+
 			return config;
 
 		} catch (Exception e) {
@@ -35,6 +35,10 @@ public abstract class ConfigurationManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public synchronized boolean deleteConfig() {
+		return file.delete();
 	}
 
 	public abstract boolean writeConfig();

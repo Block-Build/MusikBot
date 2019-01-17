@@ -117,7 +117,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		try {
 			doCommand(event);
 		} catch (Exception e) {
-			System.err.print(e);
+			e.printStackTrace();
 		}
 	}
 

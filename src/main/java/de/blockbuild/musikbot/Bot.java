@@ -24,6 +24,7 @@ import de.blockbuild.musikbot.commands.NextCommand;
 import de.blockbuild.musikbot.commands.PauseCommand;
 import de.blockbuild.musikbot.commands.PingCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
+import de.blockbuild.musikbot.commands.PlaylistCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
@@ -166,6 +167,7 @@ public class Bot {
 				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
+				new PlaylistCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
