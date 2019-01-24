@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
-import com.jagrosh.jdautilities.commandclient.Command;
-import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -69,13 +69,11 @@ public class Bot {
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
-	private CommandClientBuilder ccb;
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
 		this.main = main;
 		musicManagers = new HashMap<>();
-		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
 		config = new BotConfiguration(this);
 
@@ -90,6 +88,7 @@ public class Bot {
 	public boolean start() {
 		try {
 			String token = config.getToken();
+			// Check Token!! Disable Plugin.
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
@@ -117,7 +116,7 @@ public class Bot {
 		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
-		
+
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
@@ -153,13 +152,14 @@ public class Bot {
 	public void initCommandClient() {
 		String ownerID = config.getOwnerID();
 		String trigger = config.getTrigger();
+		CommandClientBuilder ccb = new CommandClientBuilder();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
-		registerCommandModule(
+		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
 				new QueueCommand(this),
@@ -209,7 +209,7 @@ public class Bot {
 		 */
 	}
 
-	public void registerCommandModule(Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}
