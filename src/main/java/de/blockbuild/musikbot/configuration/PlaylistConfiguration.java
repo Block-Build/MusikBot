@@ -30,6 +30,7 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 		config.set("User_Name", this.userName);
 		config.set("Playlist_Name", this.playlistName);
+		config.set("Amount", playlist.size());
 		config.set("Playlist", this.playlist);
 
 		return this.saveConfig(config);
@@ -86,5 +87,9 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	public void clearPlaylist() {
 		this.playlist.clear();
+	}
+
+	public int getAmount() {
+		return this.playlist.size();
 	}
 }

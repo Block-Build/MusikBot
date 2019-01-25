@@ -39,7 +39,7 @@ public class BotConfiguration extends ConfigurationManager {
 		try {
 			YamlConfiguration config = this.loadConfig();
 
-			this.token = config.getString("Bot_Token", "insert token here");
+			this.token = config.getString("Bot_Token", "Insert Token here");
 			this.ownerID = config.getString("Owner_ID", "12345");
 			this.trigger = config.getString("Command_Trigger", "!");
 			this.game = config.getString("Game", "Ready for playing music. !Play");

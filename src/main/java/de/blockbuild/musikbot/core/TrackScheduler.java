@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
@@ -109,8 +109,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-		System.out.println("onTrackEnd endReason " + endReason.toString());
-
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
@@ -124,8 +122,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
-		System.out.println("onTrackStart");
-		System.out.println("textChannel " + guild.getSystemChannel().getName());
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}

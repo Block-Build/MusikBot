@@ -24,9 +24,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void start() {
-		// initInstances();
 		Bukkit.getScheduler().runTaskLater(this, () -> {
-			System.out.println("Music Bot get started");
 			bot = new Bot(this);
 		}, 1L);
 	}
