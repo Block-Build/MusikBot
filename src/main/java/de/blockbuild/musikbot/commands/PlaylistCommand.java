@@ -46,7 +46,7 @@ public class PlaylistCommand extends MBCommand {
 				File[] filelist = new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/")
 						.listFiles();
 				if (filelist.length == 0) {
-					builder.append("`No saved Playlist.`");
+					builder.append("`No saved playlist.`");
 				} else {
 					for (File file : filelist) {
 						builder.append("`").append(file.getName().substring(0, file.getName().length() - 4))
@@ -71,14 +71,15 @@ public class PlaylistCommand extends MBCommand {
 				event.reply(builder.toString());
 				return;
 			}
-
+			playlist.clearPlaylist();
 			playlist.addTrack(musicManager.getAudioPlayer().getPlayingTrack().getInfo().uri);
 			playlist.addTracks(trackScheduler.getQueue());
 
 			if (playlist.writeConfig()) {
-				builder.append(" Successfully saved: `").append(name).append("`");
+				builder.append(" Successfully saved playlist `").append(name).append("` containing `")
+						.append(playlist.getAmount()).append("` Tracks");
 			} else {
-				builder.append(" Failed to save Playlist `").append(name).append("`");
+				builder.append(" Failed to save playlist `").append(name).append("`");
 			}
 			event.reply(builder.toString());
 
@@ -107,7 +108,8 @@ public class PlaylistCommand extends MBCommand {
 			}
 
 			builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Playlist `").append(name).append("` loaded Successfully.");
+			builder.append(" Successfully load Playlist `").append(name).append("` containing `")
+					.append(playlist.getAmount()).append("` Tracks.");
 
 			event.reply(builder.toString());
 

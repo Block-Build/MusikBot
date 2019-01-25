@@ -12,7 +12,7 @@ public class VolumeCommand extends MBCommand {
 		super(bot);
 		this.name = "volume";
 		this.aliases = new String[] { "vol", "v" };
-		this.help = "Change the volume";
+		this.help = "Changes the volume.";
 		this.arguments = "[0-100]";
 		this.joinOnCommand = false;
 		this.category = MUSIC;

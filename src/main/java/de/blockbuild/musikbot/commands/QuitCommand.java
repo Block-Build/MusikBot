@@ -12,7 +12,7 @@ public class QuitCommand extends MBCommand {
 		super(bot);
 		this.name = "quit";
 		this.aliases = new String[] { "leave", "disconnect" };
-		this.help = "Triggers the Bot to quit the voice channel!";
+		this.help = "Disconnect and delete queue.";
 		this.joinOnCommand = false;
 		this.category = CONNECTION;
 	}

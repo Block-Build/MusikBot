@@ -11,7 +11,7 @@ public class StopCommand extends MBCommand {
 	public StopCommand(Bot bot) {
 		super(bot);
 		this.name = "stop";
-		this.help = "Disconnect and delete queue";
+		this.help = "Stops playback";
 		this.joinOnCommand = false;
 		this.category = CONNECTION;
 	}
