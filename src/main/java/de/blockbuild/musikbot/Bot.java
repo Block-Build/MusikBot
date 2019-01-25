@@ -72,6 +72,8 @@ public class Bot {
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
+		System.out.println("[" + main.getName() + "] Get started...");
+
 		this.main = main;
 		musicManagers = new HashMap<>();
 		playerManager = new DefaultAudioPlayerManager();
@@ -80,15 +82,25 @@ public class Bot {
 		if (start()) {
 			initListeners();
 			initCommandClient();
+			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
-			stop();
+			System.out.println("[" + main.getName() + "] Shut down");
+			main.onDisable();
 		}
 	}
 
 	public boolean start() {
 		try {
 			String token = config.getToken();
-			// Check Token!! Disable Plugin.
+			if (token == null || token.isEmpty()) {
+				System.out.println("No token was provided. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			} else if (token.equals("Insert Token here")) {
+				System.out.println("Token was left at default. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
@@ -98,6 +110,7 @@ public class Bot {
 		} catch (InterruptedException e) {
 			// Should never triggered!
 			e.printStackTrace();
+			return false;
 		}
 
 		try {
@@ -126,10 +139,11 @@ public class Bot {
 		return true;
 	}
 
-	public boolean stop() {
-		jda.shutdown();
-		System.out.println("Bot has stopped");
-		return true;
+	public void stop() {
+		if (!(jda == null)) {
+			jda.shutdown();
+			jda = null;
+		}
 	}
 
 	public synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
