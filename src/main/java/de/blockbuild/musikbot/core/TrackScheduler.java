@@ -109,8 +109,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-		System.out.println("onTrackEnd endReason " + endReason.toString());
-
 		if (endReason.mayStartNext) {
 			player.playTrack(queue.poll());
 		}
@@ -124,8 +122,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
-		System.out.println("onTrackStart");
-		System.out.println("textChannel " + guild.getSystemChannel().getName());
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}
