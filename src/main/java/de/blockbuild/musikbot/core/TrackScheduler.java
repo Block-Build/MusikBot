@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -15,6 +16,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import de.blockbuild.musikbot.Bot;
+
 import net.dv8tion.jda.core.entities.Guild;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
@@ -23,12 +26,16 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
 	private final Guild guild;
+	private final Bot bot;
+	private final ExtendYoutubeAudioSourceManager eyasm;
 
-	public TrackScheduler(Guild guild, GuildMusicManager musicManager) {
+	public TrackScheduler(Bot bot, GuildMusicManager musicManager) {
 		this.musicManager = musicManager;
 		this.player = musicManager.getAudioPlayer();
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
-		this.guild = guild;
+		this.bot = bot;
+		this.guild = musicManager.getGuild();
+		this.eyasm = new ExtendYoutubeAudioSourceManager();
 	}
 
 	public void queue(AudioTrack track, CommandEvent event) {
@@ -110,7 +117,21 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			player.playTrack(queue.poll());
+			if (false && track.getSourceManager().getSourceName() == "youtube") {
+				try {
+					String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
+					if (autoUrl == null) {
+						player.playTrack(queue.poll());
+					} else {
+						bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new BasicResultHandler(player));
+					}
+				} catch (IOException e) {
+					System.out.println("Error on Youtube autoplay.");
+					e.printStackTrace();
+				}
+			} else {
+				player.playTrack(queue.poll());
+			}
 		}
 
 		if (player.getPlayingTrack() == null && queue.isEmpty()

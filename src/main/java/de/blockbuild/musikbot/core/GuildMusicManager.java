@@ -25,7 +25,7 @@ public class GuildMusicManager {
 		this.bot = bot;
 		this.guild = guild;
 		this.player = playerManager.createPlayer();
-		this.trackScheduler = new TrackScheduler(guild, this);
+		this.trackScheduler = new TrackScheduler(bot, this);
 		player.addListener(trackScheduler);
 		this.config = new GuildConfiguration(bot, this);
 
