@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,13 +8,15 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+
+import de.blockbuild.musikbot.Bot;
 
 import net.dv8tion.jda.core.entities.Guild;
 
@@ -23,12 +26,16 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	private final AudioPlayer player;
 	private final BlockingQueue<AudioTrack> queue;
 	private final Guild guild;
+	private final Bot bot;
+	private final ExtendYoutubeAudioSourceManager eyasm;
 
-	public TrackScheduler(Guild guild, GuildMusicManager musicManager) {
+	public TrackScheduler(Bot bot, GuildMusicManager musicManager) {
 		this.musicManager = musicManager;
 		this.player = musicManager.getAudioPlayer();
 		this.queue = new LinkedBlockingQueue<AudioTrack>();
-		this.guild = guild;
+		this.bot = bot;
+		this.guild = musicManager.getGuild();
+		this.eyasm = new ExtendYoutubeAudioSourceManager();
 	}
 
 	public void queue(AudioTrack track, CommandEvent event) {
@@ -63,6 +70,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 		if (!(event == null)) {
 			event.reply(builder.toString());
+		}
+	}
+
+	public void queueSilent(AudioTrack track) {
+		if (!player.startTrack(track, true)) {
+			queue.offer(track);
 		}
 	}
 
@@ -103,10 +116,22 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-		System.out.println("onTrackEnd endReason " + endReason.toString());
-
 		if (endReason.mayStartNext) {
-			player.playTrack(queue.poll());
+			if (false && track.getSourceManager().getSourceName() == "youtube") {
+				try {
+					String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
+					if (autoUrl == null) {
+						player.playTrack(queue.poll());
+					} else {
+						bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new BasicResultHandler(player));
+					}
+				} catch (IOException e) {
+					System.out.println("Error on Youtube autoplay.");
+					e.printStackTrace();
+				}
+			} else {
+				player.playTrack(queue.poll());
+			}
 		}
 
 		if (player.getPlayingTrack() == null && queue.isEmpty()
@@ -118,8 +143,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	@Override
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
-		System.out.println("onTrackStart");
-		System.out.println("textChannel " + guild.getSystemChannel().getName());
 		if (player.isPaused()) {
 			player.setPaused(false);
 		}
@@ -142,6 +165,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	public AudioTrack getNextTrack() {
 		return queue.peek();
+	}
+
+	public List<AudioTrack> getQueue() {
+		List<AudioTrack> list = new ArrayList<AudioTrack>();
+		for (AudioTrack track : queue) {
+			list.add(track);
+		}
+		return list;
 	}
 
 	public void flushQueue() {

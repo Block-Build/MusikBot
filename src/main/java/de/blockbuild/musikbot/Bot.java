@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
-import com.jagrosh.jdautilities.commandclient.Command;
-import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -24,6 +24,7 @@ import de.blockbuild.musikbot.commands.NextCommand;
 import de.blockbuild.musikbot.commands.PauseCommand;
 import de.blockbuild.musikbot.commands.PingCommand;
 import de.blockbuild.musikbot.commands.PlayCommand;
+import de.blockbuild.musikbot.commands.PlaylistCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBobCommand;
@@ -40,8 +41,8 @@ import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
-import de.blockbuild.musikbot.core.BotConfiguration;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -68,51 +69,67 @@ public class Bot {
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
-	private CommandClientBuilder ccb;
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
+		System.out.println("[" + main.getName() + "] Get started...");
+
 		this.main = main;
 		musicManagers = new HashMap<>();
-		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
 		config = new BotConfiguration(this);
 
 		if (start()) {
 			initListeners();
 			initCommandClient();
+			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
-			stop();
+			System.out.println("[" + main.getName() + "] Shut down");
+			main.onDisable();
 		}
 	}
 
 	public boolean start() {
 		try {
-			String token = config.token;
+			String token = config.getToken();
+			if (token == null || token.isEmpty()) {
+				System.out.println("No token was provided. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			} else if (token.equals("Insert Token here")) {
+				System.out.println("Token was left at default. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
-
-			try {
-				jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
-			} catch (IOException e) {
-			}
-
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
 			return false;
 		} catch (InterruptedException e) {
 			// Should never triggered!
 			e.printStackTrace();
+			return false;
 		}
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.game));
+
+		try {
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		System.out.println(jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS));
+		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		System.out.println(inviteURL);
+		config.setInviteLink(inviteURL);
+
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
@@ -122,10 +139,11 @@ public class Bot {
 		return true;
 	}
 
-	public boolean stop() {
-		jda.shutdown();
-		System.out.println("Bot has stopped");
-		return true;
+	public void stop() {
+		if (!(jda == null)) {
+			jda.shutdown();
+			jda = null;
+		}
 	}
 
 	public synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
@@ -146,15 +164,16 @@ public class Bot {
 	}
 
 	public void initCommandClient() {
-		String ownerID = config.ownerID;
-		String trigger = config.trigger;
+		String ownerID = config.getOwnerID();
+		String trigger = config.getTrigger();
+		CommandClientBuilder ccb = new CommandClientBuilder();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
-		ccb.setEmojis(config.emojis.get("Success"), config.emojis.get("Warning"), config.emojis.get("Error"));
+		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
-		registerCommandModule(
+		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
 				new QueueCommand(this),
@@ -163,6 +182,7 @@ public class Bot {
 				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
+				new PlaylistCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
@@ -203,7 +223,7 @@ public class Bot {
 		 */
 	}
 
-	public void registerCommandModule(Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}

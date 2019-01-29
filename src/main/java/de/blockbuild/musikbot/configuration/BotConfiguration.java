@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.core;
+package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
-	public String token, trigger, game, ownerID;
-	public Map<String, String> emojis;
+	private String token, trigger, game, ownerID, inviteURL;
+	private Map<String, String> emojis;
 
 	// Avatar
 	// Name
@@ -30,6 +30,7 @@ public class BotConfiguration extends ConfigurationManager {
 		config.set("Command_Trigger", this.trigger);
 		config.set("Game", this.game);
 		config.createSection("Emojis", this.emojis);
+		config.set("Invite_URL", this.inviteURL);
 
 		return this.saveConfig(config);
 	}
@@ -38,7 +39,7 @@ public class BotConfiguration extends ConfigurationManager {
 		try {
 			YamlConfiguration config = this.loadConfig();
 
-			this.token = config.getString("Bot_Token", "insert token here");
+			this.token = config.getString("Bot_Token", "Insert Token here");
 			this.ownerID = config.getString("Owner_ID", "12345");
 			this.trigger = config.getString("Command_Trigger", "!");
 			this.game = config.getString("Game", "Ready for playing music. !Play");
@@ -61,5 +62,38 @@ public class BotConfiguration extends ConfigurationManager {
 
 	public String getRawConfiguration() {
 		return loadConfig().saveToString();
+	}
+	
+	public String getToken() {
+		return this.token;
+	}
+
+	public String getGame() {
+		return this.game;
+	}
+
+	public String getTrigger() {
+		return this.trigger;
+	}
+
+	public String getOwnerID() {
+		return this.ownerID;
+	}
+
+	public String getSuccess() {
+		return this.emojis.get("Success");
+	}
+
+	public String getWarning() {
+		return this.emojis.get("Warning");
+	}
+
+	public String getError() {
+		return this.emojis.get("Error");
+	}
+
+	public void setInviteLink(String inviteURL) {
+		this.inviteURL = inviteURL;
+		writeConfig();
 	}
 }

@@ -3,7 +3,7 @@ package de.blockbuild.musikbot.commands;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import de.blockbuild.musikbot.Bot;

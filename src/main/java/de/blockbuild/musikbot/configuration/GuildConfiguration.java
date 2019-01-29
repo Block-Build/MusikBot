@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.core;
+package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.blockbuild.musikbot.Bot;
+import de.blockbuild.musikbot.core.GuildMusicManager;
 
 import net.dv8tion.jda.core.entities.Guild;
 

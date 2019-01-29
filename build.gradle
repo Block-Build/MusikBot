@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.4'}
 
 mainClassName = 'de.blockbuild.musikbot.Main'
-version = '0.0.6'
+version = '0.0.8'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -18,8 +18,9 @@ repositories {
 
 dependencies {
     compile 'com.sedmelluq:lavaplayer:1.3.10'
-    compile 'net.dv8tion:JDA:3.8.1_448'
-    compile 'com.jagrosh:JDA-Utilities:1.9'
+    compile 'com.jagrosh:jda-utilities:2.1.5'
+    compile 'net.dv8tion:JDA:3.8.1_456'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
 
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
 }
@@ -36,6 +37,10 @@ shadowJar {
     classifier = 'Shaded'
     dependencies {
         exclude(dependency('org.spigotmc:spigot-api:1.12.1-R0.1-SNAPSHOT'))
+        exclude(dependency('com.google.guava:guava:21.0'))
+        exclude(dependency('org.hamcrest:hamcrest-core:1.1'))
+        exclude(dependency('org.yaml:snakeyaml:1.19'))
+        exclude(dependency('commons-lang:commons-lang:2.6'))
     }
     relocate 'org.apache', 'shadow.org.apache'
     relocate 'org.json', 'shadow.org.json'

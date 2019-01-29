@@ -1,14 +1,10 @@
-package de.blockbuild.musikbot.core;
+package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.Map;
-
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public abstract class ConfigurationManager {
 	private final File file;
-	public String token, trigger, game, ownerID;
-	public Map<String, String> emojis;
 
 	public ConfigurationManager(File file) {
 		this.file = file;
@@ -28,10 +24,10 @@ public abstract class ConfigurationManager {
 		try {
 			YamlConfiguration config = new YamlConfiguration();
 
-			if (!file.exists()) {
-				config.save(file);
+			if (file.exists()) {
+				config.load(file);
 			}
-			config.load(file);
+
 			return config;
 
 		} catch (Exception e) {
@@ -39,6 +35,10 @@ public abstract class ConfigurationManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public synchronized boolean deleteConfig() {
+		return file.delete();
 	}
 
 	public abstract boolean writeConfig();
