@@ -30,6 +30,9 @@ public class InfoCommand extends MBCommand {
 			builder.append("Title: `").append(trackInfo.title).append("`\n");
 			builder.append("Author: `").append(trackInfo.author).append("`\n");
 			builder.append("Duration: `").append(getTime(trackInfo.length)).append("`\n");
+			builder.append("Source: `")
+					.append(musicManager.getAudioPlayer().getPlayingTrack().getSourceManager().getSourceName())
+					.append("`\n");
 			builder.append("URL: `").append(trackInfo.uri).append("`\n");
 			event.reply(builder.toString());
 		} else {
