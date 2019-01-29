@@ -41,6 +41,7 @@ import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.commands.YTAutoPlayCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
@@ -183,6 +184,7 @@ public class Bot {
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
+				new YTAutoPlayCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 

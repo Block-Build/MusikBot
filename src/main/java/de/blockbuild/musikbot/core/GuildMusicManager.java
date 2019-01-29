@@ -20,6 +20,7 @@ public class GuildMusicManager {
 	private final Guild guild;
 	public List<AudioTrack> tracks;
 	public Boolean isQueue;
+	private Boolean autoPlay;
 
 	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Bot bot) {
 		this.bot = bot;
@@ -73,5 +74,13 @@ public class GuildMusicManager {
 
 	public int getVolume() {
 		return player.getVolume();
+	}
+
+	public Boolean isAutoPlay() {
+		return this.autoPlay;
+	}
+
+	public void setIsAutoPlay(boolean bool) {
+		this.autoPlay = bool;
 	}
 }
