@@ -35,7 +35,7 @@ public class ChooseCommand extends MBCommand {
 				// not an Integer
 			} finally {
 				if (choose > 0 && choose <= 5) {
-					if (musicManager.isQueue) {
+					if (musicManager.isQueue()) {
 						musicManager.getTrackScheduler().queue(musicManager.tracks.get(choose - 1), event);
 					} else {
 						musicManager.getTrackScheduler().playTrack(musicManager.tracks.get(choose - 1), event);

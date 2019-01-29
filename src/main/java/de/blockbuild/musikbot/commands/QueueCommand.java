@@ -84,7 +84,7 @@ public class QueueCommand extends MBCommand {
 					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title)
 							.append("`\n");
 					musicManager.tracks.add(playlist.getTracks().get(i));
-					musicManager.isQueue = true;
+					musicManager.setIsQueue(true);
 				}
 				event.reply(builder.toString());
 			} else {
