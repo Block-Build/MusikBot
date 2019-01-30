@@ -15,19 +15,17 @@ public abstract class ConfigurationManager {
 			config.save(this.file);
 			return true;
 		} catch (Exception e) {
+			System.out.println("Couldn't save " + file.getName());
 			e.printStackTrace();
 			return false;
 		}
 	}
 
-	public synchronized YamlConfiguration loadConfig() {
+	public synchronized YamlConfiguration loadConfig(String header) {
 		try {
-			YamlConfiguration config = new YamlConfiguration();
-
-			if (file.exists()) {
-				config.load(file);
-			}
-
+			YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+			config.options().header(header);
+			config.options().copyDefaults(true);
 			return config;
 
 		} catch (Exception e) {
