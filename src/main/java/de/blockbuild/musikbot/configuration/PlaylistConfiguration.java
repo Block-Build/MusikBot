@@ -18,6 +18,8 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	public PlaylistConfiguration(Bot bot, User user, String name) {
 		super(new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
+		this.userName = user.getName();
+		this.playlistName = name;
 
 		readConfig();
 	}
@@ -28,6 +30,7 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 		config.set("User_Name", this.userName);
 		config.set("Playlist_Name", this.playlistName);
+		config.set("Amount", playlist.size());
 		config.set("Playlist", this.playlist);
 
 		return this.saveConfig(config);
@@ -37,8 +40,6 @@ public class PlaylistConfiguration extends ConfigurationManager {
 	public boolean readConfig() {
 		YamlConfiguration config = this.loadConfig();
 
-		this.userName = config.getString("User_Name", "");
-		this.playlistName = config.getString("Playlist_Name", "Playlist_Name");
 		this.playlist = config.getStringList("Playlist");
 
 		return true;
@@ -86,5 +87,9 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	public void clearPlaylist() {
 		this.playlist.clear();
+	}
+
+	public int getAmount() {
+		return this.playlist.size();
 	}
 }

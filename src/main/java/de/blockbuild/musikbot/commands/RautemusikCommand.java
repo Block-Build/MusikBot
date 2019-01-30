@@ -1,6 +1,6 @@
 package de.blockbuild.musikbot.commands;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -30,7 +30,7 @@ public class RautemusikCommand extends MBCommand {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 		if (event.getArgs().isEmpty()) {
-			if (event.getMessage().getContentDisplay().toLowerCase().startsWith("main", 1)) {
+			if (event.getMessage().getContentDisplay().trim().toLowerCase().startsWith("main", 1)) {
 				playerManager.loadItemOrdered(musicManager, "http://main-high.rautemusik.fm/listen.mp3",
 						new ResultHandler(trackScheduler, event));
 			} else {

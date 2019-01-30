@@ -12,13 +12,13 @@ import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class RadioBonnRheinSiegCommand extends MBCommand {
+public class RadioBobCommand extends MBCommand {
 
-	public RadioBonnRheinSiegCommand(Bot bot) {
+	public RadioBobCommand(Bot bot) {
 		super(bot);
-		this.name = "radiobonnrheinsieg";
-		this.aliases = new String[] { "rbrs" };
-		this.help = "Plays RadioBonnRheinSieg!";
+		this.name = "radiobob";
+		this.aliases = new String[] { "rb", "bob" };
+		this.help = "Streams RadioBob!";
 		this.joinOnCommand = true;
 		this.category = MUSIC;
 	}
@@ -29,7 +29,7 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		playerManager.loadItemOrdered(musicManager, "http://stream.lokalradio.nrw/rbrs",
+		playerManager.loadItemOrdered(musicManager, "http://streams.radiobob.de/bob-live/mp3-192/mediaplayer",
 				new ResultHandler(trackScheduler, event));
 	}
 
@@ -63,7 +63,7 @@ public class RadioBonnRheinSiegCommand extends MBCommand {
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(event.getArgs());
+			builder.append(" Faild to load ").append(event.getArgs());
 			event.reply(builder.toString());
 		}
 	}

@@ -2,7 +2,7 @@ package de.blockbuild.musikbot.commands;
 
 import java.util.ArrayList;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -33,17 +33,25 @@ public class QueueCommand extends MBCommand {
 	protected void doCommand(CommandEvent event) {
 		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		AudioPlayerManager playerManager = bot.getPlayerManager();
+
 		if (event.getArgs().isEmpty()) {
-			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append("Tracks in Queue:\n").append(trackScheduler.getPlaylist());
-			event.reply(builder.toString());
+			if (!event.getMessage().getAttachments().isEmpty()) {
+				if (!event.getMessage().getAttachments().get(0).isImage()) {
+					String TrackURL = event.getMessage().getAttachments().get(0).getUrl();
+					playerManager.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event));
+				}
+			} else {
+				StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+				builder.append("Tracks in Queue:\n").append(trackScheduler.getPlaylist());
+				event.reply(builder.toString());
+			}
 		} else {
 			String TrackUrl = event.getArgs();
 			if (!event.getArgs().startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
 			}
-			AudioPlayerManager playerManager = bot.getPlayerManager();
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
 	}

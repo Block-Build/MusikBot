@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
-import com.jagrosh.jdautilities.commandclient.Command;
-import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -27,10 +27,13 @@ import de.blockbuild.musikbot.commands.PlayCommand;
 import de.blockbuild.musikbot.commands.PlaylistCommand;
 import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
+import de.blockbuild.musikbot.commands.RadioBobCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
+import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
 import de.blockbuild.musikbot.commands.BlacklistCommand;
 import de.blockbuild.musikbot.commands.ShuffleCommand;
 import de.blockbuild.musikbot.commands.SkipCommand;
@@ -50,6 +53,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Icon;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -57,38 +61,46 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 public class Bot {
 	public final static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ,
 			Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
-			Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE,
-			Permission.MESSAGE_EXT_EMOJI, Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
-			Permission.NICKNAME_CHANGE, Permission.MESSAGE_TTS };
+			Permission.MESSAGE_EMBED_LINKS, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	public final static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ,
 			Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
-			Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK,
-			Permission.MESSAGE_TTS };
+			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
-	private CommandClientBuilder ccb;
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
+		System.out.println("[" + main.getName() + "] Get started...");
+
 		this.main = main;
 		musicManagers = new HashMap<>();
-		ccb = new CommandClientBuilder();
 		playerManager = new DefaultAudioPlayerManager();
 		config = new BotConfiguration(this);
 
 		if (start()) {
 			initListeners();
 			initCommandClient();
+			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
-			stop();
+			System.out.println("[" + main.getName() + "] Shut down");
+			main.onDisable();
 		}
 	}
 
 	public boolean start() {
 		try {
 			String token = config.getToken();
+			if (token == null || token.isEmpty()) {
+				System.out.println("No token was provided. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			} else if (token.equals("Insert Token here")) {
+				System.out.println("Token was left at default. Please provide a vaild token.");
+				System.out.println("Without a token the Bot will not be able to start.");
+				return false;
+			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
@@ -98,6 +110,7 @@ public class Bot {
 		} catch (InterruptedException e) {
 			// Should never triggered!
 			e.printStackTrace();
+			return false;
 		}
 
 		try {
@@ -116,7 +129,7 @@ public class Bot {
 		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
-		
+
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
 
@@ -126,10 +139,11 @@ public class Bot {
 		return true;
 	}
 
-	public boolean stop() {
-		jda.shutdown();
-		System.out.println("Bot has stopped");
-		return true;
+	public void stop() {
+		if (!(jda == null)) {
+			jda.shutdown();
+			jda = null;
+		}
 	}
 
 	public synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
@@ -152,13 +166,14 @@ public class Bot {
 	public void initCommandClient() {
 		String ownerID = config.getOwnerID();
 		String trigger = config.getTrigger();
+		CommandClientBuilder ccb = new CommandClientBuilder();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		// ccb.setAlternativePrefix("-");
-		registerCommandModule(
+		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
 				new QueueCommand(this),
@@ -172,6 +187,7 @@ public class Bot {
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
 				new RautemusikCommand(this), 
+				new RadioBobCommand(this),
 				
 				new VolumeCommand(this),
 				new InfoCommand(this),  
@@ -189,6 +205,8 @@ public class Bot {
 				new WhitelistCommand(this),
 				new AutoDisconnectCommand(this),
 				new AutoConnectCommand(this),
+				new DefaultTextChannelCommand(this),
+				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
     
@@ -200,15 +218,12 @@ public class Bot {
 		 * jump to time?
 		 * 
 		 * ##setup commands##
-		 * defaultTextChannel
-		 * defaultVoiceCannel
-		 * setDefaultVolume? or just save volume
 		 * defaultPlaylist?
 		 * setIcon?
 		 */
 	}
 
-	public void registerCommandModule(Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}
@@ -223,7 +238,7 @@ public class Bot {
 				System.out.println("no VoiceChannel");
 			} catch (InsufficientPermissionException e) {
 				System.out.println("Missing permission: " + e.getPermission() + " to join '"
-						+ guild.getVoiceChannels().get(2).getName() + "'");
+						+ guild.getVoiceChannels().get(i).getName() + "'");
 			} catch (Exception e) {
 				System.err.println(e);
 			}
@@ -231,8 +246,18 @@ public class Bot {
 		return false;
 	}
 
-	public void joinDiscordVoiceChannel(Guild guild, Long id) {
-		guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+	public boolean joinDiscordVoiceChannel(Guild guild, Long id) {
+		try {
+			guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(id));
+			return true;
+		} catch (IllegalArgumentException e) {
+			System.out.println(id + " is not a VoiceChannel");
+		} catch (InsufficientPermissionException e) {
+			System.out.println("Missing permission: " + e.getPermission() + " to join '" + id + "'");
+		} catch (Exception e) {
+			System.out.println(id + " isn't a vaild VoiceChannel");
+		}
+		return false;
 	}
 
 	public boolean joinDiscordVoiceChannel(Guild guild, String name) {
@@ -240,14 +265,14 @@ public class Bot {
 			guild.getAudioManager().openAudioConnection((VoiceChannel) guild.getVoiceChannelsByName(name, true).get(0));
 			return true;
 		} catch (IllegalArgumentException e) {
-			System.out.println("no VoiceChannel");
+			System.out.println(name + " is not a VoiceChannel");
 		} catch (InsufficientPermissionException e) {
 			System.out.println("Missing permission: " + e.getPermission() + " to join '"
-					+ guild.getVoiceChannels().get(2).getName() + "'");
+					+ guild.getVoiceChannels().get(0).getName() + "'");
 		} catch (Exception e) {
-			System.err.println(e);
+			System.out.println(name + " isn't a vaild VoiceChannel");
 		}
-		return joinDiscordVoiceChannel(guild);
+		return false;
 	}
 
 	public JDA getJda() {
@@ -286,5 +311,13 @@ public class Bot {
 		} else {
 			return user.getName();
 		}
+	}
+
+	public TextChannel getTextChannelById(Long id) {
+		return this.jda.getTextChannelById(id);
+	}
+
+	public VoiceChannel getVoiceChannelById(Long id) {
+		return this.jda.getVoiceChannelById(id);
 	}
 }

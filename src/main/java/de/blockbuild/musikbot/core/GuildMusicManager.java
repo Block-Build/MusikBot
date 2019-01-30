@@ -10,6 +10,7 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.configuration.GuildConfiguration;
 
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class GuildMusicManager {
 	private final AudioPlayer player;
@@ -24,7 +25,7 @@ public class GuildMusicManager {
 		this.bot = bot;
 		this.guild = guild;
 		this.player = playerManager.createPlayer();
-		this.trackScheduler = new TrackScheduler(guild, this);
+		this.trackScheduler = new TrackScheduler(bot, this);
 		player.addListener(trackScheduler);
 		this.config = new GuildConfiguration(bot, this);
 
@@ -32,7 +33,15 @@ public class GuildMusicManager {
 			if (config.getAutoConnectVoiceChannelId() == 0) {
 				bot.joinDiscordVoiceChannel(guild);
 			} else {
-				bot.joinDiscordVoiceChannel(guild, config.getAutoConnectVoiceChannelId());
+				if (!bot.joinDiscordVoiceChannel(guild, config.getAutoConnectVoiceChannelId())
+						&& config.isDefaultTextChannelEnabled()) {
+					TextChannel channel = bot.getTextChannelById(config.getDefaultTextChannel());
+					StringBuilder builder = new StringBuilder();
+					builder.append(" Missing permission or there is no channel called `")
+							.append(config.getDefaultTextChannel()).append("`.");
+					channel.sendMessage(builder.toString());
+
+				}
 			}
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
