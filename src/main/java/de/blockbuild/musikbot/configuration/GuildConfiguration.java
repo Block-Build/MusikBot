@@ -47,7 +47,7 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.set("Default_VoiceChannel", this.defaultVoiceChannel);
 			// config.set("", );
 
-			return this.saveConfig(config);
+			return this.saveConfig(config, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -56,7 +56,7 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig(null);
+			YamlConfiguration config = this.loadConfig();
 
 			this.guildName = guild.getName();
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
@@ -239,9 +239,5 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setDefaultVoiceChannel(long id) {
 		defaultVoiceChannel.replace("VoiceChannelId", id);
-	}
-
-	public String getRawConfiguration() {
-		return loadConfig(null).saveToString();
 	}
 }

@@ -33,12 +33,12 @@ public class PlaylistConfiguration extends ConfigurationManager {
 		config.set("Amount", playlist.size());
 		config.set("Playlist", this.playlist);
 
-		return this.saveConfig(config);
+		return this.saveConfig(config, null);
 	}
 
 	@Override
 	public boolean readConfig() {
-		YamlConfiguration config = this.loadConfig(null);
+		YamlConfiguration config = this.loadConfig();
 
 		this.playlist = config.getStringList("Playlist");
 

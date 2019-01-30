@@ -32,12 +32,12 @@ public class BotConfiguration extends ConfigurationManager {
 		config.createSection("Emojis", this.emojis);
 		config.set("Invite_URL", this.inviteURL);
 
-		return this.saveConfig(config);
+		return this.saveConfig(config, null);
 	}
 
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig(null);
+			YamlConfiguration config = this.loadConfig();
 
 			this.token = config.getString("Bot_Token", "Insert Token here");
 			this.ownerID = config.getString("Owner_ID", "12345");
@@ -60,10 +60,6 @@ public class BotConfiguration extends ConfigurationManager {
 		}
 	}
 
-	public String getRawConfiguration() {
-		return loadConfig(null).saveToString();
-	}
-	
 	public String getToken() {
 		return this.token;
 	}
