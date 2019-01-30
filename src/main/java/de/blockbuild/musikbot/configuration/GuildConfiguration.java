@@ -56,7 +56,7 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig();
+			YamlConfiguration config = this.loadConfig(null);
 
 			this.guildName = guild.getName();
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
@@ -242,6 +242,6 @@ public class GuildConfiguration extends ConfigurationManager {
 	}
 
 	public String getRawConfiguration() {
-		return loadConfig().saveToString();
+		return loadConfig(null).saveToString();
 	}
 }

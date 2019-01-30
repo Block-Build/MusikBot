@@ -37,7 +37,7 @@ public class BotConfiguration extends ConfigurationManager {
 
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig();
+			YamlConfiguration config = this.loadConfig(null);
 
 			this.token = config.getString("Bot_Token", "Insert Token here");
 			this.ownerID = config.getString("Owner_ID", "12345");
@@ -61,7 +61,7 @@ public class BotConfiguration extends ConfigurationManager {
 	}
 
 	public String getRawConfiguration() {
-		return loadConfig().saveToString();
+		return loadConfig(null).saveToString();
 	}
 	
 	public String getToken() {

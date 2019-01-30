@@ -38,7 +38,7 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	@Override
 	public boolean readConfig() {
-		YamlConfiguration config = this.loadConfig();
+		YamlConfiguration config = this.loadConfig(null);
 
 		this.playlist = config.getStringList("Playlist");
 
