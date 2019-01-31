@@ -29,6 +29,7 @@ import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBobCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
+import de.blockbuild.musikbot.commands.RadioMnmCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
@@ -190,6 +191,7 @@ public class Bot {
 				new RadioBonnRheinSiegCommand(this), 
 				new RautemusikCommand(this), 
 				new RadioBobCommand(this),
+				new RadioMnmCommand(this),
 				
 				new VolumeCommand(this),
 				new InfoCommand(this),  
