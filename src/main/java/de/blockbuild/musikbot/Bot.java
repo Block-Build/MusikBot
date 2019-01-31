@@ -161,7 +161,7 @@ public class Bot {
 	}
 
 	public void initListeners() {
-		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new MessageListener(this));
 		jda.addEventListener(new VoiceChannelListener());
 	}
 
@@ -174,7 +174,6 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
-		// ccb.setAlternativePrefix("-");
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
