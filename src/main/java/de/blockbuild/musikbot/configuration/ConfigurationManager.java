@@ -1,7 +1,6 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,21 +51,19 @@ public abstract class ConfigurationManager {
 		return loadConfig().saveToString();
 	}
 
-	protected Map<String, String> phraseMap(ConfigurationSection section) {
-		Map<String, String> map = new HashMap<>();
-
-		for (String s : section.getValues(false).keySet()) {
-			map.put(s, section.get(s).toString());
-		}
-		return map;
-	}
-
-	protected ConfigurationSection phraseConfigurationSection(ConfigurationSection section, Map<String, String> map,
-			String... keys) {
+	protected ConfigurationSection phraseMap(ConfigurationSection section, Map<String, Object> map, String... keys) {
 
 		for (String s : keys) {
 			section.addDefault(s, map.get(s));
 		}
 		return section;
+	}
+
+	protected ConfigurationSection addDefaultSection(YamlConfiguration config, String section) {
+		if (config.contains(section)) {
+			return config.getConfigurationSection(section);
+		} else {
+			return config.createSection(section);
+		}
 	}
 }

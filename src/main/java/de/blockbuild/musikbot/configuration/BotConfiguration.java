@@ -9,7 +9,7 @@ import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
 	private String token, trigger, game, ownerID, inviteURL;
-	private Map<String, String> emojis;
+	private Map<String, Object> emojis;
 	private static String header;
 
 	public BotConfiguration(Bot bot) {
@@ -39,7 +39,7 @@ public class BotConfiguration extends ConfigurationManager {
 		config.set("Owner_ID", this.ownerID);
 		config.set("Command_Trigger", this.trigger);
 		config.set("Game", this.game);
-		this.phraseConfigurationSection(config.createSection("Emojis"), this.emojis, "Success", "Warning", "Error");
+		this.phraseMap(config.createSection("Emojis"), this.emojis, "Success", "Warning", "Error");
 		config.set("Invite_URL", this.inviteURL);
 
 		return this.saveConfig(config, header);
@@ -55,7 +55,7 @@ public class BotConfiguration extends ConfigurationManager {
 			config.addDefault("Command_Trigger", "!");
 			config.addDefault("Game", "Ready for playing music. !Play");
 
-			c = config.createSection("Emojis");
+			c = this.addDefaultSection(config, "Emojis");
 			c.addDefault("Success", "\uD83D\uDE03");
 			c.addDefault("Warning", "\uD83D\uDE2E");
 			c.addDefault("Error", "\uD83D\uDE26");
@@ -65,7 +65,7 @@ public class BotConfiguration extends ConfigurationManager {
 			this.trigger = config.getString("Command_Trigger");
 			this.game = config.getString("Game");
 
-			this.emojis = this.phraseMap(config.getConfigurationSection("Emojis"));
+			this.emojis = config.getConfigurationSection("Emojis").getValues(false);
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read BotConfiguration!");
@@ -91,15 +91,15 @@ public class BotConfiguration extends ConfigurationManager {
 	}
 
 	public String getSuccess() {
-		return this.emojis.get("Success");
+		return (String) this.emojis.get("Success");
 	}
 
 	public String getWarning() {
-		return this.emojis.get("Warning");
+		return (String) this.emojis.get("Warning");
 	}
 
 	public String getError() {
-		return this.emojis.get("Error");
+		return (String) this.emojis.get("Error");
 	}
 
 	public void setInviteLink(String inviteURL) {
