@@ -323,4 +323,20 @@ public class Bot {
 	public VoiceChannel getVoiceChannelById(Long id) {
 		return this.jda.getVoiceChannelById(id);
 	}
+
+	public Guild getGuildById(String id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public Guild getGuildById(Long id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

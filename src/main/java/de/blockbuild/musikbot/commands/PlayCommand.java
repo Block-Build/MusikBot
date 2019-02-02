@@ -32,13 +32,12 @@ public class PlayCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
+	protected void doGuildCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayer player = musicManager.getAudioPlayer();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		if (event.getArgs().isEmpty()) {
+		if (args.isEmpty()) {
 			StringBuilder builder = new StringBuilder();
 
 			if (!event.getMessage().getAttachments().isEmpty()) {
@@ -57,8 +56,8 @@ public class PlayCommand extends MBCommand {
 			}
 			event.reply(builder.toString());
 		} else {
-			String TrackUrl = event.getArgs();
-			if (!event.getArgs().startsWith("http")) {
+			String TrackUrl = args;
+			if (!args.startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
 			} else {
@@ -66,6 +65,21 @@ public class PlayCommand extends MBCommand {
 			}
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 
 	private String getTime(long lng) {
@@ -81,7 +95,7 @@ public class PlayCommand extends MBCommand {
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
-			this.musicManager = bot.getGuildAudioPlayer(event.getGuild());
+			this.musicManager = bot.getGuildAudioPlayer(guild);
 		}
 
 		@Override
@@ -115,14 +129,14 @@ public class PlayCommand extends MBCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(event.getArgs());
+			builder.append(" No result found: ").append(args);
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load ").append(event.getArgs());
+			builder.append(" Faild to load ").append(args);
 			event.reply(builder.toString());
 		}
 	}

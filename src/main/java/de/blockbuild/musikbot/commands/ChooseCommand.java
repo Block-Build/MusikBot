@@ -3,7 +3,6 @@ package de.blockbuild.musikbot.commands;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class ChooseCommand extends MBCommand {
@@ -21,16 +20,14 @@ public class ChooseCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
-
+	protected void doGuildCommand(CommandEvent event) {
 		if (musicManager.tracks == null || musicManager.tracks.isEmpty()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append("There is nothing to choose. First you need to search for an YT-Video with `!Play <title>`");
 			event.reply(builder.toString());
 		} else {
 			try {
-				choose = Integer.parseInt(event.getArgs());
+				choose = Integer.parseInt(args);
 			} catch (Exception e) {
 				// not an Integer
 			} finally {
@@ -42,12 +39,27 @@ public class ChooseCommand extends MBCommand {
 					}
 				} else {
 					StringBuilder builder = new StringBuilder().append(event.getClient().getError());
-					builder.append("`").append(event.getArgs()).append("` is not vaild numer. Use `!").append(this.name)
+					builder.append("`").append(args).append("` is not vaild numer. Use `!").append(this.name)
 							.append("` ").append(this.getArguments());
 					event.reply(builder.toString());
 				}
 				musicManager.tracks = null;
 			}
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 }

@@ -30,12 +30,11 @@ public class QueueCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
+	protected void doGuildCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		if (event.getArgs().isEmpty()) {
+		if (args.isEmpty()) {
 			if (!event.getMessage().getAttachments().isEmpty()) {
 				if (!event.getMessage().getAttachments().get(0).isImage()) {
 					String TrackURL = event.getMessage().getAttachments().get(0).getUrl();
@@ -47,13 +46,28 @@ public class QueueCommand extends MBCommand {
 				event.reply(builder.toString());
 			}
 		} else {
-			String TrackUrl = event.getArgs();
-			if (!event.getArgs().startsWith("http")) {
+			String TrackUrl = args;
+			if (!args.startsWith("http")) {
 				TrackUrl = "ytsearch:" + TrackUrl;
 				isSearch = true;
 			}
 			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 
 	private class ResultHandler implements AudioLoadResultHandler {
@@ -95,14 +109,14 @@ public class QueueCommand extends MBCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(event.getArgs());
+			builder.append(" No result found: ").append(args);
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(event.getArgs());
+			builder.append(" faild to load ").append(args);
 			event.reply(builder.toString());
 		}
 	}

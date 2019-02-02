@@ -5,7 +5,11 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
@@ -18,9 +22,21 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 	protected final Bot bot;
 	protected Boolean joinOnCommand;
 
+	protected User user;
+	protected User selfUser;
+	protected Member member;
+	protected Member selfMember;
+	protected VoiceChannel channel;
+	protected VoiceChannel selfChannel;
+	protected TextChannel textChannel;
+	protected PrivateChannel privateChannel;
+	protected GuildMusicManager musicManager;
+	protected Guild guild;
+	protected String args;
+
 	public MBCommand(Bot bot) {
 		this.bot = bot;
-		this.guildOnly = true;
+		this.guildOnly = false;
 		this.botPermissions = RECOMMENDED_PERMS();
 	}
 
@@ -30,22 +46,52 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 	@Override
 	protected void execute(CommandEvent event) {
-		Member member = event.getMember();
-		Member selfMember = event.getSelfMember();
-		VoiceChannel channel = member.getVoiceState().getChannel();
-		VoiceChannel selfChannel = selfMember.getVoiceState().getChannel();
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
+
+		args = event.getArgs();
+		user = event.getAuthor();
+		selfUser = event.getSelfUser();
+		textChannel = event.getTextChannel();
+		privateChannel = event.getPrivateChannel();
+
+		if (event.getChannelType() == ChannelType.PRIVATE) {
+			if (event.isOwner()) {
+				if (!(args == null) && args.length() >= 18) {
+					guild = null;
+					guild = bot.getGuildById(args.substring(0, 18));
+					if (!(guild == null)) {
+						args = args.substring(18).trim();
+						member = guild.getMember(user);
+						selfMember = guild.getSelfMember();
+						channel = member.getVoiceState().getChannel();
+						selfChannel = selfMember.getVoiceState().getChannel();
+						musicManager = bot.getGuildAudioPlayer(guild);
+
+						doGuildCommand(event);
+						return;
+					}
+				}
+			}
+			doPrivateCommand(event);
+			return;
+		}
+
+		guild = event.getGuild();
+		member = event.getMember();
+		selfMember = event.getSelfMember();
+		channel = member.getVoiceState().getChannel();
+		selfChannel = selfMember.getVoiceState().getChannel();
+		musicManager = bot.getGuildAudioPlayer(guild);
 
 		if (musicManager.config.isDefaultTextChannelEnabled()) {
-			if (!(event.getTextChannel().getIdLong() == musicManager.config.getDefaultTextChannel())
+			if (!(textChannel.getIdLong() == musicManager.config.getDefaultTextChannel())
 					&& !(musicManager.config.getDefaultTextChannel() == 0L)) {
 				return;
 			}
 		}
 
-		if (!event.isOwner() && musicManager.config.isBlockedUser(member.getUser().getIdLong())
+		if (!event.isOwner() && musicManager.config.isBlockedUser(user.getIdLong())
 				|| (!event.isOwner() && (musicManager.config.isWhitelistEnabled()
-						&& !(musicManager.config.isWhitelistedUser(member.getUser().getIdLong()))))) {
+						&& !(musicManager.config.isWhitelistedUser(user.getIdLong()))))) {
 			User owner = bot.getUserById(bot.config.getOwnerID());
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
 			builder.append(" You're not allowed to interact with me!");
@@ -66,8 +112,8 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			if (!selfMember.getVoiceState().inVoiceChannel()) {
 				if (joinOnCommand) {
 					if (allowedToJoinVoiceChannel(musicManager, channel.getIdLong())) {
-						bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
-						doCommand(event);
+						bot.joinDiscordVoiceChannel(guild, channel.getIdLong());
+						doGuildCommand(event);
 					} else {
 						sendDefaultVoiceChannelInfo(event, musicManager);
 					}
@@ -91,7 +137,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 		if (this.getCategory().getName() == CONNECTION.getName()) {
 			if (this.guildOnly == false) {
-				doCommand(event);
+				doGuildCommand(event);
 				return;
 			}
 
@@ -101,7 +147,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			}
 
 			if (!selfMember.getVoiceState().inVoiceChannel()) {
-				doCommand(event);
+				doGuildCommand(event);
 				return;
 			}
 
@@ -120,13 +166,13 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				builder.append(" Only the Owner is permitted to use this command");
 				event.reply(builder.toString());
 			} else {
-				doCommand(event);
+				doGuildCommand(event);
 			}
 			return;
 		}
 
 		try {
-			doCommand(event);
+			doGuildCommand(event);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -188,7 +234,9 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		event.reply(builder.toString());
 	}
 
-	protected abstract void doCommand(CommandEvent event);
+	protected abstract void doGuildCommand(CommandEvent event);
+
+	protected abstract void doPrivateCommand(CommandEvent event);
 
 	@Override
 	public int compareTo(Command o) {

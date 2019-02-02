@@ -7,7 +7,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class InfoCommand extends MBCommand {
@@ -22,8 +21,7 @@ public class InfoCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
+	protected void doGuildCommand(CommandEvent event) {
 		if (!(musicManager.getAudioPlayer().getPlayingTrack() == null)) {
 			AudioTrackInfo trackInfo = musicManager.getAudioPlayer().getPlayingTrack().getInfo();
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess()).append("\n");
@@ -40,6 +38,21 @@ public class InfoCommand extends MBCommand {
 			builder.append(" Currently there is no track playing. Use `!Play` to start a track.");
 			event.reply(builder.toString());
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 
 	private String getTime(long lng) {

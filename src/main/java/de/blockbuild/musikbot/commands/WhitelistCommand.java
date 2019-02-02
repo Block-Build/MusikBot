@@ -3,7 +3,6 @@ package de.blockbuild.musikbot.commands;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 
 public class WhitelistCommand extends MBCommand {
@@ -18,16 +17,14 @@ public class WhitelistCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
-
-		if (event.getArgs().isEmpty()) {
+	protected void doGuildCommand(CommandEvent event) {
+		if (args.isEmpty()) {
 			sendCommandInfo(event);
 			return;
 		}
 
-		if (event.getArgs().startsWith("add ")) {
-			Long l = this.getLong(event.getArgs().substring(4), event);
+		if (args.startsWith("add ")) {
+			Long l = this.getLong(args.substring(4), event);
 			if (l == null)
 				return;
 
@@ -38,8 +35,8 @@ public class WhitelistCommand extends MBCommand {
 					.append("' to whitelist.");
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("remove ")) {
-			Long l = this.getLong(event.getArgs().substring(7), event);
+		} else if (args.startsWith("remove ")) {
+			Long l = this.getLong(args.substring(7), event);
 			if (l == null)
 				return;
 
@@ -57,14 +54,14 @@ public class WhitelistCommand extends MBCommand {
 					.append("' from whitelist.");
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("clear")) {
+		} else if (args.startsWith("clear")) {
 			musicManager.config.whitelistClear();
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Whitelist successfully cleard");
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("list")) {
+		} else if (args.startsWith("list")) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" **Whitelist:**\n");
 			for (Long l : musicManager.config.getWhitelist()) {
@@ -72,14 +69,14 @@ public class WhitelistCommand extends MBCommand {
 			}
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("enable")) {
+		} else if (args.startsWith("enable")) {
 			musicManager.config.setWhitelistEnabled(true);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 			builder.append(" Whitelist now is `Enabled`");
 			event.reply(builder.toString());
 
-		} else if (event.getArgs().startsWith("disable")) {
+		} else if (args.startsWith("disable")) {
 			musicManager.config.setWhitelistEnabled(false);
 
 			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
@@ -88,5 +85,20 @@ public class WhitelistCommand extends MBCommand {
 		} else {
 			sendCommandInfo(event);
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 }

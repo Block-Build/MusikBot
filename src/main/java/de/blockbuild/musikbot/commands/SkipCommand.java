@@ -19,13 +19,13 @@ public class SkipCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = bot.getGuildAudioPlayer(event.getGuild()).getTrackScheduler();
+	protected void doGuildCommand(CommandEvent event) {
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 
-		if (!(event.getArgs().isEmpty())) {
+		if (!(args.isEmpty())) {
 			int i = 0;
 			try {
-				i = Integer.parseInt(event.getArgs());
+				i = Integer.parseInt(args);
 			} catch (Exception e) {
 				// no integer
 			} finally {
@@ -37,7 +37,7 @@ public class SkipCommand extends MBCommand {
 					trackScheduler.nextTrack(event);
 				} else {
 					StringBuilder builder = new StringBuilder(event.getClient().getError());
-					builder.append(" `").append(event.getArgs()).append("` isn't a number.");
+					builder.append(" `").append(args).append("` isn't a number.");
 					event.reply(builder.toString());
 				}
 			}
@@ -45,6 +45,21 @@ public class SkipCommand extends MBCommand {
 			trackScheduler.nextTrack(event);
 		}
 
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 
 }
