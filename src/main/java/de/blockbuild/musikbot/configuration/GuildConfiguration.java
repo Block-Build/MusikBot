@@ -1,7 +1,6 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,21 +10,27 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.entities.Guild;
-
 public class GuildConfiguration extends ConfigurationManager {
-	private final Guild guild;
 	private final GuildMusicManager musicManager;
 	private String guildName;
 	private int volume;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
 	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel;
+	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
 		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
 		this.musicManager = musicManager;
-		this.guild = musicManager.getGuild();
+		this.guildName = musicManager.getGuild().getName();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("MusikBot by Block-Build\n");
+		builder.append("+=====================+\n");
+		builder.append("| GUILD CONFIGURATION |\n");
+		builder.append("+=====================+\n");
+		builder.append("\n");
+		header = builder.toString();
 
 		readConfig();
 		writeConfig();
@@ -42,12 +47,15 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.set("Blacklist", this.blacklist);
 			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
-			config.set("Auto_Connect_On_Startup", this.autoConnect);
-			config.set("Default_TextChannel", this.defaultTextChannel);
-			config.set("Default_VoiceChannel", this.defaultVoiceChannel);
-			// config.set("", );
 
-			return this.saveConfig(config);
+			this.phraseMap(config.createSection("Auto_Connect_On_Startup"), this.autoConnect, "Enabled",
+					"VoiceChannelId", "Track");
+			this.phraseMap(config.createSection("Default_TextChannel"), this.defaultTextChannel, "Enabled",
+					"TextChannelId");
+			this.phraseMap(config.createSection("Default_VoiceChannel"), this.defaultVoiceChannel, "Enabled",
+					"VoiceChannelId");
+
+			return this.saveConfig(config, header);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -57,42 +65,40 @@ public class GuildConfiguration extends ConfigurationManager {
 	public boolean readConfig() {
 		try {
 			YamlConfiguration config = this.loadConfig();
+			ConfigurationSection c;
 
-			this.guildName = guild.getName();
+			config.addDefault("Guild_Name", this.guildName);
+			config.addDefault("Volume", 100);
+			config.addDefault("Whitelist_Enabled", "");
+			config.addDefault("Whitelist", null);
+			config.addDefault("Blacklist", null);
+			config.addDefault("Auto_Disconnect_If_Alone", false);
+			config.addDefault("Auto_Disconnect_After_Last_Track", false);
+
+			c = this.addDefaultSection(config, "Auto_Connect_On_Startup");
+			c.addDefault("Enabled", false);
+			c.addDefault("VoiceChannelId", 0L);
+			c.addDefault("Track", "");
+
+			c = this.addDefaultSection(config, "Default_TextChannel");
+			c.addDefault("Enabled", false);
+			c.addDefault("TextChannelId", 0L);
+
+			c = this.addDefaultSection(config, "Default_VoiceChannel");
+			c.addDefault("Enabled", false);
+			c.addDefault("VoiceChannelId", 0L);
+
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
 					: 100;
-			this.useWhitelist = config.getBoolean("Whitelist_Enabled", false);
+			this.useWhitelist = config.getBoolean("Whitelist_Enabled");
 			this.whitelist = config.getLongList("Whitelist");
 			this.blacklist = config.getLongList("Blacklist");
-			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone", false);
-			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track", false);
+			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone");
+			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track");
 
-			this.autoConnect = new HashMap<>();
-			if (!config.contains("Auto_Connect_On_Startup")) {
-				config.createSection("Auto_Connect_On_Startup", this.autoConnect);
-			}
-			ConfigurationSection autoConnectList = config.getConfigurationSection("Auto_Connect_On_Startup");
-			autoConnect.put("Enabled", autoConnectList.getBoolean("Enabled", false));
-			autoConnect.put("VoiceChannelId", autoConnectList.getLong("VoiceChannelId"));
-			autoConnect.put("Track", autoConnectList.getString("Track", ""));
-
-			this.defaultTextChannel = new HashMap<>();
-			if (!config.contains("Default_TextChannel")) {
-				config.createSection("Default_TextChannel", this.defaultTextChannel);
-			}
-			ConfigurationSection defaultTextChannelList = config.getConfigurationSection("Default_TextChannel");
-			defaultTextChannel.put("Enabled", defaultTextChannelList.getBoolean("Enabled", false));
-			defaultTextChannel.put("TextChannelId", defaultTextChannelList.getLong("TextChannelId"));
-
-			this.defaultVoiceChannel = new HashMap<>();
-			if (!config.contains("Default_VoiceChannel")) {
-				config.createSection("Default_VoiceChannel", this.defaultVoiceChannel);
-			}
-			ConfigurationSection defaultVoiceChannelList = config.getConfigurationSection("Default_VoiceChannel");
-			defaultVoiceChannel.put("Enabled", defaultVoiceChannelList.getBoolean("Enabled", false));
-			defaultVoiceChannel.put("VoiceChannelId", defaultVoiceChannelList.getLong("VoiceChannelId"));
-
-			// Playlist
+			this.autoConnect = config.getConfigurationSection("Auto_Connect_On_Startup").getValues(false);
+			this.defaultTextChannel = config.getConfigurationSection("Default_TextChannel").getValues(false);
+			this.defaultVoiceChannel = config.getConfigurationSection("Default_VoiceChannel").getValues(false);
 
 			initConfig();
 			return true;
@@ -105,6 +111,9 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	private void initConfig() {
 		musicManager.getAudioPlayer().setVolume(this.volume);
+
+		if (isAutoConnectEnabled() && getAutoConnectVoiceChannelId() == 0L)
+			setAutoConnectEnabled(false);
 
 		if (isDefaultTextChannelEnabled() && getDefaultTextChannel() == 0L)
 			setDefaultTextChannelEnabled(false);
@@ -141,8 +150,8 @@ public class GuildConfiguration extends ConfigurationManager {
 		return (Boolean) autoConnect.get("Enabled");
 	}
 
-	public Long getAutoConnectVoiceChannelId() {
-		return (Long) autoConnect.get("VoiceChannelId");
+	public long getAutoConnectVoiceChannelId() {
+		return Long.parseLong(autoConnect.get("VoiceChannelId").toString());
 	}
 
 	public String getAutoConnectTrack() {
@@ -239,9 +248,5 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setDefaultVoiceChannel(long id) {
 		defaultVoiceChannel.replace("VoiceChannelId", id);
-	}
-
-	public String getRawConfiguration() {
-		return loadConfig().saveToString();
 	}
 }

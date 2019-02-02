@@ -8,7 +8,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
@@ -25,11 +24,10 @@ public class RautemusikCommand extends MBCommand {
 	}
 
 	@Override
-	protected void doCommand(CommandEvent event) {
-		GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());
+	protected void doGuildCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
-		if (event.getArgs().isEmpty()) {
+		if (args.isEmpty()) {
 			if (event.getMessage().getContentDisplay().trim().toLowerCase().startsWith("main", 1)) {
 				playerManager.loadItemOrdered(musicManager, "http://main-high.rautemusik.fm/listen.mp3",
 						new ResultHandler(trackScheduler, event));
@@ -41,7 +39,7 @@ public class RautemusikCommand extends MBCommand {
 		} else {
 			String link;
 
-			switch (event.getArgs().toLowerCase()) {
+			switch (args.toLowerCase()) {
 			case "12punks":
 				link = "http://12punks-high.rautemusik.fm/listen.mp3";
 				break;
@@ -172,10 +170,25 @@ public class RautemusikCommand extends MBCommand {
 				playerManager.loadItemOrdered(playerManager, link, new ResultHandler(trackScheduler, event));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(" `").append(event.getArgs()).append("` Isn't a vaild radio station");
+				builder.append(" `").append(args).append("` Isn't a vaild radio station");
 				event.reply(builder.toString());
 			}
 		}
+	}
+
+	@Override
+	protected void doPrivateCommand(CommandEvent event) {
+		event.reply(event.getClient().getError() + " This command cannot be used in Direct messages.");
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+
+		builder.append(" **MusikBot** ").append("by Block-Build\n");
+		builder.append("SpigotMC: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append("GitHub: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("Version: `").append(bot.getMain().getDescription().getVersion()).append("`\n");
+		builder.append("Do you have any problem or suggestion? Open an Issue on GitHub.");
+
+		event.reply(builder.toString());
 	}
 
 	private class ResultHandler implements AudioLoadResultHandler {
@@ -201,16 +214,15 @@ public class RautemusikCommand extends MBCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(event.getArgs());
+			builder.append(" No result found: ").append(args);
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(event.getArgs());
+			builder.append(" faild to load ").append(args);
 			event.reply(builder.toString());
 		}
 	}
-
 }

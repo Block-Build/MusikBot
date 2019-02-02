@@ -15,11 +15,20 @@ import net.dv8tion.jda.core.entities.User;
 public class PlaylistConfiguration extends ConfigurationManager {
 	private String playlistName, userName;
 	private List<String> playlist;
+	private static String header;
 
 	public PlaylistConfiguration(Bot bot, User user, String name) {
 		super(new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
 		this.userName = user.getName();
 		this.playlistName = name;
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("MusikBot by Block-Build\n");
+		builder.append("+========================+\n");
+		builder.append("| PLAYLIST CONFIGURATION |\n");
+		builder.append("+========================+\n");
+		builder.append("\n");
+		header = builder.toString();
 
 		readConfig();
 	}
@@ -33,16 +42,21 @@ public class PlaylistConfiguration extends ConfigurationManager {
 		config.set("Amount", playlist.size());
 		config.set("Playlist", this.playlist);
 
-		return this.saveConfig(config);
+		return this.saveConfig(config, header);
 	}
 
 	@Override
 	public boolean readConfig() {
-		YamlConfiguration config = this.loadConfig();
+		try {
+			YamlConfiguration config = this.loadConfig();
 
-		this.playlist = config.getStringList("Playlist");
-
-		return true;
+			this.playlist = config.getStringList("Playlist");
+			return true;
+		} catch (Exception e) {
+			System.out.println("Couldn't read Playlist `" + this.playlistName + "`!");
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public void setPlaylist(AudioPlaylist playlist) {
