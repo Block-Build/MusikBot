@@ -133,8 +133,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	public boolean nextYTAutoPlay(AudioTrack track) {
-		if (musicManager.isAutoPlay() && !(track == null)
-				&& track.getSourceManager().getSourceName() == "youtube") {
+		if (musicManager.isAutoPlay() && !(track == null) && track.getSourceManager().getSourceName() == "youtube") {
 			try {
 				String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
 				if (autoUrl == null) {
@@ -165,6 +164,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (queue.isEmpty()) {
 			builder.append("`Queue is empty.`");
 		} else {
+			builder.append("Tracks queued: `").append(queue.size()).append("`\n");
 			int i = 0;
 			Iterator<AudioTrack> x = queue.iterator();
 			while (x.hasNext()) {

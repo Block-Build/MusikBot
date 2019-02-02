@@ -42,7 +42,7 @@ public class QueueCommand extends MBCommand {
 				}
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-				builder.append("Tracks in Queue:\n").append(trackScheduler.getPlaylist());
+				builder.append(" **Queue:**\n").append(trackScheduler.getPlaylist());
 				event.reply(builder.toString());
 			}
 		} else {
