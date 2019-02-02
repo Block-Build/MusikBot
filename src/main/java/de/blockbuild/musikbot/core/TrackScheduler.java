@@ -90,8 +90,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	public void nextTrack(CommandEvent event) {
 		StringBuilder builder = new StringBuilder();
-		if (queue.isEmpty()) {
+		if (nextYTAutoPlay(player.getPlayingTrack())) {
+			builder.append(event.getClient().getSuccess());
+			builder.append(" Now Playing: `").append(player.getPlayingTrack().getInfo().title).append("`.");
+		} else if (queue.isEmpty()) {
 			builder.append(event.getClient().getWarning()).append(" Queue is empty.");
+			player.stopTrack();
 		} else {
 			builder.append(event.getClient().getSuccess());
 			builder.append(" Now Playing: `").append(queue.peek().getInfo().title).append("`.");
@@ -117,19 +121,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			if (false && track.getSourceManager().getSourceName() == "youtube") {
-				try {
-					String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
-					if (autoUrl == null) {
-						player.playTrack(queue.poll());
-					} else {
-						bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new BasicResultHandler(player));
-					}
-				} catch (IOException e) {
-					System.out.println("Error on Youtube autoplay.");
-					e.printStackTrace();
-				}
-			} else {
+			if (nextYTAutoPlay(track)) {
 				player.playTrack(queue.poll());
 			}
 		}
@@ -137,7 +129,26 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (player.getPlayingTrack() == null && queue.isEmpty()
 				&& musicManager.config.isDisconnectAfterLastTrackEnabled()) {
 			guild.getAudioManager().closeAudioConnection();
-			return;
+		}
+	}
+
+	public boolean nextYTAutoPlay(AudioTrack track) {
+		if (musicManager.isAutoPlay() && !(track == null) && track.getSourceManager().getSourceName() == "youtube") {
+			try {
+				String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
+				if (autoUrl == null) {
+					return false;
+				} else {
+					bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new BasicResultHandler(player));
+					return true;
+				}
+			} catch (IOException e) {
+				System.out.println("Error on Youtube autoplay.");
+				e.printStackTrace();
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -153,6 +164,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		if (queue.isEmpty()) {
 			builder.append("`Queue is empty.`");
 		} else {
+			builder.append("Tracks queued: `").append(queue.size()).append("`\n");
 			int i = 0;
 			Iterator<AudioTrack> x = queue.iterator();
 			while (x.hasNext()) {

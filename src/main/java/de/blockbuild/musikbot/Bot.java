@@ -29,6 +29,7 @@ import de.blockbuild.musikbot.commands.QueueCommand;
 import de.blockbuild.musikbot.commands.QuitCommand;
 import de.blockbuild.musikbot.commands.RadioBobCommand;
 import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
+import de.blockbuild.musikbot.commands.RadioMnmCommand;
 import de.blockbuild.musikbot.commands.RautemusikCommand;
 import de.blockbuild.musikbot.commands.ResumeCommand;
 import de.blockbuild.musikbot.commands.ConfigCommand;
@@ -41,6 +42,7 @@ import de.blockbuild.musikbot.commands.StopCommand;
 import de.blockbuild.musikbot.commands.VersionCommand;
 import de.blockbuild.musikbot.commands.VolumeCommand;
 import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.commands.YTAutoPlayCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
@@ -159,7 +161,7 @@ public class Bot {
 	}
 
 	public void initListeners() {
-		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new MessageListener(this));
 		jda.addEventListener(new VoiceChannelListener());
 	}
 
@@ -172,7 +174,6 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
-		// ccb.setAlternativePrefix("-");
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
@@ -183,11 +184,13 @@ public class Bot {
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
+				new YTAutoPlayCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
 				new RautemusikCommand(this), 
 				new RadioBobCommand(this),
+				new RadioMnmCommand(this),
 				
 				new VolumeCommand(this),
 				new InfoCommand(this),  
@@ -319,5 +322,21 @@ public class Bot {
 
 	public VoiceChannel getVoiceChannelById(Long id) {
 		return this.jda.getVoiceChannelById(id);
+	}
+
+	public Guild getGuildById(String id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public Guild getGuildById(Long id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

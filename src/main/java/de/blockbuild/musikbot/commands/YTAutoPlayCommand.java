@@ -4,47 +4,32 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.MBCommand;
-import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class SkipCommand extends MBCommand {
-
-	public SkipCommand(Bot bot) {
+public class YTAutoPlayCommand extends MBCommand {
+	public YTAutoPlayCommand(Bot bot) {
 		super(bot);
-		this.name = "skip";
-		this.aliases = new String[] { "s", "sk" };
-		this.help = "Skips the track";
-		this.arguments = "[Amount]";
+		this.name = "autoplay";
+		this.aliases = new String[] { "ytautoplay", "ap", "yap" };
+		this.help = "Enable or disable Youtube autoplay";
+		this.arguments = "<Enable|Disable>";
 		this.joinOnCommand = true;
 		this.category = MUSIC;
 	}
 
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 
-		if (!(args.isEmpty())) {
-			int i = 0;
-			try {
-				i = Integer.parseInt(args);
-			} catch (Exception e) {
-				// no integer
-			} finally {
-				if (i > 0) {
-					trackScheduler.flushQueue(i - 1);
-					StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-					builder.append(" ").append(i).append(" tracks got flushed!");
-					event.reply(builder.toString());
-					trackScheduler.nextTrack(event);
-				} else {
-					StringBuilder builder = new StringBuilder(event.getClient().getError());
-					builder.append(" `").append(args).append("` isn't a number.");
-					event.reply(builder.toString());
-				}
-			}
+		if (args.equalsIgnoreCase("enable")) {
+			musicManager.setIsAutoPlay(true);
+			builder.append(" YouTube autoplay: `enabled`");
+		} else if (args.equalsIgnoreCase("disable")) {
+			musicManager.setIsAutoPlay(false);
+			builder.append(" YouTube autoplay: `disabled`");
 		} else {
-			trackScheduler.nextTrack(event);
+			sendCommandInfo(event);
 		}
-
+		event.reply(builder.toString());
 	}
 
 	@Override
@@ -61,5 +46,4 @@ public class SkipCommand extends MBCommand {
 
 		event.reply(builder.toString());
 	}
-
 }
