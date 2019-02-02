@@ -35,7 +35,8 @@ public class InfoCommand extends MBCommand {
 			event.reply(builder.toString());
 		} else {
 			StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-			builder.append(" Currently there is no track playing. Use `!Play` to start a track.");
+			builder.append(" Currently there is no track playing. Use `").append(event.getClient().getPrefix())
+					.append("play` to start a track.");
 			event.reply(builder.toString());
 		}
 	}

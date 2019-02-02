@@ -223,7 +223,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 	public void sendCommandInfo(CommandEvent event) {
 		StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-		builder.append(" !").append(this.name).append(" ").append(this.arguments);
+		builder.append(" ").append(event.getClient().getPrefix()).append(this.name).append(" ").append(this.arguments);
 		event.reply(builder.toString());
 	}
 

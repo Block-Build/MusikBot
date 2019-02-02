@@ -23,7 +23,8 @@ public class ChooseCommand extends MBCommand {
 	protected void doGuildCommand(CommandEvent event) {
 		if (musicManager.tracks == null || musicManager.tracks.isEmpty()) {
 			StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-			builder.append("There is nothing to choose. First you need to search for an YT-Video with `!Play <title>`");
+			builder.append("There is nothing to choose. First you need to search for an YT-Video with `")
+					.append(event.getClient().getPrefix()).append("play <title>`");
 			event.reply(builder.toString());
 		} else {
 			try {
@@ -39,8 +40,9 @@ public class ChooseCommand extends MBCommand {
 					}
 				} else {
 					StringBuilder builder = new StringBuilder().append(event.getClient().getError());
-					builder.append("`").append(args).append("` is not vaild numer. Use `!").append(this.name)
-							.append("` ").append(this.getArguments());
+					builder.append("`").append(args).append("` is not vaild numer. Use `")
+							.append(event.getClient().getPrefix()).append(this.name).append("` ")
+							.append(this.getArguments());
 					event.reply(builder.toString());
 				}
 				musicManager.tracks = null;
