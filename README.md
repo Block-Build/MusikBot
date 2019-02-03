@@ -1,4 +1,4 @@
-
+[![Release](https://img.shields.io/github/release/Block-Build/MusikBot.svg)](https://github.com/Block-Build/MusikBot/releases/latest)
 # MusikBot ![GitHub Logo](/src/main/resources/64.png)  
 
 Discord MusikBot on Minecraft
