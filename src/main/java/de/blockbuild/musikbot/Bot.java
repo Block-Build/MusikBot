@@ -174,7 +174,7 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
-		ccb.setLinkedCacheSize(30);
+		ccb.setLinkedCacheSize(100);
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
