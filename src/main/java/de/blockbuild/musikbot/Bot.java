@@ -174,6 +174,7 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
+		ccb.setLinkedCacheSize(30);
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
@@ -212,21 +213,11 @@ public class Bot {
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
-    
-		jda.addEventListener(ccb.build());
 
-		/*
-		 * missing commands:
-		 * #Playback commands##
-		 * jump to time?
-		 * 
-		 * ##setup commands##
-		 * defaultPlaylist?
-		 * setIcon?
-		 */
+		jda.addEventListener(ccb.build());
 	}
 
-	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb, Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}
