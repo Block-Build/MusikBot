@@ -12,12 +12,14 @@ The Discord MusikBot is a Music Bot you can host on your Minecraft Server as a P
 * Supported formats: MP3, FLAC, WAV, AAC, Opus, Vorbis, MP4/M4A, OGG, Stream playlists (M3U and PLS)
 * Adding songs to queue
 * Shuffle the playlist
+* YouTube autoplay
 * Get information about currend song
 * You are able to skip tracks
 * Able to change the volume of the Bot
 * Save your playlist to load and listen to it next time
 * Join the Bot to as much Servers as you want! They will act independently
 * Many things can be configured: Should the bot disconnect if it is alone? How about automatically joining a channel? And many more!
+* White- and blacklists for users and other bots
 * Change the command trigger to whatever you want
 * And a lot of more cool stuff! Just have a look to !help and config files;)
 * Much more is planned! Suggestions and feedback are welcome! Please open an issue
