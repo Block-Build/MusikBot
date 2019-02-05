@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class ConfigCommand extends MBCommand {
+public class ConfigCommand extends SetupCommand {
 
 	public ConfigCommand(Bot bot) {
 		super(bot);
@@ -14,7 +14,6 @@ public class ConfigCommand extends MBCommand {
 		this.help = "To load, save or show the Config";
 		this.arguments = "<save|load|show>";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override

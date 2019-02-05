@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class AutoConnectCommand extends MBCommand {
+public class AutoConnectCommand extends SetupCommand {
 
 	public AutoConnectCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class AutoConnectCommand extends MBCommand {
 		this.help = "set's auto connect option's in config";
 		this.arguments = "<enable|disable|channel|track> [voicechannelid|URL|clear]";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override

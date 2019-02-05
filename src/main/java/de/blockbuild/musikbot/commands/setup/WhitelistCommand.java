@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class WhitelistCommand extends MBCommand {
+public class WhitelistCommand extends SetupCommand {
 
 	public WhitelistCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class WhitelistCommand extends MBCommand {
 		this.help = "edits the whitelist";
 		this.arguments = "<add|remove|clear|list|enable|disable> [UserID]";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override

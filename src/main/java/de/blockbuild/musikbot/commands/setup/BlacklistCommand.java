@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class BlacklistCommand extends MBCommand {
+public class BlacklistCommand extends SetupCommand {
 
 	public BlacklistCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class BlacklistCommand extends MBCommand {
 		this.help = "edits the blocked users list";
 		this.arguments = "<add|remove|clear|list> [UserID]";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override

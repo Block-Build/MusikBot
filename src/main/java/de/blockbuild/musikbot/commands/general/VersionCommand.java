@@ -12,7 +12,7 @@ public class VersionCommand extends MBCommand {
 		this.name = "version";
 		this.help = "MusikBot version.";
 		this.joinOnCommand = false;
-		this.category = SETUP;
+		//this.category = SETUP;
 	}
 
 	@Override

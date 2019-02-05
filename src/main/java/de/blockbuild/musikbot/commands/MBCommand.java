@@ -20,7 +20,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 	protected final Category MUSIC = new Category("Music");
 	protected final Category CONNECTION = new Category("Connection");
 	protected final Category OTHER = new Category("Other");
-	protected final Category SETUP = new Category("Setup");
+	// protected final Category SETUP = new Category("Setup");
 	protected final Bot bot;
 	protected Boolean joinOnCommand;
 
@@ -160,18 +160,13 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 				return;
 			}
 		}
-
-		if (this.getCategory().getName() == SETUP.getName()) {
-			if (!event.isOwner()) {
-				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
-				builder.append(" Only the Owner is permitted to use this command");
-				event.reply(builder.toString());
-			} else {
-				doGuildCommand(event);
-			}
-			return;
-		}
-
+		/*
+		 * if (this.getCategory().getName() == SETUP.getName()) { if (!event.isOwner())
+		 * { StringBuilder builder = new
+		 * StringBuilder().append(event.getClient().getWarning());
+		 * builder.append(" Only the Owner is permitted to use this command");
+		 * event.reply(builder.toString()); } else { doGuildCommand(event); } return; }
+		 */
 		try {
 			doGuildCommand(event);
 		} catch (Exception e) {

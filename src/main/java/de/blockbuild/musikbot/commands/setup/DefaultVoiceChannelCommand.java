@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class DefaultVoiceChannelCommand extends MBCommand {
+public class DefaultVoiceChannelCommand extends SetupCommand {
 
 	public DefaultVoiceChannelCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class DefaultVoiceChannelCommand extends MBCommand {
 		this.help = "set's the `Default_VoiceChannel` option's in config";
 		this.arguments = "<enable|disable|channel> [textchannelid|clear]";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override

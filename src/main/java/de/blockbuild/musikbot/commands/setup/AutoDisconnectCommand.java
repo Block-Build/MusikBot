@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.setup;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.SetupCommand;
 
-public class AutoDisconnectCommand extends MBCommand {
+public class AutoDisconnectCommand extends SetupCommand {
 
 	public AutoDisconnectCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class AutoDisconnectCommand extends MBCommand {
 		this.help = "set's auto disconnect option in config";
 		this.arguments = "<alone|trackend> <enable|disable>";
 		this.joinOnCommand = false;
-		this.category = SETUP;
 	}
 
 	@Override
