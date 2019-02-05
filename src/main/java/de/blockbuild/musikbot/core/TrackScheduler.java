@@ -90,7 +90,16 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	public void nextTrack(CommandEvent event) {
 		StringBuilder builder = new StringBuilder();
+		// Kann man mal ausprobieren.
+		// synchronized (player) {
+		// }
 		if (nextYTAutoPlay(player.getPlayingTrack())) {
+			// Wait until track is really loaded
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			builder.append(event.getClient().getSuccess());
 			builder.append(" Now Playing: `").append(player.getPlayingTrack().getInfo().title).append("`.");
 		} else if (queue.isEmpty()) {
