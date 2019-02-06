@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import org.bstats.bukkit.Metrics;
+
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
@@ -72,6 +74,8 @@ public class Bot {
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	public final BotConfiguration config;
+	@SuppressWarnings("unused")
+	private Metrics metrics;
 
 	public Bot(Main main) {
 		System.out.println("[" + main.getName() + "] Get started...");
@@ -84,6 +88,7 @@ public class Bot {
 		if (start()) {
 			initListeners();
 			initCommandClient();
+			new Metrics(main);
 			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
 			System.out.println("[" + main.getName() + "] Shut down");
