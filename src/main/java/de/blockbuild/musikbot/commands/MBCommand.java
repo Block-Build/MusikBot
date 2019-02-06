@@ -107,50 +107,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 			return;
 		}
 
-		/*
-		 * if (this.getCategory().getName() == MUSIC.getName()) { if
-		 * (!member.getVoiceState().inVoiceChannel()) { // Should not be triggered!
-		 * return; }
-		 * 
-		 * if (!selfMember.getVoiceState().inVoiceChannel()) { if (joinOnCommand) { if
-		 * (allowedToJoinVoiceChannel(musicManager, channel.getIdLong())) {
-		 * bot.joinDiscordVoiceChannel(guild, channel.getIdLong());
-		 * doGuildCommand(event); } else { sendDefaultVoiceChannelInfo(event,
-		 * musicManager); } return; } else { StringBuilder builder = new
-		 * StringBuilder(event.getClient().getWarning());
-		 * builder.append(" Use `!Join [Channel]` to let me join a channel");
-		 * event.reply(builder.toString()); return; } }
-		 * 
-		 * if (!channel.equals(selfChannel)) { // in different channels StringBuilder
-		 * builder = new StringBuilder(event.getClient().getWarning());
-		 * builder.append(" You must be in the same channel as me to use that command!"
-		 * ); event.reply(builder.toString()); return; } }
-		 */
-
-		/*
-		 * if (this.getCategory().getName() == CONNECTION.getName()) { if
-		 * (this.guildOnly == false) { doGuildCommand(event); return; }
-		 * 
-		 * if (!member.getVoiceState().inVoiceChannel()) { // Should not be triggered!
-		 * return; }
-		 * 
-		 * if (!selfMember.getVoiceState().inVoiceChannel()) { doGuildCommand(event);
-		 * return; }
-		 * 
-		 * if (!channel.equals(selfChannel)) { // in different channels StringBuilder
-		 * builder = new StringBuilder(event.getClient().getWarning());
-		 * builder.append(" You must be in the same channel as me to use that command!"
-		 * ); event.reply(builder.toString()); return; } }
-		 */
-
-		/*
-		 * if (this.getCategory().getName() == SETUP.getName()) { if (!event.isOwner())
-		 * { StringBuilder builder = new
-		 * StringBuilder().append(event.getClient().getWarning());
-		 * builder.append(" Only the Owner is permitted to use this command");
-		 * event.reply(builder.toString()); } else { doGuildCommand(event); } return; }
-		 */
-
 		try {
 			doGuildCommand(event);
 		} catch (Exception e) {
