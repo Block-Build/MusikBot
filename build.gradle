@@ -14,10 +14,6 @@ repositories {
     maven {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
-    maven {
-        name = 'CodeMC'
-        url = 'https://repo.codemc.org/repository/maven-public'
-    }
 }
 
 dependencies {
@@ -25,7 +21,6 @@ dependencies {
     compile 'com.jagrosh:jda-utilities:2.1.5'
     compile 'net.dv8tion:JDA:3.8.1_456'
     compile 'org.slf4j:slf4j-simple:1.7.25'
-    compile group: 'org.bstats', name: 'bstats-bukkit', version: '1.4'
 
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
 }
@@ -49,7 +44,6 @@ shadowJar {
     }
     relocate 'org.apache', 'shadow.org.apache'
     relocate 'org.json', 'shadow.org.json'
-    relocate 'org.bstats', 'shadow.org.bstats'
 }
 
 build {
