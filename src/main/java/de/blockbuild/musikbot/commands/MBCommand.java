@@ -17,10 +17,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
-	// protected final Category MUSIC = new Category("Music");
-	// protected final Category CONNECTION = new Category("Connection");
-	protected final Category OTHER = new Category("Other");
-	// protected final Category SETUP = new Category("Setup");
+	protected final Category GENERAL = new Category("GENERAL");
 	protected final Bot bot;
 	protected Boolean joinOnCommand = false;
 
