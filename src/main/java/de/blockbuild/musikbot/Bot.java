@@ -88,7 +88,7 @@ public class Bot {
 		if (start()) {
 			initListeners();
 			initCommandClient();
-			new Metrics(main);
+			metrics = new Metrics(main);
 			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
 			System.out.println("[" + main.getName() + "] Shut down");
