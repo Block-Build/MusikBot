@@ -3,16 +3,14 @@ package de.blockbuild.musikbot.commands.connection;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.ConnectionCommand;
 
-public class PingCommand extends MBCommand {
+public class PingCommand extends ConnectionCommand {
 	public PingCommand(Bot bot) {
 		super(bot);
 		this.name = "ping";
 		this.help = "Displays the responce time";
 		this.joinOnCommand = false;
-		this.category = CONNECTION;
-		this.guildOnly = false;
 	}
 
 	@Override

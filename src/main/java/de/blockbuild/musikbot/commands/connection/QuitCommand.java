@@ -3,18 +3,16 @@ package de.blockbuild.musikbot.commands.connection;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.ConnectionCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class QuitCommand extends MBCommand {
+public class QuitCommand extends ConnectionCommand {
 
 	public QuitCommand(Bot bot) {
 		super(bot);
 		this.name = "quit";
 		this.aliases = new String[] { "leave", "disconnect" };
 		this.help = "Disconnect and delete queue.";
-		this.joinOnCommand = false;
-		this.category = CONNECTION;
 	}
 
 	@Override

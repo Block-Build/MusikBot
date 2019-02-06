@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.connection;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.ConnectionCommand;
 
-public class JoinCommand extends MBCommand {
+public class JoinCommand extends ConnectionCommand {
 
 	public JoinCommand(Bot bot) {
 		super(bot);
@@ -13,7 +13,6 @@ public class JoinCommand extends MBCommand {
 		this.help = "Triggers the Bot to join a voice channel!";
 		this.arguments = "[ChannelName]";
 		this.joinOnCommand = false;
-		this.category = CONNECTION;
 	}
 
 	@Override

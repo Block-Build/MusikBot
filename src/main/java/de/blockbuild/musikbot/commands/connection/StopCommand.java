@@ -3,17 +3,15 @@ package de.blockbuild.musikbot.commands.connection;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.ConnectionCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class StopCommand extends MBCommand {
+public class StopCommand extends ConnectionCommand {
 
 	public StopCommand(Bot bot) {
 		super(bot);
 		this.name = "stop";
 		this.help = "Stops playback";
-		this.joinOnCommand = false;
-		this.category = CONNECTION;
 	}
 
 	@Override

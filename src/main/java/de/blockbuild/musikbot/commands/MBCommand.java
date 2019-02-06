@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
 	// protected final Category MUSIC = new Category("Music");
-	protected final Category CONNECTION = new Category("Connection");
+	// protected final Category CONNECTION = new Category("Connection");
 	protected final Category OTHER = new Category("Other");
 	// protected final Category SETUP = new Category("Setup");
 	protected final Bot bot;
@@ -124,30 +124,21 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		 * ); event.reply(builder.toString()); return; } }
 		 */
 
-		if (this.getCategory().getName() == CONNECTION.getName()) {
-			if (this.guildOnly == false) {
-				doGuildCommand(event);
-				return;
-			}
-
-			if (!member.getVoiceState().inVoiceChannel()) {
-				// Should not be triggered!
-				return;
-			}
-
-			if (!selfMember.getVoiceState().inVoiceChannel()) {
-				doGuildCommand(event);
-				return;
-			}
-
-			if (!channel.equals(selfChannel)) {
-				// in different channels
-				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(" You must be in the same channel as me to use that command!");
-				event.reply(builder.toString());
-				return;
-			}
-		}
+		/*
+		 * if (this.getCategory().getName() == CONNECTION.getName()) { if
+		 * (this.guildOnly == false) { doGuildCommand(event); return; }
+		 * 
+		 * if (!member.getVoiceState().inVoiceChannel()) { // Should not be triggered!
+		 * return; }
+		 * 
+		 * if (!selfMember.getVoiceState().inVoiceChannel()) { doGuildCommand(event);
+		 * return; }
+		 * 
+		 * if (!channel.equals(selfChannel)) { // in different channels StringBuilder
+		 * builder = new StringBuilder(event.getClient().getWarning());
+		 * builder.append(" You must be in the same channel as me to use that command!"
+		 * ); event.reply(builder.toString()); return; } }
+		 */
 
 		/*
 		 * if (this.getCategory().getName() == SETUP.getName()) { if (!event.isOwner())
