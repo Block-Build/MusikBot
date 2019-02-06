@@ -8,10 +8,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class RadioMnmCommand extends MBCommand {
+public class RadioMnmCommand extends RadioCommand {
 
 	public RadioMnmCommand(Bot bot) {
 		super(bot);
@@ -19,7 +19,6 @@ public class RadioMnmCommand extends MBCommand {
 		this.aliases = new String[] { "mnm" };
 		this.help = "Streams Mnm!";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override

@@ -8,10 +8,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class RautemusikCommand extends MBCommand {
+public class RautemusikCommand extends RadioCommand {
 
 	public RautemusikCommand(Bot bot) {
 		super(bot);
@@ -20,7 +20,6 @@ public class RautemusikCommand extends MBCommand {
 		this.help = "Plays Rautemusik!";
 		this.arguments = "<12punks | 90s | BigCityBeats | BreakZ.FM | ChartHits | Christmas | Club | DAS Coachingradio | Country | Deutschrap | Goldies | Globalize Yourself Stereo/gyr | Happy | HappyHardcore | HardeR | House | JaM | Kids | Klassik | Lounge | LoveHits | Main | Oriental | PartyHits | Rock | Salsa | Schlager | Sex | Solo Piano | Study | TechHouse | Top40 | Trance | Trap | Traurig | Volksmusik | Wacken Radio | Weihnachten | Workout>";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override
