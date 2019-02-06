@@ -3,10 +3,10 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class NextCommand extends MBCommand {
+public class NextCommand extends MusicCommand {
 
 	public NextCommand(Bot bot) {
 		super(bot);
@@ -14,7 +14,6 @@ public class NextCommand extends MBCommand {
 		this.aliases = new String[] { "n" };
 		this.help = "Returns the next tracks title.";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override

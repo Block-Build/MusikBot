@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 
-public class YTAutoPlayCommand extends MBCommand {
+public class YTAutoPlayCommand extends MusicCommand {
 	public YTAutoPlayCommand(Bot bot) {
 		super(bot);
 		this.name = "autoplay";
@@ -13,7 +13,6 @@ public class YTAutoPlayCommand extends MBCommand {
 		this.help = "Enable or disable Youtube autoplay";
 		this.arguments = "<Enable|Disable>";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override

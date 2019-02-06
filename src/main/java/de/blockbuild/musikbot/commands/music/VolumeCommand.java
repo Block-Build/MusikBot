@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 
-public class VolumeCommand extends MBCommand {
+public class VolumeCommand extends MusicCommand {
 
 	public VolumeCommand(Bot bot) {
 		super(bot);
@@ -14,7 +14,6 @@ public class VolumeCommand extends MBCommand {
 		this.help = "Changes the volume.";
 		this.arguments = "[0-100]";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override

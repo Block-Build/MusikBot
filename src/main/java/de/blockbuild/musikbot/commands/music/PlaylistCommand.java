@@ -10,11 +10,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.configuration.PlaylistConfiguration;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class PlaylistCommand extends MBCommand {
+public class PlaylistCommand extends MusicCommand {
 	List<String> tracks;
 
 	public PlaylistCommand(Bot bot) {
@@ -24,7 +24,6 @@ public class PlaylistCommand extends MBCommand {
 		this.help = "save, load, delete or list your playlists";
 		this.arguments = "<save|delete|load|list> <name>";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override

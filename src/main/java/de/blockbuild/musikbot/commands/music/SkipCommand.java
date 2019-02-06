@@ -3,10 +3,10 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class SkipCommand extends MBCommand {
+public class SkipCommand extends MusicCommand {
 
 	public SkipCommand(Bot bot) {
 		super(bot);
@@ -15,7 +15,6 @@ public class SkipCommand extends MBCommand {
 		this.help = "Skips the track";
 		this.arguments = "[Amount]";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 	}
 
 	@Override

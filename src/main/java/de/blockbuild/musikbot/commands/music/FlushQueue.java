@@ -3,10 +3,10 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class FlushQueue extends MBCommand {
+public class FlushQueue extends MusicCommand {
 
 	public FlushQueue(Bot bot) {
 		super(bot);
@@ -15,7 +15,6 @@ public class FlushQueue extends MBCommand {
 		this.help = "Clears the queue";
 		this.arguments = "[Amount]";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override

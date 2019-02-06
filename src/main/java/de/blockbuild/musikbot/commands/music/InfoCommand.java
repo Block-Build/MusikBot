@@ -7,9 +7,9 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 
-public class InfoCommand extends MBCommand {
+public class InfoCommand extends MusicCommand {
 
 	public InfoCommand(Bot bot) {
 		super(bot);
@@ -17,7 +17,6 @@ public class InfoCommand extends MBCommand {
 		this.aliases = new String[] { "i" };
 		this.help = "Info of the current Track.";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override

@@ -10,11 +10,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class QueueCommand extends MBCommand {
+public class QueueCommand extends MusicCommand {
 
 	private Boolean isSearch;
 
@@ -25,7 +25,6 @@ public class QueueCommand extends MBCommand {
 		this.help = "Returns the playlist or adds the given track to queue.";
 		this.arguments = "[URL|title]";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 		this.isSearch = false;
 	}
 

@@ -3,17 +3,16 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class ShuffleCommand extends MBCommand {
+public class ShuffleCommand extends MusicCommand {
 
 	public ShuffleCommand(Bot bot) {
 		super(bot);
 		this.name = "shuffle";
 		this.help = "Shuffles the playlist";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override

@@ -12,11 +12,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class PlayCommand extends MBCommand {
+public class PlayCommand extends MusicCommand {
 
 	private Boolean isSearch;
 
@@ -27,7 +27,6 @@ public class PlayCommand extends MBCommand {
 		this.help = "Shows current track or plays given track";
 		this.arguments = "[URL|title]";
 		this.joinOnCommand = true;
-		this.category = MUSIC;
 		this.isSearch = false;
 	}
 

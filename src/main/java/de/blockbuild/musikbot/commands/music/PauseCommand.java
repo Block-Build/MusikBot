@@ -4,15 +4,14 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 
-public class PauseCommand extends MBCommand {
+public class PauseCommand extends MusicCommand {
 	public PauseCommand(Bot bot) {
 		super(bot);
 		this.name = "pause";
 		this.help = "Pause playback.";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override

@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands.music;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MBCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 
-public class ChooseCommand extends MBCommand {
+public class ChooseCommand extends MusicCommand {
 
 	private int choose = 0;
 
@@ -16,7 +16,6 @@ public class ChooseCommand extends MBCommand {
 		this.help = "Chosse one of fife search results";
 		this.arguments = "<1-5>";
 		this.joinOnCommand = false;
-		this.category = MUSIC;
 	}
 
 	@Override
