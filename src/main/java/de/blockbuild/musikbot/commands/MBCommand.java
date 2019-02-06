@@ -86,6 +86,11 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		if (musicManager.config.isDefaultTextChannelEnabled()) {
 			if (!(textChannel.getIdLong() == musicManager.config.getDefaultTextChannel())
 					&& !(musicManager.config.getDefaultTextChannel() == 0L)) {
+				StringBuilder builder = new StringBuilder().append(event.getClient().getWarning());
+				builder.append(" You are only allowd to use commands in `")
+						.append(bot.getTextChannelById(musicManager.config.getDefaultTextChannel()).getName())
+						.append("`");
+				event.replyInDm(builder.toString());
 				return;
 			}
 		}
