@@ -130,7 +130,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			if (nextYTAutoPlay(track)) {
+			if (!nextYTAutoPlay(track)) {
 				player.playTrack(queue.poll());
 			}
 		}
