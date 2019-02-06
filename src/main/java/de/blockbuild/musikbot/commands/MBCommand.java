@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
+import de.blockbuild.musikbot.configuration.GuildConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
 import net.dv8tion.jda.core.Permission;
@@ -174,10 +175,9 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		return l;
 	}
 
-	protected boolean allowedToJoinVoiceChannel(GuildMusicManager musicManager, long id) {
-		if (musicManager.config.isDefaultVoiceChannelEnabled()
-				&& !(musicManager.config.getDefaultVoiceChannel() == 0L)) {
-			if (musicManager.config.getDefaultVoiceChannel() == id) {
+	protected boolean allowedToJoinVoiceChannel(GuildConfiguration config, long id) {
+		if (config.isDefaultVoiceChannelEnabled() && !(config.getDefaultVoiceChannel() == 0L)) {
+			if (config.getDefaultVoiceChannel() == id) {
 				return true;
 			} else {
 				return false;
@@ -187,10 +187,9 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		}
 	}
 
-	protected boolean allowedToJoinVoiceChannel(GuildMusicManager musicManager, String id) {
-		if (musicManager.config.isDefaultVoiceChannelEnabled()
-				&& !(musicManager.config.getDefaultVoiceChannel() == 0L)) {
-			if (String.valueOf(musicManager.config.getDefaultVoiceChannel()) == id) {
+	protected boolean allowedToJoinVoiceChannel(GuildConfiguration config, String id) {
+		if (config.isDefaultVoiceChannelEnabled() && !(config.getDefaultVoiceChannel() == 0L)) {
+			if (String.valueOf(config.getDefaultVoiceChannel()) == id) {
 				return true;
 			} else {
 				return false;

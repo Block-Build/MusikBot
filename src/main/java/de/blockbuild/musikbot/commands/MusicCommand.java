@@ -27,7 +27,7 @@ public abstract class MusicCommand extends MBCommand {
 
 				if (!event.getSelfMember().getVoiceState().inVoiceChannel()) {
 					if (joinOnCommand) {
-						if (allowedToJoinVoiceChannel(musicManager, channel.getIdLong())) {
+						if (allowedToJoinVoiceChannel(musicManager.config, channel.getIdLong())) {
 							bot.joinDiscordVoiceChannel(event.getGuild(), channel.getIdLong());
 							return true;
 						} else {

@@ -27,14 +27,14 @@ public class JoinCommand extends ConnectionCommand {
 				builder.append(" We are already in the same channel!");
 				event.reply(builder.toString());
 			} else {
-				if (allowedToJoinVoiceChannel(musicManager, channel.getIdLong())) {
+				if (allowedToJoinVoiceChannel(musicManager.config, channel.getIdLong())) {
 					bot.joinDiscordVoiceChannel(guild, channel.getIdLong());
 				} else {
 					sendDefaultVoiceChannelInfo(event, musicManager);
 				}
 			}
 		} else {
-			if (allowedToJoinVoiceChannel(musicManager, args)) {
+			if (allowedToJoinVoiceChannel(musicManager.config, args)) {
 				if (!bot.joinDiscordVoiceChannel(guild, args)) {
 					StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 					builder.append(" Missing permission or there is no channel called `").append(args).append("`.");
