@@ -90,18 +90,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 
 	public void nextTrack(CommandEvent event) {
 		StringBuilder builder = new StringBuilder();
-		// Kann man mal ausprobieren.
-		// synchronized (player) {
-		// }
-		if (nextYTAutoPlay(player.getPlayingTrack())) {
-			// Wait until track is really loaded
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			builder.append(event.getClient().getSuccess());
-			builder.append(" Now Playing: `").append(player.getPlayingTrack().getInfo().title).append("`.");
+		String url = nextYTAutoPlay(player.getPlayingTrack());
+		if (!(url == null)) {
+			bot.getPlayerManager().loadItemOrdered(musicManager, url,
+					new BasicResultHandler(player, event, "Now Playing: `%s`."));
 		} else if (queue.isEmpty()) {
 			builder.append(event.getClient().getWarning()).append(" Queue is empty.");
 			player.stopTrack();
@@ -130,8 +122,11 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			if (!nextYTAutoPlay(track)) {
+			String url = nextYTAutoPlay(track);
+			if (url == null) {
 				player.playTrack(queue.poll());
+			} else {
+				bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player, null, null));
 			}
 		}
 
@@ -141,23 +136,24 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
-	public boolean nextYTAutoPlay(AudioTrack track) {
+	public String nextYTAutoPlay(AudioTrack track) {
 		if (musicManager.isAutoPlay() && !(track == null) && track.getSourceManager().getSourceName() == "youtube") {
 			try {
 				String autoUrl = eyasm.getYTAutoPlayNextVideoId(track);
 				if (autoUrl == null) {
-					return false;
+					return null;
 				} else {
-					bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new BasicResultHandler(player));
-					return true;
+					// bot.getPlayerManager().loadItemOrdered(musicManager, autoUrl, new
+					// BasicResultHandler(player));
+					return autoUrl;
 				}
 			} catch (IOException e) {
 				System.out.println("Error on Youtube autoplay.");
 				e.printStackTrace();
-				return false;
+				return null;
 			}
 		} else {
-			return false;
+			return null;
 		}
 	}
 
