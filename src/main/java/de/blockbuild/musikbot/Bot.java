@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import org.bstats.bukkit.Metrics;
+
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
@@ -14,33 +16,35 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.VoiceChannelListener;
-import de.blockbuild.musikbot.commands.ChooseCommand;
-import de.blockbuild.musikbot.commands.AutoConnectCommand;
-import de.blockbuild.musikbot.commands.AutoDisconnectCommand;
-import de.blockbuild.musikbot.commands.FlushQueue;
-import de.blockbuild.musikbot.commands.InfoCommand;
-import de.blockbuild.musikbot.commands.JoinCommand;
-import de.blockbuild.musikbot.commands.NextCommand;
-import de.blockbuild.musikbot.commands.PauseCommand;
-import de.blockbuild.musikbot.commands.PingCommand;
-import de.blockbuild.musikbot.commands.PlayCommand;
-import de.blockbuild.musikbot.commands.PlaylistCommand;
-import de.blockbuild.musikbot.commands.QueueCommand;
-import de.blockbuild.musikbot.commands.QuitCommand;
-import de.blockbuild.musikbot.commands.RadioBobCommand;
-import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
-import de.blockbuild.musikbot.commands.RautemusikCommand;
-import de.blockbuild.musikbot.commands.ResumeCommand;
-import de.blockbuild.musikbot.commands.ConfigCommand;
-import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
-import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
-import de.blockbuild.musikbot.commands.BlacklistCommand;
-import de.blockbuild.musikbot.commands.ShuffleCommand;
-import de.blockbuild.musikbot.commands.SkipCommand;
-import de.blockbuild.musikbot.commands.StopCommand;
-import de.blockbuild.musikbot.commands.VersionCommand;
-import de.blockbuild.musikbot.commands.VolumeCommand;
-import de.blockbuild.musikbot.commands.WhitelistCommand;
+import de.blockbuild.musikbot.commands.connection.JoinCommand;
+import de.blockbuild.musikbot.commands.connection.PingCommand;
+import de.blockbuild.musikbot.commands.connection.QuitCommand;
+import de.blockbuild.musikbot.commands.connection.StopCommand;
+import de.blockbuild.musikbot.commands.general.VersionCommand;
+import de.blockbuild.musikbot.commands.music.ChooseCommand;
+import de.blockbuild.musikbot.commands.music.FlushQueue;
+import de.blockbuild.musikbot.commands.music.InfoCommand;
+import de.blockbuild.musikbot.commands.music.NextCommand;
+import de.blockbuild.musikbot.commands.music.PauseCommand;
+import de.blockbuild.musikbot.commands.music.PlayCommand;
+import de.blockbuild.musikbot.commands.music.PlaylistCommand;
+import de.blockbuild.musikbot.commands.music.QueueCommand;
+import de.blockbuild.musikbot.commands.music.ResumeCommand;
+import de.blockbuild.musikbot.commands.music.ShuffleCommand;
+import de.blockbuild.musikbot.commands.music.SkipCommand;
+import de.blockbuild.musikbot.commands.music.VolumeCommand;
+import de.blockbuild.musikbot.commands.music.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBobCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBonnRheinSiegCommand;
+import de.blockbuild.musikbot.commands.radio.RadioMnmCommand;
+import de.blockbuild.musikbot.commands.radio.RautemusikCommand;
+import de.blockbuild.musikbot.commands.setup.AutoConnectCommand;
+import de.blockbuild.musikbot.commands.setup.AutoDisconnectCommand;
+import de.blockbuild.musikbot.commands.setup.BlacklistCommand;
+import de.blockbuild.musikbot.commands.setup.ConfigCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
+import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
@@ -70,6 +74,8 @@ public class Bot {
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private JDA jda;
 	public final BotConfiguration config;
+	@SuppressWarnings("unused")
+	private Metrics metrics;
 
 	public Bot(Main main) {
 		System.out.println("[" + main.getName() + "] Get started...");
@@ -82,6 +88,7 @@ public class Bot {
 		if (start()) {
 			initListeners();
 			initCommandClient();
+			metrics = new Metrics(main);
 			System.out.println("[" + main.getName() + "] Started successfully");
 		} else {
 			System.out.println("[" + main.getName() + "] Shut down");
@@ -159,7 +166,7 @@ public class Bot {
 	}
 
 	public void initListeners() {
-		jda.addEventListener(new MessageListener());
+		jda.addEventListener(new MessageListener(this));
 		jda.addEventListener(new VoiceChannelListener());
 	}
 
@@ -172,7 +179,7 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
-		// ccb.setAlternativePrefix("-");
+		ccb.setLinkedCacheSize(100);
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
@@ -183,11 +190,13 @@ public class Bot {
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
+				new YTAutoPlayCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
 				new RautemusikCommand(this), 
 				new RadioBobCommand(this),
+				new RadioMnmCommand(this),
 				
 				new VolumeCommand(this),
 				new InfoCommand(this),  
@@ -209,21 +218,11 @@ public class Bot {
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
-    
-		jda.addEventListener(ccb.build());
 
-		/*
-		 * missing commands:
-		 * #Playback commands##
-		 * jump to time?
-		 * 
-		 * ##setup commands##
-		 * defaultPlaylist?
-		 * setIcon?
-		 */
+		jda.addEventListener(ccb.build());
 	}
 
-	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb, Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}
@@ -319,5 +318,21 @@ public class Bot {
 
 	public VoiceChannel getVoiceChannelById(Long id) {
 		return this.jda.getVoiceChannelById(id);
+	}
+
+	public Guild getGuildById(String id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public Guild getGuildById(Long id) {
+		try {
+			return this.jda.getGuildById(id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

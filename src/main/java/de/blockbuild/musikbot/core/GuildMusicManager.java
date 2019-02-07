@@ -16,17 +16,18 @@ public class GuildMusicManager {
 	private final AudioPlayer player;
 	private final TrackScheduler trackScheduler;
 	public final GuildConfiguration config;
-	public final Bot bot;
+	private final Bot bot;
 	private final Guild guild;
 	public List<AudioTrack> tracks;
-	public Boolean isQueue;
+	private Boolean isQueue, autoPlay;
 
 	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Bot bot) {
 		this.bot = bot;
 		this.guild = guild;
 		this.player = playerManager.createPlayer();
 		this.trackScheduler = new TrackScheduler(bot, this);
-		player.addListener(trackScheduler);
+		this.player.addListener(trackScheduler);
+		this.autoPlay = false;
 		this.config = new GuildConfiguration(bot, this);
 
 		if (config.isAutoConnectEnabled()) {
@@ -45,7 +46,7 @@ public class GuildMusicManager {
 			}
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
-						new BasicResultHandler(this.getAudioPlayer()));
+						new BasicResultHandler(this.getAudioPlayer(), null, null));
 			}
 		}
 	}
@@ -73,5 +74,21 @@ public class GuildMusicManager {
 
 	public int getVolume() {
 		return player.getVolume();
+	}
+
+	public Boolean isQueue() {
+		return this.isQueue;
+	}
+
+	public void setIsQueue(boolean bool) {
+		this.isQueue = bool;
+	}
+
+	public Boolean isAutoPlay() {
+		return this.autoPlay;
+	}
+
+	public void setIsAutoPlay(boolean bool) {
+		this.autoPlay = bool;
 	}
 }
