@@ -10,13 +10,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
+import net.dv8tion.jda.core.entities.Role;
+
 public class GuildConfiguration extends ConfigurationManager {
 	private final GuildMusicManager musicManager;
 	private String guildName;
 	private int volume;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles;
 	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
@@ -45,6 +47,10 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.set("Whitelist_Enabled", this.useWhitelist);
 			config.set("Whitelist", this.whitelist);
 			config.set("Blacklist", this.blacklist);
+
+			this.phraseMap(config.createSection("Command_Permission_Roles"), this.roles, "Music_Commands",
+					"Radio_Commands", "Connection_Commands", "Setup_Commands");
+
 			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 
@@ -72,6 +78,13 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.addDefault("Whitelist_Enabled", "");
 			config.addDefault("Whitelist", null);
 			config.addDefault("Blacklist", null);
+
+			c = this.addDefaultSection(config, "Command_Permission_Roles");
+			c.addDefault("Music_Commands", musicManager.getGuild().getPublicRole().getName());
+			c.addDefault("Radio_Commands", musicManager.getGuild().getPublicRole().getName());
+			c.addDefault("Connection_Commands", musicManager.getGuild().getPublicRole().getName());
+			c.addDefault("Setup_Commands", musicManager.getGuild().getPublicRole().getName());
+
 			config.addDefault("Auto_Disconnect_If_Alone", false);
 			config.addDefault("Auto_Disconnect_After_Last_Track", false);
 
@@ -93,6 +106,7 @@ public class GuildConfiguration extends ConfigurationManager {
 			this.useWhitelist = config.getBoolean("Whitelist_Enabled");
 			this.whitelist = config.getLongList("Whitelist");
 			this.blacklist = config.getLongList("Blacklist");
+			this.roles = config.getConfigurationSection("Command_Permission_Roles").getValues(false);
 			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone");
 			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track");
 
@@ -248,5 +262,46 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setDefaultVoiceChannel(long id) {
 		defaultVoiceChannel.replace("VoiceChannelId", id);
+	}
+
+	public Role getMusicRole() {
+		Role role = this.getRole((String) roles.get("Music_Commands"));
+		if (role == null) {
+			role = musicManager.getGuild().getPublicRole();
+		}
+		return role;
+	}
+
+	public Role getRadioRole() {
+		Role role = this.getRole((String) roles.get("Radio_Commands"));
+		if (role == null) {
+			role = musicManager.getGuild().getPublicRole();
+		}
+		return role;
+	}
+
+	public Role getConnectionRole() {
+		Role role = this.getRole((String) roles.get("Connection_Commands"));
+		if (role == null) {
+			role = musicManager.getGuild().getPublicRole();
+		}
+		return role;
+	}
+
+	public Role getSetupRole() {
+		Role role = this.getRole((String) roles.get("Setup_Commands"));
+		if (role == null) {
+			role = musicManager.getGuild().getPublicRole();
+		}
+		return role;
+	}
+
+	private Role getRole(String role) {
+		List<Role> r = musicManager.getGuild().getRolesByName(role, true);
+		if (r.isEmpty()) {
+			System.err.println(role + "isn't a vaild role");
+			return null;
+		}
+		return r.get(0);
 	}
 }
