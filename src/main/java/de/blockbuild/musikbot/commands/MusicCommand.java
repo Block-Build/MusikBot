@@ -16,11 +16,10 @@ public abstract class MusicCommand extends MBCommand {
 				return true;
 			}
 
-			Role setup = event.getGuild().getRolesByName("load from config", true).isEmpty() ? null
-					: event.getGuild().getRolesByName("load from config", true).get(0);
+			Role music = bot.getGuildAudioPlayer(event.getGuild()).config.getSetupRole();
 
-			if (event.isOwner() || event.getMember().hasPermission(Permission.MANAGE_SERVER)
-					|| !(setup == null) && event.getMember().getRoles().contains(setup)) {
+			if (event.isOwner() || event.getMember().hasPermission(Permission.MANAGE_SERVER) || music == null
+					|| event.getMember().getRoles().contains(music)) {
 
 				VoiceChannel channel = event.getMember().getVoiceState().getChannel();
 				GuildMusicManager musicManager = bot.getGuildAudioPlayer(event.getGuild());

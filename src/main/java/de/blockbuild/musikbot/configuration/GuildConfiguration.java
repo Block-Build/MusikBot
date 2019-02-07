@@ -80,10 +80,10 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.addDefault("Blacklist", null);
 
 			c = this.addDefaultSection(config, "Command_Permission_Roles");
-			c.addDefault("Music_Commands", musicManager.getGuild().getPublicRole().getName());
-			c.addDefault("Radio_Commands", musicManager.getGuild().getPublicRole().getName());
-			c.addDefault("Connection_Commands", musicManager.getGuild().getPublicRole().getName());
-			c.addDefault("Setup_Commands", musicManager.getGuild().getPublicRole().getName());
+			c.addDefault("Music_Commands", "");
+			c.addDefault("Radio_Commands", "");
+			c.addDefault("Connection_Commands", "");
+			c.addDefault("Setup_Commands", "");
 
 			config.addDefault("Auto_Disconnect_If_Alone", false);
 			config.addDefault("Auto_Disconnect_After_Last_Track", false);
@@ -265,41 +265,28 @@ public class GuildConfiguration extends ConfigurationManager {
 	}
 
 	public Role getMusicRole() {
-		Role role = this.getRole((String) roles.get("Music_Commands"));
-		if (role == null) {
-			role = musicManager.getGuild().getPublicRole();
-		}
-		return role;
+		return this.getRole((String) roles.get("Music_Commands"));
 	}
 
 	public Role getRadioRole() {
-		Role role = this.getRole((String) roles.get("Radio_Commands"));
-		if (role == null) {
-			role = musicManager.getGuild().getPublicRole();
-		}
-		return role;
+		return this.getRole((String) roles.get("Radio_Commands"));
 	}
 
 	public Role getConnectionRole() {
-		Role role = this.getRole((String) roles.get("Connection_Commands"));
-		if (role == null) {
-			role = musicManager.getGuild().getPublicRole();
-		}
-		return role;
+		return this.getRole((String) roles.get("Connection_Commands"));
 	}
 
 	public Role getSetupRole() {
-		Role role = this.getRole((String) roles.get("Setup_Commands"));
-		if (role == null) {
-			role = musicManager.getGuild().getPublicRole();
-		}
-		return role;
+		return this.getRole((String) roles.get("Setup_Commands"));
 	}
 
 	private Role getRole(String role) {
+		if (role.isEmpty() || role.equals("@everyone")) {
+			return null;
+		}
 		List<Role> r = musicManager.getGuild().getRolesByName(role, true);
 		if (r.isEmpty()) {
-			System.err.println(role + "isn't a vaild role");
+			System.err.println("[MusikBot] '" + role + "' isn't a vaild role");
 			return null;
 		}
 		return r.get(0);

@@ -10,6 +10,7 @@ public abstract class SetupCommand extends MBCommand {
 	public SetupCommand(Bot bot) {
 		super(bot);
 		this.category = new Category("SETUP", event -> {
+
 			if (event.isOwner()) {
 				return true;
 			} else if (event.getGuild() == null) {
@@ -18,9 +19,9 @@ public abstract class SetupCommand extends MBCommand {
 				return true;
 			}
 
-			Role setup = event.getGuild().getRolesByName("load from config", true).isEmpty() ? null
-					: event.getGuild().getRolesByName("load from config", true).get(0);
-			if (!(setup == null) && event.getMember().getRoles().contains(setup)) {
+			Role setup = bot.getGuildAudioPlayer(event.getGuild()).config.getSetupRole();
+
+			if (setup == null || event.getMember().getRoles().contains(setup)) {
 				return true;
 			} else {
 				event.reply(event.getClient().getWarning() + " You are not permitted to use this command");
