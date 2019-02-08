@@ -34,15 +34,17 @@ public class ConfigCommand extends SetupCommand {
 		} else if (args.startsWith("show")) {
 			builder.append(event.getClient().getSuccess()).append(" ");
 
-			builder.append("**Bot Configuration**").append("\n");
-			builder.append(bot.config.getRawConfiguration()).append("\n");
+			if (event.isOwner()) {
+				builder.append("**Bot Configuration**").append("\n");
+				builder.append(bot.config.getRawConfiguration()).append("\n");
+			}
 
 			builder.append("**Guild Configuration**").append("\n");
 			builder.append(musicManager.config.getRawConfiguration()).append("\n");
 		} else {
 			sendCommandInfo(event);
 		}
-		event.reply(builder.toString());
+		event.replyInDm(builder.toString());
 	}
 
 	@Override
