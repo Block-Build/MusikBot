@@ -50,7 +50,7 @@ shadowJar {
     }
     relocate 'org.apache', 'shadow.org.apache'
     relocate 'org.json', 'shadow.org.json'
-    relocate 'org.bstats', 'shadow.org.bstats'
+    relocate 'org.bstats', 'de.blockbuild.musikbot.bstats'
 }
 
 build {
