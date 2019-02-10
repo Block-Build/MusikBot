@@ -1,10 +1,12 @@
 package de.blockbuild.musikbot;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
@@ -14,35 +16,35 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.VoiceChannelListener;
-import de.blockbuild.musikbot.commands.ChooseCommand;
-import de.blockbuild.musikbot.commands.AutoConnectCommand;
-import de.blockbuild.musikbot.commands.AutoDisconnectCommand;
-import de.blockbuild.musikbot.commands.FlushQueue;
-import de.blockbuild.musikbot.commands.InfoCommand;
-import de.blockbuild.musikbot.commands.JoinCommand;
-import de.blockbuild.musikbot.commands.NextCommand;
-import de.blockbuild.musikbot.commands.PauseCommand;
-import de.blockbuild.musikbot.commands.PingCommand;
-import de.blockbuild.musikbot.commands.PlayCommand;
-import de.blockbuild.musikbot.commands.PlaylistCommand;
-import de.blockbuild.musikbot.commands.QueueCommand;
-import de.blockbuild.musikbot.commands.QuitCommand;
-import de.blockbuild.musikbot.commands.RadioBobCommand;
-import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
-import de.blockbuild.musikbot.commands.RadioMnmCommand;
-import de.blockbuild.musikbot.commands.RautemusikCommand;
-import de.blockbuild.musikbot.commands.ResumeCommand;
-import de.blockbuild.musikbot.commands.ConfigCommand;
-import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
-import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
-import de.blockbuild.musikbot.commands.BlacklistCommand;
-import de.blockbuild.musikbot.commands.ShuffleCommand;
-import de.blockbuild.musikbot.commands.SkipCommand;
-import de.blockbuild.musikbot.commands.StopCommand;
-import de.blockbuild.musikbot.commands.VersionCommand;
-import de.blockbuild.musikbot.commands.VolumeCommand;
-import de.blockbuild.musikbot.commands.WhitelistCommand;
-import de.blockbuild.musikbot.commands.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.connection.JoinCommand;
+import de.blockbuild.musikbot.commands.connection.PingCommand;
+import de.blockbuild.musikbot.commands.connection.QuitCommand;
+import de.blockbuild.musikbot.commands.general.VersionCommand;
+import de.blockbuild.musikbot.commands.music.ChooseCommand;
+import de.blockbuild.musikbot.commands.music.FlushQueue;
+import de.blockbuild.musikbot.commands.music.InfoCommand;
+import de.blockbuild.musikbot.commands.music.NextCommand;
+import de.blockbuild.musikbot.commands.music.PauseCommand;
+import de.blockbuild.musikbot.commands.music.PlayCommand;
+import de.blockbuild.musikbot.commands.music.PlaylistCommand;
+import de.blockbuild.musikbot.commands.music.QueueCommand;
+import de.blockbuild.musikbot.commands.music.ResumeCommand;
+import de.blockbuild.musikbot.commands.music.ShuffleCommand;
+import de.blockbuild.musikbot.commands.music.SkipCommand;
+import de.blockbuild.musikbot.commands.music.StopCommand;
+import de.blockbuild.musikbot.commands.music.VolumeCommand;
+import de.blockbuild.musikbot.commands.music.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBobCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBonnRheinSiegCommand;
+import de.blockbuild.musikbot.commands.radio.RadioMnmCommand;
+import de.blockbuild.musikbot.commands.radio.RautemusikCommand;
+import de.blockbuild.musikbot.commands.setup.AutoConnectCommand;
+import de.blockbuild.musikbot.commands.setup.AutoDisconnectCommand;
+import de.blockbuild.musikbot.commands.setup.BlacklistCommand;
+import de.blockbuild.musikbot.commands.setup.ConfigCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
+import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
@@ -61,11 +63,8 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class Bot {
-	public final static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
-			Permission.MESSAGE_EMBED_LINKS, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
-	public final static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
+	public final static Permission[] BASIC_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
+			Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
 			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
@@ -80,6 +79,16 @@ public class Bot {
 		musicManagers = new HashMap<>();
 		playerManager = new DefaultAudioPlayerManager();
 		config = new BotConfiguration(this);
+
+		try {
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
+					new File(main.getDataFolder(), "Sample_BotConfig.yml"));
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
+					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
+		} catch (IOException e) {
+			System.err.println("[" + main.getName() + "] Can't write Sample_Configs.");
+			e.printStackTrace();
+		}
 
 		if (start()) {
 			initListeners();
@@ -128,7 +137,7 @@ public class Bot {
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		String inviteURL = jda.asBot().getInviteUrl(Bot.BASIC_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
 
@@ -174,6 +183,7 @@ public class Bot {
 		ccb.useHelpBuilder(true);
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
+		ccb.setLinkedCacheSize(100);
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
@@ -212,21 +222,11 @@ public class Bot {
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
 				new VersionCommand(this));
-    
-		jda.addEventListener(ccb.build());
 
-		/*
-		 * missing commands:
-		 * #Playback commands##
-		 * jump to time?
-		 * 
-		 * ##setup commands##
-		 * defaultPlaylist?
-		 * setIcon?
-		 */
+		jda.addEventListener(ccb.build());
 	}
 
-	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb, Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}

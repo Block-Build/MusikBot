@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,6 +12,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		try {
 			start();
+			new Metrics(this);
 		} catch (Exception e) {
 			System.out.println(e);
 		}

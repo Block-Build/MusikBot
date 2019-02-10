@@ -10,13 +10,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
+import net.dv8tion.jda.core.entities.Role;
+
 public class GuildConfiguration extends ConfigurationManager {
 	private final GuildMusicManager musicManager;
 	private String guildName;
-	private int volume;
+	private int volume, messageDeleteDelay;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles;
 	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
@@ -42,9 +44,14 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			config.set("Guild_Name", this.guildName);
 			config.set("Volume", this.volume);
+			config.set("Delete_Command_Massages_Delay", this.messageDeleteDelay);
 			config.set("Whitelist_Enabled", this.useWhitelist);
 			config.set("Whitelist", this.whitelist);
 			config.set("Blacklist", this.blacklist);
+
+			this.phraseMap(config.createSection("Command_Permission_Roles"), this.roles, "Music_Commands",
+					"Radio_Commands", "Connection_Commands", "Setup_Commands");
+
 			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
 			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 
@@ -69,9 +76,17 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			config.addDefault("Guild_Name", this.guildName);
 			config.addDefault("Volume", 100);
+			config.addDefault("Delete_Command_Massages_Delay", 0);
 			config.addDefault("Whitelist_Enabled", "");
 			config.addDefault("Whitelist", null);
 			config.addDefault("Blacklist", null);
+
+			c = this.addDefaultSection(config, "Command_Permission_Roles");
+			c.addDefault("Music_Commands", "");
+			c.addDefault("Radio_Commands", "");
+			c.addDefault("Connection_Commands", "");
+			c.addDefault("Setup_Commands", "");
+
 			config.addDefault("Auto_Disconnect_If_Alone", false);
 			config.addDefault("Auto_Disconnect_After_Last_Track", false);
 
@@ -90,9 +105,11 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
 					: 100;
+			this.messageDeleteDelay = config.getInt("Delete_Command_Massages_Delay");
 			this.useWhitelist = config.getBoolean("Whitelist_Enabled");
 			this.whitelist = config.getLongList("Whitelist");
 			this.blacklist = config.getLongList("Blacklist");
+			this.roles = config.getConfigurationSection("Command_Permission_Roles").getValues(false);
 			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone");
 			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track");
 
@@ -111,6 +128,10 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	private void initConfig() {
 		musicManager.getAudioPlayer().setVolume(this.volume);
+
+		if (messageDeleteDelay < 0) {
+			messageDeleteDelay = 0;
+		}
 
 		if (isAutoConnectEnabled() && getAutoConnectVoiceChannelId() == 0L)
 			setAutoConnectEnabled(false);
@@ -248,5 +269,37 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setDefaultVoiceChannel(long id) {
 		defaultVoiceChannel.replace("VoiceChannelId", id);
+	}
+
+	public Role getMusicRole() {
+		return this.getRole((String) roles.get("Music_Commands"));
+	}
+
+	public Role getRadioRole() {
+		return this.getRole((String) roles.get("Radio_Commands"));
+	}
+
+	public Role getConnectionRole() {
+		return this.getRole((String) roles.get("Connection_Commands"));
+	}
+
+	public Role getSetupRole() {
+		return this.getRole((String) roles.get("Setup_Commands"));
+	}
+
+	private Role getRole(String role) {
+		if (role.isEmpty() || role.equals("@everyone")) {
+			return null;
+		}
+		List<Role> r = musicManager.getGuild().getRolesByName(role, true);
+		if (r.isEmpty()) {
+			System.err.println("[MusikBot] '" + role + "' isn't a vaild role");
+			return null;
+		}
+		return r.get(0);
+	}
+
+	public int getMessageDeleteDelay() {
+		return messageDeleteDelay;
 	}
 }

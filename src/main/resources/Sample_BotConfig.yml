@@ -1,0 +1,34 @@
+# MusikBot by Block-Build
+# +===================+
+# | BOT CONFIGURATION |
+# +===================+
+# 
+# You have to insert the bot token and owner id.
+# Instructions on: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`
+# Support/Suggestions/Bugs? Have a look on this site: `https://github.com/Block-Build/MusikBot`
+
+# The Bot token can be found on this site: "https://discordapp.com/developers/applications/".
+# Example Token: NTIzOTI3MzY3NDY3NjYzNDAx.D0G_Yg.L0v8GGJdMRVLhdujEizj6K37IjE
+Bot_Token: insert token here
+
+# The Discord user ID of the Bot, server or guild owner.
+# You could easy get the User ID from discord by right click after enableing the Developer Mode
+# Example ID: 012345678912345678
+Owner_ID: '12345'
+
+# The command trigger is a character the bot use to identify a command.
+# Example Trigger: '+' Example command: +play
+Command_Trigger: '!'
+
+# The game of the bot.
+# This will be shown under the name of the bot. "Playing <Game>".
+Game: Ready for playing music. !Play
+
+# The emojis the bot will use to responce if a command was successfull.
+Emojis:
+  Success: 😃
+  Warning: 😮
+  Error: 😦
+
+# You will need the invite URL to join the bot a discord guild.
+Invite_URL: '`https://discordapp.com/oauth2/authorize?scope=bot&client_id=012345678912345678&permissions=3234880`'
