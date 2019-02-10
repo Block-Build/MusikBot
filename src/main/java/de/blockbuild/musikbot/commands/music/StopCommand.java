@@ -1,12 +1,12 @@
-package de.blockbuild.musikbot.commands.connection;
+package de.blockbuild.musikbot.commands.music;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.ConnectionCommand;
+import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-public class StopCommand extends ConnectionCommand {
+public class StopCommand extends MusicCommand {
 
 	public StopCommand(Bot bot) {
 		super(bot);
