@@ -63,11 +63,8 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class Bot {
-	public final static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
-			Permission.MESSAGE_EMBED_LINKS, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
-	public final static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
+	public final static Permission[] BASIC_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
+			Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
 			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
@@ -133,7 +130,7 @@ public class Bot {
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		String inviteURL = jda.asBot().getInviteUrl(Bot.BASIC_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
 

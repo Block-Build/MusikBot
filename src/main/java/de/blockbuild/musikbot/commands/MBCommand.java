@@ -45,7 +45,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 	}
 
 	private Permission[] RECOMMENDED_PERMS() {
-		return Bot.RECOMMENDED_PERMS;
+		return Bot.BASIC_PERMS;
 	}
 
 	@Override
