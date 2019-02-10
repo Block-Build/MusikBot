@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.Role;
 public class GuildConfiguration extends ConfigurationManager {
 	private final GuildMusicManager musicManager;
 	private String guildName;
-	private int volume;
+	private int volume, messageDeleteDelay;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
 	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles;
@@ -44,6 +44,7 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			config.set("Guild_Name", this.guildName);
 			config.set("Volume", this.volume);
+			config.set("Delete_Command_Massages_Delay", this.messageDeleteDelay);
 			config.set("Whitelist_Enabled", this.useWhitelist);
 			config.set("Whitelist", this.whitelist);
 			config.set("Blacklist", this.blacklist);
@@ -75,6 +76,7 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			config.addDefault("Guild_Name", this.guildName);
 			config.addDefault("Volume", 100);
+			config.addDefault("Delete_Command_Massages_Delay", 0);
 			config.addDefault("Whitelist_Enabled", "");
 			config.addDefault("Whitelist", null);
 			config.addDefault("Blacklist", null);
@@ -103,6 +105,7 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
 					: 100;
+			this.messageDeleteDelay = config.getInt("Delete_Command_Massages_Delay");
 			this.useWhitelist = config.getBoolean("Whitelist_Enabled");
 			this.whitelist = config.getLongList("Whitelist");
 			this.blacklist = config.getLongList("Blacklist");
@@ -125,6 +128,10 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	private void initConfig() {
 		musicManager.getAudioPlayer().setVolume(this.volume);
+
+		if (messageDeleteDelay < 0) {
+			messageDeleteDelay = 0;
+		}
 
 		if (isAutoConnectEnabled() && getAutoConnectVoiceChannelId() == 0L)
 			setAutoConnectEnabled(false);
@@ -290,5 +297,9 @@ public class GuildConfiguration extends ConfigurationManager {
 			return null;
 		}
 		return r.get(0);
+	}
+
+	public int getMessageDeleteDelay() {
+		return messageDeleteDelay;
 	}
 }

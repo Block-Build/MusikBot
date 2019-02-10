@@ -1,5 +1,7 @@
 package de.blockbuild.musikbot.commands;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
@@ -11,6 +13,8 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -81,6 +85,10 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		selfChannel = selfMember.getVoiceState().getChannel();
 		musicManager = bot.getGuildAudioPlayer(guild);
 
+		if (musicManager.config.getMessageDeleteDelay() > 0) {
+			deleteMessageLater(event.getChannel(), event.getMessage(), musicManager.config.getMessageDeleteDelay());
+		}
+
 		if (musicManager.config.isDefaultTextChannelEnabled()) {
 			if (!(textChannel.getIdLong() == musicManager.config.getDefaultTextChannel())
 					&& !(musicManager.config.getDefaultTextChannel() == 0L)) {
@@ -112,6 +120,12 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected void deleteMessageLater(MessageChannel channel, Message message, int delay) {
+		Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+			message.delete().queue();
+		}, delay, TimeUnit.MINUTES);
 	}
 
 	public Long getLong(String string, CommandEvent event) {
