@@ -24,6 +24,11 @@ public class ResumeCommand extends MusicCommand {
 
 		AudioPlayer player = musicManager.getAudioPlayer();
 		player.setPaused(false);
+
+		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+		builder.append(" Playback resumed.");
+		event.reply(builder.toString());
+
 		// event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
 		// event.getJDA().getPresence().setGame(Game.of(GameType.LISTENING,
 		// player.getPlayingTrack().getInfo().title));

@@ -19,6 +19,11 @@ public class PauseCommand extends MusicCommand {
 		AudioPlayer player = musicManager.getAudioPlayer();
 		if (!(player.getPlayingTrack() == null)) {
 			player.setPaused(true);
+
+			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
+			builder.append(" Playback paused.");
+			event.reply(builder.toString());
+
 			// event.getJDA().getPresence().setStatus(OnlineStatus.IDLE);
 			// event.getJDA().getPresence().setGame(Game.of(GameType.DEFAULT, "Paused! |
 			// Type '!Resume'"));
