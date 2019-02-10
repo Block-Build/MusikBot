@@ -1,10 +1,12 @@
 package de.blockbuild.musikbot;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 
@@ -77,6 +79,16 @@ public class Bot {
 		musicManagers = new HashMap<>();
 		playerManager = new DefaultAudioPlayerManager();
 		config = new BotConfiguration(this);
+
+		try {
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
+					new File(main.getDataFolder(), "Sample_BotConfig.yml"));
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
+					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
+		} catch (IOException e) {
+			System.err.println("[" + main.getName() + "] Can't write Sample_Configs.");
+			e.printStackTrace();
+		}
 
 		if (start()) {
 			initListeners();

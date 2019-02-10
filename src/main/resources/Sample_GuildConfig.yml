@@ -1,0 +1,75 @@
+# MusikBot by Block-Build
+# +=====================+
+# | GUILD CONFIGURATION |
+# +=====================+
+
+# The name of the guild
+Guild_Name: Guild_Name
+
+# Sound volume of the bot from 1 to 100.
+Volume: 100
+
+# The delay/time in Minutes after the command and bot responce get deleted.
+# The bot needs the 'Message_Manage' permission.
+# Set to 0 to disable.
+Delete_Command_Massages_Delay: 0
+
+# Enable or disable whitelist
+Whitelist_Enabled: false
+
+# List of whitelistet guild member
+# Example: 
+# Whitelist:
+#   - 0123456789012345678
+#   - 1234567890123456789
+Whitelist: []
+
+# List of blacklisted guild member
+# Example: 
+# Blacklist:
+#   - 0123456789012345678
+#   - 1234567890123456789
+Blacklist: []
+
+# Discord role you need to use the category of commands
+# If "Music_Commands:" is set to '' or '@everyone' everyone is able to use music commands
+# If "Music_Commands:" is set to 'dj' only member with a role called "dj" are able to use this commands
+# Example Music_Commands: 'dj'
+Command_Permission_Roles:
+  Music_Commands: ''
+  Radio_Commands: ''
+  Connection_Commands: ''
+  Setup_Commands: ''
+
+# Sould the bot disconnect automaticly if it is the last member in a channel?
+Auto_Disconnect_If_Alone: false
+
+# Sould the bot disconnect automaticly if the last track is finished?
+Auto_Disconnect_After_Last_Track: false
+
+# Should the bot automaticly join the guild after startup?
+Auto_Connect_On_Startup:
+# Enable or disable
+  Enabled: false
+# The ID of the VoiceChannel the bot sould join.
+# Example: 259798211111726208
+  VoiceChannelId: 0
+# Should the bot start a track after join?
+# Insert an URL.
+  Track: ''
+
+# A specific TextChannel the bot only listen to.
+Default_TextChannel:
+# Enable or disable
+  Enabled: false
+# The ID of the TextChannel
+# Example: 259798211111726208
+  TextChannelId: 0
+
+# A specific VoiceChannel the bot only listen to.
+Default_VoiceChannel:
+# Enable or disable
+  Enabled: false
+# The ID of the VoiceChannel
+# Example: 259798211111726208
+  VoiceChannelId: 0
