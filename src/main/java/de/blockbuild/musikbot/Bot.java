@@ -125,7 +125,9 @@ public class Bot {
 		}
 
 		try {
-			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue(unused -> {
+			}, ignored -> {
+			});
 		} catch (IOException e) {
 			System.err.println(e);
 		}
