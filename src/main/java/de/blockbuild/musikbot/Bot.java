@@ -44,6 +44,7 @@ import de.blockbuild.musikbot.commands.setup.BlacklistCommand;
 import de.blockbuild.musikbot.commands.setup.ConfigCommand;
 import de.blockbuild.musikbot.commands.setup.DefaultTextChannelCommand;
 import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
+import de.blockbuild.musikbot.commands.setup.ReloadCommand;
 import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
@@ -223,6 +224,7 @@ public class Bot {
 				new DefaultTextChannelCommand(this),
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
+				new ReloadCommand(this),
 				new VersionCommand(this));
 
 		jda.addEventListener(ccb.build());
