@@ -19,10 +19,10 @@ import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.connection.JoinCommand;
 import de.blockbuild.musikbot.commands.connection.PingCommand;
 import de.blockbuild.musikbot.commands.connection.QuitCommand;
+import de.blockbuild.musikbot.commands.general.InfoCommand;
 import de.blockbuild.musikbot.commands.general.VersionCommand;
 import de.blockbuild.musikbot.commands.music.ChooseCommand;
 import de.blockbuild.musikbot.commands.music.FlushQueue;
-import de.blockbuild.musikbot.commands.music.InfoCommand;
 import de.blockbuild.musikbot.commands.music.NextCommand;
 import de.blockbuild.musikbot.commands.music.PauseCommand;
 import de.blockbuild.musikbot.commands.music.PlayCommand;
@@ -225,11 +225,14 @@ public class Bot {
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
 				new YTAutoPlayCommand(this),
-				new VolumeCommand(this),
-				new InfoCommand(this),  
+				new VolumeCommand(this), 
 				new PauseCommand(this),
 				new ResumeCommand(this),
 				new StopCommand(this), 
+				
+				//General
+				new InfoCommand(this),
+				new VersionCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
@@ -250,8 +253,7 @@ public class Bot {
 				new DefaultTextChannelCommand(this),
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
-				new ReloadCommand(this),
-				new VersionCommand(this));
+				new ReloadCommand(this));
 
 		jda.addEventListener(ccb.build());
 	}
