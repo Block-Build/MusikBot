@@ -124,7 +124,9 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 
 	protected void deleteMessageLater(MessageChannel channel, Message message, int delay) {
 		Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-			message.delete().queue();
+			message.delete().queue(unused -> {
+			}, ignored -> {
+			});
 		}, delay, TimeUnit.MINUTES);
 	}
 
