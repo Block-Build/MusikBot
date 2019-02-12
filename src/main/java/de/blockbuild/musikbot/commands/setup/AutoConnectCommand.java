@@ -12,7 +12,6 @@ public class AutoConnectCommand extends SetupCommand {
 		this.name = "autoconnect";
 		this.help = "set's auto connect option's in config";
 		this.arguments = "<enable|disable|channel|track> [voicechannelid|URL|clear]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

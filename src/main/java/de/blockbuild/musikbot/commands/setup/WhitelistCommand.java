@@ -12,7 +12,6 @@ public class WhitelistCommand extends SetupCommand {
 		this.name = "whitelist";
 		this.help = "edits the whitelist";
 		this.arguments = "<add|remove|clear|list|enable|disable> [UserID]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

@@ -13,7 +13,6 @@ public class ConfigCommand extends SetupCommand {
 		this.aliases = new String[] { "cfg" };
 		this.help = "To load, save or show the Config";
 		this.arguments = "<save|load|show>";
-		this.joinOnCommand = false;
 	}
 
 	@Override

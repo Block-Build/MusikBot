@@ -12,7 +12,6 @@ public class BlacklistCommand extends SetupCommand {
 		this.name = "blacklist";
 		this.help = "edits the blocked users list";
 		this.arguments = "<add|remove|clear|list> [UserID]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

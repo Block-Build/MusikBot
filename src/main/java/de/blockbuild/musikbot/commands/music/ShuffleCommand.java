@@ -12,7 +12,6 @@ public class ShuffleCommand extends MusicCommand {
 		super(bot);
 		this.name = "shuffle";
 		this.help = "Shuffles the playlist";
-		this.joinOnCommand = false;
 	}
 
 	@Override

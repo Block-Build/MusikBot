@@ -12,7 +12,6 @@ public class DefaultVoiceChannelCommand extends SetupCommand {
 		this.name = "defaultvoicechannel";
 		this.help = "set's the `Default_VoiceChannel` option's in config";
 		this.arguments = "<enable|disable|channel> [textchannelid|clear]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

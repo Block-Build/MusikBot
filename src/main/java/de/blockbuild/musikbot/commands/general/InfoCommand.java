@@ -16,7 +16,6 @@ public class InfoCommand extends MBCommand {
 		this.name = "info";
 		this.aliases = new String[] { "i" };
 		this.help = "Info of the current Track.";
-		this.joinOnCommand = false;
 	}
 
 	@Override
