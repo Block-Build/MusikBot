@@ -12,7 +12,6 @@ public class AutoDisconnectCommand extends SetupCommand {
 		this.name = "autodisconnect";
 		this.help = "set's auto disconnect option in config";
 		this.arguments = "<alone|trackend> <enable|disable>";
-		this.joinOnCommand = false;
 	}
 
 	@Override

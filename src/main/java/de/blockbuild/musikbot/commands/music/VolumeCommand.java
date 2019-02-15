@@ -13,7 +13,6 @@ public class VolumeCommand extends MusicCommand {
 		this.aliases = new String[] { "vol", "v" };
 		this.help = "Changes the volume.";
 		this.arguments = "[0-100]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package de.blockbuild.musikbot;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -23,6 +24,12 @@ public class Main extends JavaPlugin {
 		if (bot != null) {
 			bot.stop();
 		}
+	}
+
+	public void reload() {
+		Plugin plugin = this.getServer().getPluginManager().getPlugin(this.getName());
+		this.getServer().getPluginManager().disablePlugin(plugin);
+		this.getServer().getPluginManager().enablePlugin(plugin);
 	}
 
 	private void start() {

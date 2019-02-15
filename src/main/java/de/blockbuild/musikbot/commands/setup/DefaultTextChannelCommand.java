@@ -12,7 +12,6 @@ public class DefaultTextChannelCommand extends SetupCommand {
 		this.name = "defaulttextchannel";
 		this.help = "set's the `Default_TextChannel` option's in config";
 		this.arguments = "<enable|disable|channel> [textchannelid|clear]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

@@ -13,7 +13,6 @@ public class ConfigCommand extends SetupCommand {
 		this.aliases = new String[] { "cfg" };
 		this.help = "To load, save or show the Config";
 		this.arguments = "<save|load|show>";
-		this.joinOnCommand = false;
 	}
 
 	@Override
@@ -22,14 +21,18 @@ public class ConfigCommand extends SetupCommand {
 		if (args.startsWith("save")) {
 			if (musicManager.config.writeConfig()) {
 				builder.append(event.getClient().getSuccess()).append(" Config saved successfully");
+				event.reply(builder.toString());
 			} else {
 				builder.append(event.getClient().getError()).append(" Faild to save config");
+				event.reply(builder.toString());
 			}
 		} else if (args.startsWith("load")) {
 			if (musicManager.config.readConfig()) {
 				builder.append(event.getClient().getSuccess()).append(" Config load successfully");
+				event.reply(builder.toString());
 			} else {
 				builder.append(event.getClient().getError()).append(" Faild to load config");
+				event.reply(builder.toString());
 			}
 		} else if (args.startsWith("show")) {
 			builder.append(event.getClient().getSuccess()).append(" ");
@@ -41,10 +44,10 @@ public class ConfigCommand extends SetupCommand {
 
 			builder.append("**Guild Configuration**").append("\n");
 			builder.append(musicManager.config.getRawConfiguration()).append("\n");
+			event.replyInDm(builder.toString());
 		} else {
 			sendCommandInfo(event);
 		}
-		event.replyInDm(builder.toString());
 	}
 
 	@Override

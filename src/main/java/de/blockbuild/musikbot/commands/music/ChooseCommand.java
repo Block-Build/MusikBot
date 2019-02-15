@@ -15,7 +15,6 @@ public class ChooseCommand extends MusicCommand {
 		this.aliases = new String[] { "c", "cho" };
 		this.help = "Chosse one of fife search results";
 		this.arguments = "<1-5>";
-		this.joinOnCommand = false;
 	}
 
 	@Override

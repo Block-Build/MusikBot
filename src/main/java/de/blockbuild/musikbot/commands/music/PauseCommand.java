@@ -11,7 +11,6 @@ public class PauseCommand extends MusicCommand {
 		super(bot);
 		this.name = "pause";
 		this.help = "Pause playback.";
-		this.joinOnCommand = false;
 	}
 
 	@Override

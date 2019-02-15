@@ -14,7 +14,6 @@ public class FlushQueue extends MusicCommand {
 		this.aliases = new String[] { "f", "fl" };
 		this.help = "Clears the queue";
 		this.arguments = "[Amount]";
-		this.joinOnCommand = false;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.commands.music;
+package de.blockbuild.musikbot.commands.general;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,16 +7,15 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.MusicCommand;
+import de.blockbuild.musikbot.commands.MBCommand;
 
-public class InfoCommand extends MusicCommand {
+public class InfoCommand extends MBCommand {
 
 	public InfoCommand(Bot bot) {
 		super(bot);
 		this.name = "info";
 		this.aliases = new String[] { "i" };
 		this.help = "Info of the current Track.";
-		this.joinOnCommand = false;
 	}
 
 	@Override

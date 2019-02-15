@@ -9,7 +9,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-
+import com.jagrosh.jdautilities.command.Command.Category;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -19,10 +19,10 @@ import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.connection.JoinCommand;
 import de.blockbuild.musikbot.commands.connection.PingCommand;
 import de.blockbuild.musikbot.commands.connection.QuitCommand;
+import de.blockbuild.musikbot.commands.general.InfoCommand;
 import de.blockbuild.musikbot.commands.general.VersionCommand;
 import de.blockbuild.musikbot.commands.music.ChooseCommand;
 import de.blockbuild.musikbot.commands.music.FlushQueue;
-import de.blockbuild.musikbot.commands.music.InfoCommand;
 import de.blockbuild.musikbot.commands.music.NextCommand;
 import de.blockbuild.musikbot.commands.music.PauseCommand;
 import de.blockbuild.musikbot.commands.music.PlayCommand;
@@ -44,6 +44,7 @@ import de.blockbuild.musikbot.commands.setup.BlacklistCommand;
 import de.blockbuild.musikbot.commands.setup.ConfigCommand;
 import de.blockbuild.musikbot.commands.setup.DefaultTextChannelCommand;
 import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
+import de.blockbuild.musikbot.commands.setup.ReloadCommand;
 import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
@@ -53,6 +54,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
@@ -125,7 +127,9 @@ public class Bot {
 		}
 
 		try {
-			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue(unused -> {
+			}, ignored -> {
+			});
 		} catch (IOException e) {
 			System.err.println(e);
 		}
@@ -181,6 +185,33 @@ public class Bot {
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
+		ccb.setHelpConsumer((event) -> {
+			// Slightly changed default helpConsumer from JDA-Utilities.
+			StringBuilder builder = new StringBuilder("**" + event.getSelfUser().getName() + "** commands:\n");
+			Category category = null;
+			for (Command command : event.getClient().getCommands()) {
+				if (!command.isHidden() && (!command.isOwnerCommand() || event.isOwner())) {
+					if (category == null || !(category.getName() == command.getCategory().getName())) {
+						category = command.getCategory();
+						builder.append("\n\n  __").append(category == null ? "No Category" : category.getName())
+								.append("__:\n");
+					}
+					builder.append("\n`").append(event.getClient().getPrefix())
+							.append(event.getClient().getPrefix() == null ? " " : "").append(command.getName())
+							.append(command.getArguments() == null ? "`" : " " + command.getArguments() + "`")
+							.append(" - ").append(command.getHelp());
+				}
+			}
+			User owner = event.getJDA().getUserById(event.getClient().getOwnerIdLong());
+			if (owner != null) {
+				builder.append("\n\nFor additional help, contact **").append(owner.getName()).append("**#")
+						.append(owner.getDiscriminator());
+			}
+			event.replyInDm(builder.toString(), unused -> {
+				if (event.isFromType(ChannelType.TEXT))
+					event.reactSuccess();
+			}, t -> event.replyWarning("Help cannot be sent because you are blocking Direct Messages."));
+		});
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
 		ccb.setLinkedCacheSize(100);
@@ -195,6 +226,14 @@ public class Bot {
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
 				new YTAutoPlayCommand(this),
+				new VolumeCommand(this), 
+				new PauseCommand(this),
+				new ResumeCommand(this),
+				new StopCommand(this), 
+				
+				//General
+				new InfoCommand(this),
+				new VersionCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
@@ -202,15 +241,9 @@ public class Bot {
 				new RadioBobCommand(this),
 				new RadioMnmCommand(this),
 				
-				new VolumeCommand(this),
-				new InfoCommand(this),  
-				new PauseCommand(this),
-				new ResumeCommand(this),
-				
 				//Connection
 				new JoinCommand(this), 
 				new QuitCommand(this),
-				new StopCommand(this), 
 				new PingCommand(this),
 				
 				//Setup
@@ -221,7 +254,7 @@ public class Bot {
 				new DefaultTextChannelCommand(this),
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
-				new VersionCommand(this));
+				new ReloadCommand(this));
 
 		jda.addEventListener(ccb.build());
 	}
