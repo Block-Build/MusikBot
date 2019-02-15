@@ -8,12 +8,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
 	private Bot bot;
+	Metrics metrics;
 
 	@Override
 	public void onEnable() {
 		try {
 			start();
-			new Metrics(this);
+			metrics = new Metrics(this);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
