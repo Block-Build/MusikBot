@@ -186,6 +186,7 @@ public class Bot {
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
 		ccb.setHelpConsumer((event) -> {
+			// Slightly changed default helpConsumer from JDA-Utilities.
 			StringBuilder builder = new StringBuilder("**" + event.getSelfUser().getName() + "** commands:\n");
 			Category category = null;
 			for (Command command : event.getClient().getCommands()) {

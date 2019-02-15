@@ -11,7 +11,6 @@ public class VersionCommand extends MBCommand {
 		super(bot);
 		this.name = "version";
 		this.help = "MusikBot version.";
-		this.category = GENERAL;
 	}
 
 	@Override
