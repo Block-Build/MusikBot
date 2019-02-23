@@ -26,26 +26,36 @@ public class PurgeCommand extends SetupCommand {
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
 		event.reply(event.getClient().getWarning() + " Deleting messages...", m -> {
-			textChannel.getHistoryBefore(m, 100).queue(messageHistory -> {
-				List<Message> list = messageHistory.getRetrievedHistory().stream()
-						.filter(message -> !message.isPinned()
-								&& !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2)))
-						.collect(Collectors.toList());
+			System.out.println(1);
+			textChannel.getHistory().retrievePast(100).queue(messages -> {
 
-				textChannel.deleteMessages(list).queue(success -> {
-					m.editMessage(event.getClient().getSuccess() + " Finished deleting.").queueAfter(15,
-							TimeUnit.SECONDS, message -> message.delete().queue());
-					;
-				}, error -> {
-					if (error instanceof PermissionException) {
-						textChannel.sendMessage(event.getClient().getError() + " Missing permission: "
-								+ ((PermissionException) error).getPermission().getName());
-					} else {
-						textChannel.sendMessage(
-								event.getClient().getError() + " Error on deleting messages. See log for details.")
-								.queue();
-					}
+				// textChannel.getHistoryBefore(m, 100).queue(messageHistory -> {
+				System.out.println(2);
+				List<Message> list = messages.stream()
+						// messageHistory.getRetrievedHistory().stream()
+						.filter(message -> !message.isPinned() && !(message.getIdLong() == m.getIdLong()))
+						// !message.getCreationTime().isBefore(OffsetDateTime.now().minusWeeks(2))
+						.collect(Collectors.toList());
+				System.out.println(3);
+
+				RequestFuture.allOf(textChannel.purgeMessages(list)).thenRun(() -> {
+					System.out.println(4);
+					m.editMessage(event.getClient().getSuccess() + " Finished deleting.").queue();
+					System.out.println(5);
+					m.delete().queueAfter(15, TimeUnit.SECONDS);
 				});
+
+				/*
+				 * textChannel.deleteMessages(list).queue(success -> {
+				 * m.editMessage(event.getClient().getSuccess() +
+				 * " Finished deleting.").queueAfter(15, TimeUnit.SECONDS, message ->
+				 * message.delete().queue()); }, error -> { if (error instanceof
+				 * PermissionException) { textChannel.sendMessage(event.getClient().getError() +
+				 * " Missing permission: " + ((PermissionException)
+				 * error).getPermission().getName()); } else { textChannel.sendMessage(
+				 * event.getClient().getError() +
+				 * " Error on deleting messages. See log for details.") .queue(); } });
+				 */
 			});
 
 			/*
@@ -54,8 +64,10 @@ public class PurgeCommand extends SetupCommand {
 			 * message.getAuthor().isBot() ).collect(Collectors.toList()); });
 			 */
 		});
-		List<RequestFuture<Void>> f = textChannel.purgeMessages(textChannel.getHistory().retrievePast(100).complete());
-		RequestFuture.allOf(f).thenRun(() -> System.out.println(""));
+
+		textChannel.getHistory().retrievePast(100).queue(m -> {
+			RequestFuture.allOf(textChannel.purgeMessages(m)).thenRun(() -> System.out.println(""));
+		});
 	}
 
 	@Override
