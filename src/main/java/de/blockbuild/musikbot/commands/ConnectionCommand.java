@@ -13,7 +13,7 @@ public abstract class ConnectionCommand extends MBCommand {
 				return true;
 			}
 
-			Role connection = bot.getGuildAudioPlayer(event.getGuild()).config.getSetupRole();
+			Role connection = bot.getGuildAudioPlayer(event.getGuild()).config.getConnectionRole();
 
 			if (event.isOwner() || event.getMember().hasPermission(Permission.MANAGE_SERVER) || connection == null
 					|| event.getMember().getRoles().contains(connection)) {
