@@ -1,20 +1,20 @@
 package de.blockbuild.musikbot;
 
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.blockbuild.musikbot.metrics.Metrics;
+
 public class Main extends JavaPlugin {
 
 	private Bot bot;
-	Metrics metrics;
 
 	@Override
 	public void onEnable() {
 		try {
 			start();
-			metrics = new Metrics(this);
+			Metrics metrics = new Metrics(this);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
