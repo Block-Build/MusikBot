@@ -16,7 +16,7 @@ public abstract class MusicCommand extends MBCommand {
 				return true;
 			}
 
-			Role music = bot.getGuildAudioPlayer(event.getGuild()).config.getSetupRole();
+			Role music = bot.getGuildAudioPlayer(event.getGuild()).config.getMusicRole();
 
 			if (event.isOwner() || event.getMember().hasPermission(Permission.MANAGE_SERVER) || music == null
 					|| event.getMember().getRoles().contains(music)) {
