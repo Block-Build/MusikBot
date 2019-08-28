@@ -16,7 +16,7 @@ public abstract class RadioCommand extends MBCommand {
 				return true;
 			}
 
-			Role radio = bot.getGuildAudioPlayer(event.getGuild()).config.getSetupRole();
+			Role radio = bot.getGuildAudioPlayer(event.getGuild()).config.getRadioRole();
 
 			if (event.isOwner() || event.getMember().hasPermission(Permission.MANAGE_SERVER) || radio == null
 					|| event.getMember().getRoles().contains(radio)) {
