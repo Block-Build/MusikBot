@@ -1,10 +1,10 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '1.2.4'}
+    id 'com.github.johnrengelman.shadow' version '4.0.4'}
 
 mainClassName = 'de.blockbuild.musikbot.Main'
-version = '1.1.2a'
+version = '1.1.2a-dev-reaction-menue'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.sedmelluq:lavaplayer:1.3.20'
+    compile 'com.sedmelluq:lavaplayer:1.3.25'
     compile 'com.jagrosh:jda-utilities:2.1.5'
     compile 'net.dv8tion:JDA:3.8.3_464'
     compile 'org.slf4j:slf4j-simple:1.7.25'
