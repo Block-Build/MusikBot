@@ -84,7 +84,6 @@ public class Bot {
 		this.musicManagers = new HashMap<>();
 		this.playerManager = new DefaultAudioPlayerManager();
 		this.config = new BotConfiguration(this);
-		
 
 		try {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
@@ -119,7 +118,7 @@ public class Bot {
 				return false;
 			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
-					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
+					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(waiter).build();
 			jda.awaitReady();
 		} catch (LoginException e) {
 			System.out.println("Invaild bot Token");
@@ -322,7 +321,7 @@ public class Bot {
 	public Main getMain() {
 		return main;
 	}
-	
+
 	public EventWaiter getWaiter() {
 		return waiter;
 	}
