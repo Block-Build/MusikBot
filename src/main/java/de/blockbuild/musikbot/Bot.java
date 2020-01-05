@@ -9,6 +9,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.command.Command.Category;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -71,6 +72,7 @@ public class Bot {
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
+	private final EventWaiter waiter;
 	private JDA jda;
 	public final BotConfiguration config;
 
@@ -78,9 +80,11 @@ public class Bot {
 		System.out.println("[" + main.getName() + "] Get started...");
 
 		this.main = main;
-		musicManagers = new HashMap<>();
-		playerManager = new DefaultAudioPlayerManager();
-		config = new BotConfiguration(this);
+		this.waiter = new EventWaiter();
+		this.musicManagers = new HashMap<>();
+		this.playerManager = new DefaultAudioPlayerManager();
+		this.config = new BotConfiguration(this);
+		
 
 		try {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
@@ -317,6 +321,10 @@ public class Bot {
 
 	public Main getMain() {
 		return main;
+	}
+	
+	public EventWaiter getWaiter() {
+		return waiter;
 	}
 
 	public AudioPlayerManager getPlayerManager() {
