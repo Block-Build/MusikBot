@@ -1,10 +1,12 @@
 package de.blockbuild.musikbot.commands.music;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.menu.ButtonMenu;
+import com.jagrosh.jdautilities.menu.OrderedMenu;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -15,6 +17,10 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.TrackScheduler;
+
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 
 public class PlayCommand extends MusicCommand {
 
@@ -42,27 +48,43 @@ public class PlayCommand extends MusicCommand {
 			if (!event.getMessage().getAttachments().isEmpty()) {
 				if (!event.getMessage().getAttachments().get(0).isImage()) {
 					String TrackURL = event.getMessage().getAttachments().get(0).getUrl();
-					playerManager.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event));
+					String FileName = event.getMessage().getAttachments().get(0).getFileName();
+					event.reply(Emoji.MAG_RIGHT.getUtf8() + " Trying to load **" + FileName + "**", m -> playerManager
+							.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event, m)));
 				}
 			} else if (player.getPlayingTrack() == null) {
-				builder.append(event.getClient().getWarning()).append(" `Queue is empty`");
+				if (trackScheduler.isQueueEmpty()) {
+					builder.append(event.getClient().getWarning()).append(" **Nothing to play at the moment**");
+				} else {
+					// If player don't play but songs are in queue
+					AudioTrack track = trackScheduler.playNextTrack();
+					if (track != null) {
+						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
+							trackScheduler.messagePlayTrack(track, reply);
+						});
+					}
+				}
+
 			} else {
-				builder.append(event.getClient().getSuccess()).append(" Playing: `")
-						.append(player.getPlayingTrack().getInfo().title).append("`. Left time: `")
-						.append(getTime(
+				builder.append(Emoji.MUSICAL_NOTE.getUtf8()).append(" Now playing: **")
+						.append(player.getPlayingTrack().getInfo().title).append("**. Left time: (`")
+						.append(trackScheduler.getTime(
 								player.getPlayingTrack().getDuration() - player.getPlayingTrack().getPosition()))
-						.append("` Minutes.");
+						.append("`) Minutes.");
 			}
 			event.reply(builder.toString());
 		} else {
-			String TrackUrl = args;
-			if (!args.startsWith("http")) {
-				TrackUrl = "ytsearch:" + TrackUrl;
-				isSearch = true;
-			} else {
+			final String TrackUrl;
+			if (args.startsWith("http")) {
 				isSearch = false;
+				TrackUrl = args;
+			} else {
+				isSearch = true;
+				TrackUrl = "ytsearch:" + args;
 			}
-			playerManager.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event));
+
+			event.reply(Emoji.MAG_RIGHT.getUtf8() + " Searching... `" + event.getArgs() + "`", m -> playerManager
+					.loadItemOrdered(musicManager, TrackUrl, new ResultHandler(trackScheduler, event, m)));
 		}
 	}
 
@@ -81,17 +103,15 @@ public class PlayCommand extends MusicCommand {
 		event.reply(builder.toString());
 	}
 
-	private String getTime(long lng) {
-		return (new SimpleDateFormat("mm:ss")).format(new Date(lng));
-	}
-
 	private class ResultHandler implements AudioLoadResultHandler {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
 		private GuildMusicManager musicManager;
+		private final Message m;
 
-		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m) {
+			this.m = m;
 			this.trackScheduler = trackScheduler;
 			this.event = event;
 			this.musicManager = bot.getGuildAudioPlayer(guild);
@@ -99,7 +119,8 @@ public class PlayCommand extends MusicCommand {
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.playTrack(track, event);
+			trackScheduler.messagePlayTrack(track, m);
+			trackScheduler.playTrack(track);
 		}
 
 		@Override
@@ -108,20 +129,73 @@ public class PlayCommand extends MusicCommand {
 				musicManager.tracks = new ArrayList<>();
 
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-				builder.append(" Use `!Choose <1-5>` to choose one of the search results: \n");
-				for (int i = 0; i < 5; i++) {
-					builder.append("`").append(i + 1 + ". ").append(playlist.getTracks().get(i).getInfo().title)
-							.append("`\n");
+				builder.append(" Click the number or type `!Choose <1-5>` to choose one of the search results:");
+
+				final OrderedMenu.Builder bbuilder = new OrderedMenu.Builder().useCancelButton(true)
+						.allowTextInput(true).setEventWaiter(bot.getWaiter()).setTimeout(1, TimeUnit.MINUTES);
+				bbuilder.setText(builder.toString()).setColor(event.getSelfMember().getColor())
+						.setChoices(new String[0]).setSelection((msg, i) -> {
+
+							AudioTrack track = playlist.getTracks().get(i - 1);
+							trackScheduler.playTrack(track);
+							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
+								trackScheduler.messagePlayTrack(track, reply);
+							});
+							musicManager.tracks = null;
+
+						}).setUsers(event.getAuthor());
+
+				for (int i = 0; i < 5 && i < playlist.getTracks().size(); i++) {
+
+					AudioTrack track = playlist.getTracks().get(i);
+
+					bbuilder.addChoice("`[" + trackScheduler.getTime(track.getDuration()) + "]` [**"
+							+ track.getInfo().title + "**](" + track.getInfo().uri + ")");
+
 					musicManager.tracks.add(playlist.getTracks().get(i));
-					musicManager.setIsQueue(false);
 				}
-				event.reply(builder.toString());
+				musicManager.setIsQueue(false);
+				bbuilder.build().display(m);
 			} else {
-				AudioTrack firstTrack = playlist.getSelectedTrack();
-				if (firstTrack == null) {
-					firstTrack = playlist.getTracks().get(0);
+				final AudioTrack firstTrack = playlist.getSelectedTrack() == null ? playlist.getTracks().get(0)
+						: playlist.getSelectedTrack();
+
+				String message = trackScheduler.messagePlayTrack(firstTrack, m);
+				trackScheduler.playTrack(firstTrack);
+
+				if (event.getMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
+
+					StringBuilder builder = new StringBuilder(Emoji.MAG_RIGHT.getUtf8());
+					builder.append(" The track you provided has a playlist of **" + playlist.getTracks().size()
+							+ "** tracks attached. Select " + Emoji.THUMBSUP.getUtf8()
+							+ " to load the whole playlist.");
+
+					new ButtonMenu.Builder().setText(message + "\n" + builder.toString())
+							.setChoices(Emoji.THUMBSUP.getUtf8(), Emoji.THUMBSDOWN.getUtf8())
+							.addUsers(event.getAuthor()).setEventWaiter(bot.getWaiter())
+							.setTimeout(30, TimeUnit.SECONDS).setAction(rem -> {
+
+								if (rem.getName().equals(Emoji.THUMBSUP.getUtf8())) {
+									loadPlaylist(playlist, firstTrack);
+									m.editMessage(message + "\n" + Emoji.WHITE_CHECK_MARK.getUtf8() + " Added **"
+											+ (playlist.getTracks().size() - 1) + "** additional tracks to queue!")
+											.queue();
+								}
+							}).setFinalAction(m -> {
+								try {
+									m.clearReactions().queue();
+								} catch (PermissionException ignore) {
+								}
+							}).build().display(m);
 				}
-				trackScheduler.playTrack(firstTrack, event);
+			}
+		}
+
+		private void loadPlaylist(AudioPlaylist playlist, AudioTrack exclude) {
+			for (AudioTrack track : playlist.getTracks()) {
+				if (!track.equals(exclude)) {
+					trackScheduler.queue(track);
+				}
 			}
 		}
 

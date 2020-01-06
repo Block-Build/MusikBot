@@ -1,13 +1,16 @@
 package de.blockbuild.musikbot.core;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -19,6 +22,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.blockbuild.musikbot.Bot;
 
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 
@@ -38,6 +42,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		this.eyasm = new ExtendYoutubeAudioSourceManager();
 	}
 
+	@Deprecated
 	public void queue(AudioTrack track, CommandEvent event) {
 		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 
@@ -54,6 +59,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
+	public void queue(AudioTrack track) {
+
+		if (!player.startTrack(track, true)) {
+			queue.offer(track);
+		}
+	}
+
+	@Deprecated
 	public void queue(AudioPlaylist playlist, CommandEvent event) {
 		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 		builder.append(" Successfully added: \n");
@@ -73,12 +86,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
+	@Deprecated
 	public void queueSilent(AudioTrack track) {
 		if (!player.startTrack(track, true)) {
 			queue.offer(track);
 		}
 	}
 
+	@Deprecated
 	public void playTrack(AudioTrack track, CommandEvent event) {
 		if (!(event == null)) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
@@ -86,6 +101,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			event.reply(builder.toString());
 		}
 		player.startTrack(track, false);
+	}
+
+	public boolean playTrack(AudioTrack track) {
+		return player.startTrack(track, false);
 	}
 
 	public void nextTrack(CommandEvent event) {
@@ -103,6 +122,16 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			player.startTrack(queue.poll(), false);
 		}
 		event.reply(builder.toString());
+	}
+
+	public AudioTrack playNextTrack() {
+		AudioTrack track = queue.peek();
+		if (track == null) {
+			return null;
+		} else {
+			playTrack(queue.poll());
+			return track;
+		}
 	}
 
 	public void shuffle() {
@@ -184,6 +213,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return queue.peek();
 	}
 
+	public boolean isQueueEmpty() {
+		return queue.isEmpty();
+	}
+
 	public List<AudioTrack> getQueue() {
 		List<AudioTrack> list = new ArrayList<AudioTrack>();
 		for (AudioTrack track : queue) {
@@ -204,5 +237,18 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		for (int i = 0; i < amount; i++) {
 			queue.poll();
 		}
+	}
+
+	// Messages temporary place
+	public final String messagePlayTrack(AudioTrack track, Message m) {
+		StringBuilder builder = new StringBuilder(Emoji.ARROW_FORWARD.getUtf8());
+		builder.append(" Successfully added: **").append(track.getInfo().title).append("**");
+		builder.append(" (`").append(getTime(track.getDuration())).append("`)");
+		m.editMessage(builder.toString()).queue();
+		return builder.toString();
+	}
+
+	public String getTime(long lng) {
+		return (new SimpleDateFormat("mm:ss")).format(new Date(lng));
 	}
 }
