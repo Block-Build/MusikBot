@@ -66,7 +66,7 @@ public class PlayCommand extends MusicCommand {
 				}
 
 			} else {
-				builder.append(Emoji.MUSICAL_NOTE.getUtf8()).append(" Now playing: **")
+				builder.append(Emoji.NOTES.getUtf8()).append(" Now playing: **")
 						.append(player.getPlayingTrack().getInfo().title).append("**. Left time: (`")
 						.append(trackScheduler.getTime(
 								player.getPlayingTrack().getDuration() - player.getPlayingTrack().getPosition()))
@@ -194,7 +194,7 @@ public class PlayCommand extends MusicCommand {
 		private void loadPlaylist(AudioPlaylist playlist, AudioTrack exclude) {
 			for (AudioTrack track : playlist.getTracks()) {
 				if (!track.equals(exclude)) {
-					trackScheduler.queue(track);
+					trackScheduler.queueTrack(track);
 				}
 			}
 		}
@@ -202,14 +202,14 @@ public class PlayCommand extends MusicCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(args);
+			builder.append(" No result found: `").append(args).append("`");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load ").append(args);
+			builder.append(" Faild to load `").append(args).append("`");
 			event.reply(builder.toString());
 		}
 	}

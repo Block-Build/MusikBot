@@ -59,10 +59,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
-	public void queue(AudioTrack track) {
-
+	public int queueTrack(AudioTrack track) {
 		if (!player.startTrack(track, true)) {
 			queue.offer(track);
+			return queue.size();
+		} else {
+			return 0;
 		}
 	}
 
@@ -248,7 +250,20 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return builder.toString();
 	}
 
+	public final String messageQueueTrack(AudioTrack track, Message m, int position) {
+		StringBuilder builder = new StringBuilder(Emoji.PENCIL.getUtf8());
+		builder.append(" Successfully queued: **").append(track.getInfo().title).append("**");
+		builder.append(" (`").append(getTime(track.getDuration())).append("`)");
+		builder.append(" at position **" + position + "**");
+		m.editMessage(builder.toString()).queue();
+		return builder.toString();
+	}
+
 	public String getTime(long lng) {
 		return (new SimpleDateFormat("mm:ss")).format(new Date(lng));
+	}
+
+	public String getTimeBig(long lng) {
+		return (new SimpleDateFormat("hh:mm:ss")).format(new Date(lng));
 	}
 }
