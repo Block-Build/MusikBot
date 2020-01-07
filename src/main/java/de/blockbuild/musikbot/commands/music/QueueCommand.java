@@ -63,9 +63,9 @@ public class QueueCommand extends MusicCommand {
 					long time = 0;
 
 					Paginator.Builder pbuilder = new Paginator.Builder().setEventWaiter(bot.getWaiter())
-							.setColor(event.getSelfMember().getColor()).setItemsPerPage(15)
-							.setTimeout(2, TimeUnit.MINUTES).setItems(new String[0]).showPageNumbers(true)
-							.useNumberedItems(true);
+							.setColor(event.getSelfMember().getColor()).setItemsPerPage(15).waitOnSinglePage(true)
+							.wrapPageEnds(true).setTimeout(2, TimeUnit.MINUTES).setItems(new String[0])
+							.showPageNumbers(true).useNumberedItems(true);
 
 					for (AudioTrack track : tracks) {
 						pbuilder.addItems("`[" + trackScheduler.getTime(track.getDuration()) + "]` [**"
