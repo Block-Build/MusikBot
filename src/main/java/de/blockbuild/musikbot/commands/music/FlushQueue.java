@@ -1,6 +1,8 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
@@ -31,21 +33,22 @@ public class FlushQueue extends MusicCommand {
 			} catch (Exception e) {
 				// no integer
 			} finally {
+				StringBuilder builder = new StringBuilder();
 				if (i > 0) {
 					trackScheduler.flushQueue(i);
-					StringBuilder builder = new StringBuilder();
-					builder.append(event.getClient().getSuccess()).append(" ").append(i).append(" tracks got flushed!");
+					builder.append(event.getClient().getSuccess()).append(" **").append(i)
+							.append("** Tracks got flushed!");
 					if (!(trackScheduler.getNextTrack() == null)) {
-						builder.append("\nNext track: `").append(trackScheduler.getNextTrack().getInfo().title)
-								.append("`");
+						AudioTrack track = trackScheduler.getNextTrack();
+						builder.append("\n").append(Emoji.NOTES.getUtf8()).append(" Next Track: **")
+								.append(track.getInfo().title).append("**");
+						builder.append(" (`").append(trackScheduler.getTime(track.getDuration())).append("`)");
 					}
-					event.reply(builder.toString());
 				} else {
-					StringBuilder builder = new StringBuilder();
-					builder.append(event.getClient().getError()).append(" `").append(args)
-							.append("` isn't a vaild Number.");
-					event.reply(builder.toString());
+					builder.append(event.getClient().getError()).append(" **").append(args)
+							.append("** isn't a vaild Number!");
 				}
+				event.reply(builder.toString());
 			}
 		}
 	}
