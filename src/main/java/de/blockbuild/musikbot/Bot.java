@@ -22,7 +22,6 @@ import de.blockbuild.musikbot.commands.connection.PingCommand;
 import de.blockbuild.musikbot.commands.connection.QuitCommand;
 import de.blockbuild.musikbot.commands.general.InfoCommand;
 import de.blockbuild.musikbot.commands.general.VersionCommand;
-import de.blockbuild.musikbot.commands.music.ChooseCommand;
 import de.blockbuild.musikbot.commands.music.FlushQueue;
 import de.blockbuild.musikbot.commands.music.NextCommand;
 import de.blockbuild.musikbot.commands.music.PauseCommand;
@@ -224,7 +223,6 @@ public class Bot {
 				new QueueCommand(this),
 				new NextCommand(this), 
 				new SkipCommand(this),
-				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),

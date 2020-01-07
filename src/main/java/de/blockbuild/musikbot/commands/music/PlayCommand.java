@@ -1,6 +1,5 @@
 package de.blockbuild.musikbot.commands.music;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.github.breadmoirai.discordemoji.Emoji;
@@ -15,7 +14,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
-import de.blockbuild.musikbot.core.GuildMusicManager;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 import net.dv8tion.jda.core.Permission;
@@ -107,14 +105,12 @@ public class PlayCommand extends MusicCommand {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
-		private GuildMusicManager musicManager;
 		private final Message m;
 
 		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m) {
 			this.m = m;
 			this.trackScheduler = trackScheduler;
 			this.event = event;
-			this.musicManager = bot.getGuildAudioPlayer(guild);
 		}
 
 		@Override
@@ -126,10 +122,8 @@ public class PlayCommand extends MusicCommand {
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
 			if (isSearch) {
-				musicManager.tracks = new ArrayList<>();
-
 				StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-				builder.append(" Click the number or type `!Choose <1-5>` to choose one of the search results:");
+				builder.append(" Click the number or type in chat to choose one of the search results:");
 
 				final OrderedMenu.Builder bbuilder = new OrderedMenu.Builder().useCancelButton(true)
 						.allowTextInput(true).setEventWaiter(bot.getWaiter()).setTimeout(1, TimeUnit.MINUTES);
@@ -141,8 +135,6 @@ public class PlayCommand extends MusicCommand {
 							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
 								trackScheduler.messagePlayTrack(track, reply);
 							});
-							musicManager.tracks = null;
-
 						}).setUsers(event.getAuthor());
 
 				for (int i = 0; i < 5 && i < playlist.getTracks().size(); i++) {
@@ -151,10 +143,7 @@ public class PlayCommand extends MusicCommand {
 
 					bbuilder.addChoice("`[" + trackScheduler.getTime(track.getDuration()) + "]` [**"
 							+ track.getInfo().title + "**](" + track.getInfo().uri + ")");
-
-					musicManager.tracks.add(playlist.getTracks().get(i));
 				}
-				musicManager.setIsQueue(false);
 				bbuilder.build().display(m);
 			} else {
 				final AudioTrack firstTrack = playlist.getSelectedTrack() == null ? playlist.getTracks().get(0)
