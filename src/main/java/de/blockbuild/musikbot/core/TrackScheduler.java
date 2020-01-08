@@ -259,6 +259,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return builder.toString();
 	}
 
+	public final String messageNowPlayingTrack(AudioTrack track, Message m) {
+		StringBuilder builder = new StringBuilder(Emoji.NOTES.getUtf8());
+		builder.append(" Now playing: **").append(track.getInfo().title).append("**. Left time: (`");
+		builder.append(getTime(track.getDuration() - track.getPosition())).append("`) Minutes.");
+		m.editMessage(builder.toString()).queue();
+		return builder.toString();
+	}
+
 	public String getTime(long lng) {
 		return (new SimpleDateFormat("mm:ss")).format(new Date(lng));
 	}

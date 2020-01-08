@@ -56,23 +56,15 @@ public class PlayCommand extends MusicCommand {
 					event.reply(builder.toString());
 				} else {
 					// If player don't play but songs are in queue
-					AudioTrack track = trackScheduler.playNextTrack();
-					if (track != null) {
-						builder.append(Emoji.NOTES.getUtf8()).append(" Now playing: **")
-								.append(player.getPlayingTrack().getInfo().title).append("**. Left time: (`")
-								.append(trackScheduler.getTime(player.getPlayingTrack().getDuration()
-										- player.getPlayingTrack().getPosition()))
-								.append("`) Minutes.");
-						event.reply(builder.toString());
+					// Could show the wrong track if the next song fail to load
+					if (trackScheduler.playNextTrack() != null) {
+						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
+								m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m));
 					}
 				}
 			} else {
-				builder.append(Emoji.NOTES.getUtf8()).append(" Now playing: **")
-						.append(player.getPlayingTrack().getInfo().title).append("**. Left time: (`")
-						.append(trackScheduler.getTime(
-								player.getPlayingTrack().getDuration() - player.getPlayingTrack().getPosition()))
-						.append("`) Minutes.");
-				event.reply(builder.toString());
+				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
+						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m));
 			}
 		} else {
 			final String TrackUrl;
