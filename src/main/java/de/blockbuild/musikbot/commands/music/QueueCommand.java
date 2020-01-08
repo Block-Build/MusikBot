@@ -54,7 +54,7 @@ public class QueueCommand extends MusicCommand {
 			} else {
 				if (trackScheduler.isQueueEmpty()) {
 					// If the queue is empty
-					event.reply(Emoji.NOTEPAD_SPIRAL.getUtf8() + " **Queued tracks:**\n`No Tracks Queued!`");
+					event.reply(Emoji.NOTEPAD_SPIRAL.getUtf8() + " **Queued tracks:**\n`No tracks Queued!`");
 				} else {
 					// List queued Tracks
 					List<AudioTrack> tracks = trackScheduler.getQueue();
