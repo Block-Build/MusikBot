@@ -1,6 +1,8 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
@@ -12,19 +14,20 @@ public class NextCommand extends MusicCommand {
 		super(bot);
 		this.name = "next";
 		this.aliases = new String[] { "n" };
-		this.help = "Returns the next tracks title.";
+		this.help = "Returns the next title of the next track.";
 		this.joinOnCommand = true;
 	}
 
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = bot.getGuildAudioPlayer(guild).getTrackScheduler();
+		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		StringBuilder builder = new StringBuilder();
 		if (trackScheduler.getNextTrack() == null) {
-			builder.append(event.getClient().getWarning()).append(" Queue is empty");
+			builder.append(event.getClient().getWarning()).append(" The queue is empty!");
 		} else {
-			builder.append(event.getClient().getSuccess()).append(" Next track: `")
-					.append(trackScheduler.getNextTrack().getInfo().title).append("`");
+			AudioTrack track = trackScheduler.getNextTrack();
+			builder.append(Emoji.NOTES.getUtf8()).append(" Next track: **").append(track.getInfo().title).append("**");
+			builder.append(" (`").append(trackScheduler.getTime(track.getDuration())).append("`)");
 		}
 		event.reply(builder.toString());
 	}
