@@ -41,8 +41,6 @@ public class PlayCommand extends MusicCommand {
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
 		if (args.isEmpty()) {
-			StringBuilder builder = new StringBuilder();
-
 			if (!event.getMessage().getAttachments().isEmpty()) {
 				if (!event.getMessage().getAttachments().get(0).isImage()) {
 					String TrackURL = event.getMessage().getAttachments().get(0).getUrl();
@@ -51,16 +49,13 @@ public class PlayCommand extends MusicCommand {
 							.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event, m)));
 				}
 			} else if (player.getPlayingTrack() == null) {
-				if (trackScheduler.isQueueEmpty()) {
-					builder.append(event.getClient().getWarning()).append(" **Nothing to play at the moment**");
-					event.reply(builder.toString());
-				} else {
+				if (trackScheduler.playNextTrack(null)) {
 					// If player don't play but songs are in queue
 					// Could show the wrong track if the next song fail to load
-					if (trackScheduler.playNextTrack() != null) {
-						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-					}
+					event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
 							m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+				} else {
+					event.reply(event.getClient().getWarning() + " **Nothing to play at the moment!**");
 				}
 			} else {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
@@ -110,7 +105,7 @@ public class PlayCommand extends MusicCommand {
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.messagePlayTrack(track, m);
+			trackScheduler.messageAddTrack(track, m);
 			trackScheduler.playTrack(track);
 		}
 
@@ -128,7 +123,7 @@ public class PlayCommand extends MusicCommand {
 							AudioTrack track = playlist.getTracks().get(i - 1);
 							trackScheduler.playTrack(track);
 							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
-								trackScheduler.messagePlayTrack(track, reply);
+								trackScheduler.messageAddTrack(track, reply);
 							});
 						}).setUsers(event.getAuthor());
 
@@ -144,7 +139,7 @@ public class PlayCommand extends MusicCommand {
 				final AudioTrack firstTrack = playlist.getSelectedTrack() == null ? playlist.getTracks().get(0)
 						: playlist.getSelectedTrack();
 
-				String message = trackScheduler.messagePlayTrack(firstTrack, m);
+				String message = trackScheduler.messageAddTrack(firstTrack, m);
 				trackScheduler.playTrack(firstTrack);
 
 				if (event.getMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {

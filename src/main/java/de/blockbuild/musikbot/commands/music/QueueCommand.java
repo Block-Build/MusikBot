@@ -125,7 +125,7 @@ public class QueueCommand extends MusicCommand {
 		public void trackLoaded(AudioTrack track) {
 			int pos = trackScheduler.queueTrack(track);
 			if (pos == 0) {
-				trackScheduler.messagePlayTrack(track, m);
+				trackScheduler.messageAddTrack(track, m);
 			} else {
 				trackScheduler.messageQueueTrack(track, m, pos);
 			}
@@ -146,7 +146,7 @@ public class QueueCommand extends MusicCommand {
 							int pos = trackScheduler.queueTrack(track);
 							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
 								if (pos == 0) {
-									trackScheduler.messagePlayTrack(track, reply);
+									trackScheduler.messageAddTrack(track, reply);
 								} else {
 									trackScheduler.messageQueueTrack(track, reply, pos);
 								}
@@ -166,7 +166,7 @@ public class QueueCommand extends MusicCommand {
 						: playlist.getSelectedTrack();
 
 				int pos = trackScheduler.queueTrack(firstTrack);
-				String message = pos == 0 ? trackScheduler.messagePlayTrack(firstTrack, m)
+				String message = pos == 0 ? trackScheduler.messageAddTrack(firstTrack, m)
 						: trackScheduler.messageQueueTrack(firstTrack, m, pos);
 
 				if (event.getMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {

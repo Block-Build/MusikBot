@@ -234,7 +234,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	// Messages temporary place
-	public final String messagePlayTrack(AudioTrack track, Message m) {
+	public final String messageAddTrack(AudioTrack track, Message m) {
 		StringBuilder builder = new StringBuilder(Emoji.ARROW_FORWARD.getUtf8());
 		builder.append(" Successfully added: **").append(track.getInfo().title).append("**");
 		builder.append(" (`").append(getTime(track.getDuration())).append("`)");
