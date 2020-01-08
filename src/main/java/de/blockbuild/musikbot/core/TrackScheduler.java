@@ -109,30 +109,18 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return player.startTrack(track, false);
 	}
 
-	public void nextTrack(CommandEvent event) {
-		StringBuilder builder = new StringBuilder();
+	public boolean playNextTrack(CommandEvent event) {
 		String url = nextYTAutoPlay(player.getPlayingTrack());
-		if (!(url == null)) {
+		if (!(url == null) && event != null) {
 			bot.getPlayerManager().loadItemOrdered(musicManager, url,
 					new BasicResultHandler(player, event, "Now Playing: `%s`."));
+			return true;
 		} else if (queue.isEmpty()) {
-			builder.append(event.getClient().getWarning()).append(" Queue is empty.");
 			player.stopTrack();
+			return false;
 		} else {
-			builder.append(event.getClient().getSuccess());
-			builder.append(" Now Playing: `").append(queue.peek().getInfo().title).append("`.");
-			player.startTrack(queue.poll(), false);
-		}
-		event.reply(builder.toString());
-	}
-
-	public AudioTrack playNextTrack() {
-		AudioTrack track = queue.peek();
-		if (track == null) {
-			return null;
-		} else {
-			playTrack(queue.poll());
-			return track;
+			player.playTrack(queue.poll());
+			return true;
 		}
 	}
 
@@ -235,10 +223,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		player.playTrack(null);
 	}
 
-	public void flushQueue(int amount) {
-		for (int i = 0; i < amount; i++) {
+	public int flushQueue(int amount) {
+		int num = 0;
+		int size = queue.size();
+		for (int i = 0; i < amount && i < size; i++) {
 			queue.poll();
+			num++;
 		}
+		return num;
 	}
 
 	// Messages temporary place
@@ -259,8 +251,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return builder.toString();
 	}
 
-	public final String messageNowPlayingTrack(AudioTrack track, Message m) {
-		StringBuilder builder = new StringBuilder(Emoji.NOTES.getUtf8());
+	public final String messageNowPlayingTrack(AudioTrack track, Message m, String prefix) {
+		StringBuilder builder = new StringBuilder();
+		if (prefix != null) {
+			builder.append(prefix).append("\n");
+		}
+		builder.append(Emoji.NOTES.getUtf8());
 		builder.append(" Now playing: **").append(track.getInfo().title).append("**. Left time: (`");
 		builder.append(getTime(track.getDuration() - track.getPosition())).append("`) Minutes.");
 		m.editMessage(builder.toString()).queue();

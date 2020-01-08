@@ -59,12 +59,12 @@ public class PlayCommand extends MusicCommand {
 					// Could show the wrong track if the next song fail to load
 					if (trackScheduler.playNextTrack() != null) {
 						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-								m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m));
 					}
+							m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
 				}
 			} else {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m));
+						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
 			}
 		} else {
 			final String TrackUrl;

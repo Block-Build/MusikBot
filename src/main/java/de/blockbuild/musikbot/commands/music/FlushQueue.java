@@ -35,8 +35,8 @@ public class FlushQueue extends MusicCommand {
 			} finally {
 				StringBuilder builder = new StringBuilder();
 				if (i > 0) {
-					trackScheduler.flushQueue(i);
-					builder.append(event.getClient().getSuccess()).append(" **").append(i)
+					int num = trackScheduler.flushQueue(i);
+					builder.append(event.getClient().getSuccess()).append(" **").append(num)
 							.append("** Tracks got flushed!");
 					if (!(trackScheduler.getNextTrack() == null)) {
 						AudioTrack track = trackScheduler.getNextTrack();
@@ -46,7 +46,7 @@ public class FlushQueue extends MusicCommand {
 					}
 				} else {
 					builder.append(event.getClient().getError()).append(" **").append(args)
-							.append("** isn't a vaild Number!");
+							.append(" The number must be greater than zero!");
 				}
 				event.reply(builder.toString());
 			}

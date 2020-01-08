@@ -1,6 +1,8 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
@@ -20,6 +22,7 @@ public class SkipCommand extends MusicCommand {
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
+		AudioPlayer player = musicManager.getAudioPlayer();
 
 		if (!(args.isEmpty())) {
 			int i = 0;
@@ -29,19 +32,31 @@ public class SkipCommand extends MusicCommand {
 				// no integer
 			} finally {
 				if (i > 0) {
-					trackScheduler.flushQueue(i - 1);
+					int num = trackScheduler.flushQueue(i - 1);
 					StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-					builder.append(" ").append(i).append(" tracks got flushed!");
-					event.reply(builder.toString());
-					trackScheduler.nextTrack(event);
+					builder.append(" **").append(num + 1).append("** tracks got skipped!");
+
+					if (trackScheduler.playNextTrack(event)) {
+						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> trackScheduler
+								.messageNowPlayingTrack(player.getPlayingTrack(), m, builder.toString()));
+					} else {
+						builder.append("\n")
+								.append(event.getClient().getWarning() + " **Nothing to play at the moment!**");
+						event.reply(builder.toString());
+					}
 				} else {
 					StringBuilder builder = new StringBuilder(event.getClient().getError());
-					builder.append(" `").append(args).append("` isn't a number.");
+					builder.append(" The number must be greater than zero!");
 					event.reply(builder.toString());
 				}
 			}
 		} else {
-			trackScheduler.nextTrack(event);
+			if (trackScheduler.playNextTrack(event)) {
+				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
+						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+			} else {
+				event.reply(event.getClient().getWarning() + " **Nothing to play at the moment!**");
+			}
 		}
 
 	}
