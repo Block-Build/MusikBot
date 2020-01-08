@@ -15,7 +15,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
@@ -42,49 +41,12 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		this.eyasm = new ExtendYoutubeAudioSourceManager();
 	}
 
-	@Deprecated
-	public void queue(AudioTrack track, CommandEvent event) {
-		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-
-		if (!player.startTrack(track, true)) {
-			queue.offer(track);
-			builder.append(" Successfully added: `").append(track.getInfo().title).append("` on position: ")
-					.append(queue.size());
-		} else {
-			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
-		}
-
-		if (!(event == null)) {
-			event.reply(builder.toString());
-		}
-	}
-
 	public int queueTrack(AudioTrack track) {
 		if (!player.startTrack(track, true)) {
 			queue.offer(track);
 			return queue.size();
 		} else {
 			return 0;
-		}
-	}
-
-	@Deprecated
-	public void queue(AudioPlaylist playlist, CommandEvent event) {
-		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-		builder.append(" Successfully added: \n");
-
-		for (AudioTrack track : playlist.getTracks()) {
-			if (player.getPlayingTrack() == null) {
-				this.playTrack(track, event);
-			} else {
-				queue.offer(track);
-				builder.append("`").append(track.getInfo().title).append("` on position: ").append(queue.size())
-						.append("\n");
-			}
-		}
-
-		if (!(event == null)) {
-			event.reply(builder.toString());
 		}
 	}
 
