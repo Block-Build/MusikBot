@@ -118,7 +118,7 @@ public class Bot {
 					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
 			jda.awaitReady();
 		} catch (LoginException e) {
-			System.out.println("Invaild bot Token");
+			System.out.println("Invalid bot Token");
 			return false;
 		} catch (InterruptedException e) {
 			// Should never triggered!
