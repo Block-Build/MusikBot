@@ -1,48 +1,50 @@
 package de.blockbuild.musikbot;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.jagrosh.jdautilities.command.Command.Category;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.VoiceChannelListener;
-import de.blockbuild.musikbot.commands.ChooseCommand;
-import de.blockbuild.musikbot.commands.AutoConnectCommand;
-import de.blockbuild.musikbot.commands.AutoDisconnectCommand;
-import de.blockbuild.musikbot.commands.FlushQueue;
-import de.blockbuild.musikbot.commands.InfoCommand;
-import de.blockbuild.musikbot.commands.JoinCommand;
-import de.blockbuild.musikbot.commands.NextCommand;
-import de.blockbuild.musikbot.commands.PauseCommand;
-import de.blockbuild.musikbot.commands.PingCommand;
-import de.blockbuild.musikbot.commands.PlayCommand;
-import de.blockbuild.musikbot.commands.PlaylistCommand;
-import de.blockbuild.musikbot.commands.QueueCommand;
-import de.blockbuild.musikbot.commands.QuitCommand;
-import de.blockbuild.musikbot.commands.RadioBobCommand;
-import de.blockbuild.musikbot.commands.RadioBonnRheinSiegCommand;
-import de.blockbuild.musikbot.commands.RadioMnmCommand;
-import de.blockbuild.musikbot.commands.RautemusikCommand;
-import de.blockbuild.musikbot.commands.ResumeCommand;
-import de.blockbuild.musikbot.commands.ConfigCommand;
-import de.blockbuild.musikbot.commands.DefaultTextChannelCommand;
-import de.blockbuild.musikbot.commands.DefaultVoiceChannelCommand;
-import de.blockbuild.musikbot.commands.BlacklistCommand;
-import de.blockbuild.musikbot.commands.ShuffleCommand;
-import de.blockbuild.musikbot.commands.SkipCommand;
-import de.blockbuild.musikbot.commands.StopCommand;
-import de.blockbuild.musikbot.commands.VersionCommand;
-import de.blockbuild.musikbot.commands.VolumeCommand;
-import de.blockbuild.musikbot.commands.WhitelistCommand;
-import de.blockbuild.musikbot.commands.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.connection.JoinCommand;
+import de.blockbuild.musikbot.commands.connection.PingCommand;
+import de.blockbuild.musikbot.commands.connection.QuitCommand;
+import de.blockbuild.musikbot.commands.general.InfoCommand;
+import de.blockbuild.musikbot.commands.general.VersionCommand;
+import de.blockbuild.musikbot.commands.music.FlushQueue;
+import de.blockbuild.musikbot.commands.music.NextCommand;
+import de.blockbuild.musikbot.commands.music.PauseCommand;
+import de.blockbuild.musikbot.commands.music.PlayCommand;
+import de.blockbuild.musikbot.commands.music.PlaylistCommand;
+import de.blockbuild.musikbot.commands.music.QueueCommand;
+import de.blockbuild.musikbot.commands.music.ShuffleCommand;
+import de.blockbuild.musikbot.commands.music.SkipCommand;
+import de.blockbuild.musikbot.commands.music.StopCommand;
+import de.blockbuild.musikbot.commands.music.VolumeCommand;
+import de.blockbuild.musikbot.commands.music.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBobCommand;
+import de.blockbuild.musikbot.commands.radio.RadioBonnRheinSiegCommand;
+import de.blockbuild.musikbot.commands.radio.RadioMnmCommand;
+import de.blockbuild.musikbot.commands.radio.RautemusikCommand;
+import de.blockbuild.musikbot.commands.setup.AutoConnectCommand;
+import de.blockbuild.musikbot.commands.setup.AutoDisconnectCommand;
+import de.blockbuild.musikbot.commands.setup.BlacklistCommand;
+import de.blockbuild.musikbot.commands.setup.ConfigCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultTextChannelCommand;
+import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
+import de.blockbuild.musikbot.commands.setup.ReloadCommand;
+import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
@@ -51,6 +53,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
@@ -61,15 +64,13 @@ import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class Bot {
-	public final static Permission[] RECOMMENDED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
-			Permission.MESSAGE_EMBED_LINKS, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
-	public final static Permission[] REQUIRED_PERMS = new Permission[] { Permission.MESSAGE_READ,
-			Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
+	public final static Permission[] BASIC_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
+			Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
 			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
+	private final EventWaiter waiter;
 	private JDA jda;
 	public final BotConfiguration config;
 
@@ -77,9 +78,20 @@ public class Bot {
 		System.out.println("[" + main.getName() + "] Get started...");
 
 		this.main = main;
-		musicManagers = new HashMap<>();
-		playerManager = new DefaultAudioPlayerManager();
-		config = new BotConfiguration(this);
+		this.waiter = new EventWaiter();
+		this.musicManagers = new HashMap<>();
+		this.playerManager = new DefaultAudioPlayerManager();
+		this.config = new BotConfiguration(this);
+
+		try {
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
+					new File(main.getDataFolder(), "Sample_BotConfig.yml"));
+			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
+					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
+		} catch (IOException e) {
+			System.err.println("[" + main.getName() + "] Can't write Sample_Configs.");
+			e.printStackTrace();
+		}
 
 		if (start()) {
 			initListeners();
@@ -104,10 +116,10 @@ public class Bot {
 				return false;
 			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
-					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
+					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(waiter).build();
 			jda.awaitReady();
 		} catch (LoginException e) {
-			System.out.println("Invaild bot Token");
+			System.out.println("Invalid bot Token");
 			return false;
 		} catch (InterruptedException e) {
 			// Should never triggered!
@@ -116,7 +128,9 @@ public class Bot {
 		}
 
 		try {
-			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue();
+			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue(unused -> {
+			}, ignored -> {
+			});
 		} catch (IOException e) {
 			System.err.println(e);
 		}
@@ -128,7 +142,7 @@ public class Bot {
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		String inviteURL = jda.asBot().getInviteUrl(Bot.RECOMMENDED_PERMS);
+		String inviteURL = jda.asBot().getInviteUrl(Bot.BASIC_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
 
@@ -172,19 +186,53 @@ public class Bot {
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
 		ccb.useHelpBuilder(true);
+		ccb.setHelpConsumer((event) -> {
+			// Slightly changed default helpConsumer from JDA-Utilities.
+			StringBuilder builder = new StringBuilder("**" + event.getSelfUser().getName() + "** commands:\n");
+			Category category = null;
+			for (Command command : event.getClient().getCommands()) {
+				if (!command.isHidden() && (!command.isOwnerCommand() || event.isOwner())) {
+					if (category == null || !(category.getName() == command.getCategory().getName())) {
+						category = command.getCategory();
+						builder.append("\n\n  __").append(category == null ? "No Category" : category.getName())
+								.append("__:\n");
+					}
+					builder.append("\n`").append(event.getClient().getPrefix())
+							.append(event.getClient().getPrefix() == null ? " " : "").append(command.getName())
+							.append(command.getArguments() == null ? "`" : " " + command.getArguments() + "`")
+							.append(" - ").append(command.getHelp());
+				}
+			}
+			User owner = event.getJDA().getUserById(event.getClient().getOwnerIdLong());
+			if (owner != null) {
+				builder.append("\n\nFor additional help, contact **").append(owner.getName()).append("**#")
+						.append(owner.getDiscriminator());
+			}
+			event.replyInDm(builder.toString(), unused -> {
+				if (event.isFromType(ChannelType.TEXT))
+					event.reactSuccess();
+			}, t -> event.replyWarning("Help cannot be sent because you are blocking Direct Messages."));
+		});
 		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
 		ccb.setPrefix(trigger);
+		ccb.setLinkedCacheSize(100);
 		registerCommandModule(ccb,
 				//Music
 				new PlayCommand(this), 
 				new QueueCommand(this),
 				new NextCommand(this), 
 				new SkipCommand(this),
-				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
 				new YTAutoPlayCommand(this),
+				new VolumeCommand(this), 
+				new PauseCommand(this),
+				new StopCommand(this), 
+				
+				//General
+				new InfoCommand(this),
+				new VersionCommand(this),
   
 				//Radio
 				new RadioBonnRheinSiegCommand(this), 
@@ -192,15 +240,9 @@ public class Bot {
 				new RadioBobCommand(this),
 				new RadioMnmCommand(this),
 				
-				new VolumeCommand(this),
-				new InfoCommand(this),  
-				new PauseCommand(this),
-				new ResumeCommand(this),
-				
 				//Connection
 				new JoinCommand(this), 
 				new QuitCommand(this),
-				new StopCommand(this), 
 				new PingCommand(this),
 				
 				//Setup
@@ -211,22 +253,12 @@ public class Bot {
 				new DefaultTextChannelCommand(this),
 				new DefaultVoiceChannelCommand(this),
 				new ConfigCommand(this),
-				new VersionCommand(this));
-    
-		jda.addEventListener(ccb.build());
+				new ReloadCommand(this));
 
-		/*
-		 * missing commands:
-		 * #Playback commands##
-		 * jump to time?
-		 * 
-		 * ##setup commands##
-		 * defaultPlaylist?
-		 * setIcon?
-		 */
+		jda.addEventListener(ccb.build());
 	}
 
-	public void registerCommandModule(CommandClientBuilder ccb,Command... commands) {
+	public void registerCommandModule(CommandClientBuilder ccb, Command... commands) {
 		for (Command c : commands) {
 			ccb.addCommand(c);
 		}
@@ -284,6 +316,10 @@ public class Bot {
 
 	public Main getMain() {
 		return main;
+	}
+
+	public EventWaiter getWaiter() {
+		return waiter;
 	}
 
 	public AudioPlayerManager getPlayerManager() {

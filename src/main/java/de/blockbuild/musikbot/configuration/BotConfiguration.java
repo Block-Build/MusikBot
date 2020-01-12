@@ -1,7 +1,6 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,13 +9,25 @@ import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
 	private String token, trigger, game, ownerID, inviteURL;
-	private Map<String, String> emojis;
-
-	// Avatar
-	// Name
+	private Map<String, Object> emojis;
+	private static String header;
 
 	public BotConfiguration(Bot bot) {
 		super(new File(bot.getMain().getDataFolder(), "BotConfig.yml"));
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("MusikBot by Block-Build\n");
+		builder.append("+===================+\n");
+		builder.append("| BOT CONFIGURATION |\n");
+		builder.append("+===================+\n");
+		builder.append("\n");
+		builder.append("You have to insert the bot token and owner id.\n");
+		builder.append(
+				"Instructions on: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+		builder.append(
+				"Support/Suggestions/Bugs? Have a look on this site: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("\n");
+		header = builder.toString();
 
 		readConfig();
 		writeConfig();
@@ -29,29 +40,33 @@ public class BotConfiguration extends ConfigurationManager {
 		config.set("Owner_ID", this.ownerID);
 		config.set("Command_Trigger", this.trigger);
 		config.set("Game", this.game);
-		config.createSection("Emojis", this.emojis);
+		this.phraseMap(config.createSection("Emojis"), this.emojis, "Success", "Warning", "Error");
 		config.set("Invite_URL", this.inviteURL);
 
-		return this.saveConfig(config);
+		return this.saveConfig(config, header);
 	}
 
 	public boolean readConfig() {
 		try {
 			YamlConfiguration config = this.loadConfig();
+			ConfigurationSection c;
 
-			this.token = config.getString("Bot_Token", "Insert Token here");
-			this.ownerID = config.getString("Owner_ID", "12345");
-			this.trigger = config.getString("Command_Trigger", "!");
-			this.game = config.getString("Game", "Ready for playing music. !Play");
+			config.addDefault("Bot_Token", "insert token here");
+			config.addDefault("Owner_ID", "12345");
+			config.addDefault("Command_Trigger", "!");
+			config.addDefault("Game", "Ready for playing music. !Play");
 
-			this.emojis = new HashMap<>();
-			if (!config.contains("Emojis")) {
-				config.createSection("Emojis", this.emojis);
-			}
-			ConfigurationSection emojiList = config.getConfigurationSection("Emojis");
-			this.emojis.put("Success", emojiList.get("Success", "\uD83D\uDE03").toString());
-			this.emojis.put("Warning", emojiList.get("Warning", "\uD83D\uDE2E").toString());
-			this.emojis.put("Error", emojiList.get("Error", "\uD83D\uDE26").toString());
+			c = this.addDefaultSection(config, "Emojis");
+			c.addDefault("Success", "\uD83D\uDE03");
+			c.addDefault("Warning", "\uD83D\uDE2E");
+			c.addDefault("Error", "\uD83D\uDE26");
+
+			this.token = config.getString("Bot_Token");
+			this.ownerID = config.getString("Owner_ID");
+			this.trigger = config.getString("Command_Trigger");
+			this.game = config.getString("Game");
+
+			this.emojis = config.getConfigurationSection("Emojis").getValues(false);
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read BotConfiguration!");
@@ -60,10 +75,6 @@ public class BotConfiguration extends ConfigurationManager {
 		}
 	}
 
-	public String getRawConfiguration() {
-		return loadConfig().saveToString();
-	}
-	
 	public String getToken() {
 		return this.token;
 	}
@@ -81,19 +92,19 @@ public class BotConfiguration extends ConfigurationManager {
 	}
 
 	public String getSuccess() {
-		return this.emojis.get("Success");
+		return (String) this.emojis.get("Success");
 	}
 
 	public String getWarning() {
-		return this.emojis.get("Warning");
+		return (String) this.emojis.get("Warning");
 	}
 
 	public String getError() {
-		return this.emojis.get("Error");
+		return (String) this.emojis.get("Error");
 	}
 
 	public void setInviteLink(String inviteURL) {
-		this.inviteURL = inviteURL;
+		this.inviteURL = "`" + inviteURL + "`";
 		writeConfig();
 	}
 }
