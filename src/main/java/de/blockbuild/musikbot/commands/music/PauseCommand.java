@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
@@ -10,22 +11,27 @@ public class PauseCommand extends MusicCommand {
 	public PauseCommand(Bot bot) {
 		super(bot);
 		this.name = "pause";
-		this.help = "Pause playback.";
+		this.aliases = new String[] { "resume" };
+		this.help = "Pause or resume playback.";
 	}
 
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
 		AudioPlayer player = musicManager.getAudioPlayer();
 		if (!(player.getPlayingTrack() == null)) {
-			player.setPaused(true);
+			StringBuilder builder = new StringBuilder();
+			if (player.isPaused()) {
+				player.setPaused(false);
 
-			StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Playback paused.");
+				builder.append(Emoji.ARROW_FORWARD.getUtf8());
+				builder.append(" Playback resumed.");
+			} else {
+				player.setPaused(true);
+
+				builder.append(Emoji.PAUSE_BUTTON.getUtf8());
+				builder.append(" Playback paused.");
+			}
 			event.reply(builder.toString());
-
-			// event.getJDA().getPresence().setStatus(OnlineStatus.IDLE);
-			// event.getJDA().getPresence().setGame(Game.of(GameType.DEFAULT, "Paused! |
-			// Type '!Resume'"));
 		} else {
 			StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 			builder.append(" Currently there is no track playing. Use `").append(event.getClient().getPrefix())

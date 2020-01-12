@@ -28,7 +28,6 @@ import de.blockbuild.musikbot.commands.music.PauseCommand;
 import de.blockbuild.musikbot.commands.music.PlayCommand;
 import de.blockbuild.musikbot.commands.music.PlaylistCommand;
 import de.blockbuild.musikbot.commands.music.QueueCommand;
-import de.blockbuild.musikbot.commands.music.ResumeCommand;
 import de.blockbuild.musikbot.commands.music.ShuffleCommand;
 import de.blockbuild.musikbot.commands.music.SkipCommand;
 import de.blockbuild.musikbot.commands.music.StopCommand;
@@ -229,7 +228,6 @@ public class Bot {
 				new YTAutoPlayCommand(this),
 				new VolumeCommand(this), 
 				new PauseCommand(this),
-				new ResumeCommand(this),
 				new StopCommand(this), 
 				
 				//General
