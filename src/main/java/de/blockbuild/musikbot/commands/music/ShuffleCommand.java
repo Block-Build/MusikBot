@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
@@ -17,9 +18,15 @@ public class ShuffleCommand extends MusicCommand {
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
-		trackScheduler.shuffle();
-		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
-		builder.append(" Playlist shuffled!");
+
+		StringBuilder builder = new StringBuilder();
+		if (trackScheduler.isQueueEmpty()) {
+			builder.append(event.getClient().getWarning()).append(" The queue is empty!");
+		} else {
+			trackScheduler.shuffle();
+			builder.append(Emoji.TWISTED_RIGHTWARDS_ARROWS.getUtf8());
+			builder.append(" Queue shuffled!");
+		}
 		event.reply(builder.toString());
 	}
 

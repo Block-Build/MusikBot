@@ -42,6 +42,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		this.bot = bot;
 		this.guildOnly = false;
 		this.botPermissions = RECOMMENDED_PERMS();
+		this.category = GENERAL;
 	}
 
 	private Permission[] RECOMMENDED_PERMS() {
