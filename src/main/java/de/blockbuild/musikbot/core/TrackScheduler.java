@@ -51,13 +51,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	@Deprecated
-	public void queueSilent(AudioTrack track) {
-		if (!player.startTrack(track, true)) {
-			queue.offer(track);
-		}
-	}
-
-	@Deprecated
 	public void playTrack(AudioTrack track, CommandEvent event) {
 		if (!(event == null)) {
 			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
