@@ -26,7 +26,7 @@ public class NextCommand extends MusicCommand {
 			builder.append(event.getClient().getWarning()).append(" The queue is empty!");
 		} else {
 			AudioTrack track = trackScheduler.getNextTrack();
-			builder.append(Emoji.NOTES.getUtf8()).append(" Next track: **").append(track.getInfo().title).append("**");
+			builder.append(Emoji.TRACK_NEXT.getUtf8()).append(" Next track: **").append(track.getInfo().title).append("**");
 			builder.append(" (`").append(trackScheduler.getTime(track.getDuration())).append("`)");
 		}
 		event.reply(builder.toString());
