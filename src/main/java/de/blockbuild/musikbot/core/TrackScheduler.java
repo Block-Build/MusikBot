@@ -64,17 +64,26 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return player.startTrack(track, false);
 	}
 
-	public boolean playNextTrack(CommandEvent event) {
+	public boolean playNextTrack() {
 		String url = nextYTAutoPlay(player.getPlayingTrack());
-		if (!(url == null) && event != null) {
-			bot.getPlayerManager().loadItemOrdered(musicManager, url,
-					new BasicResultHandler(player, event, "Now Playing: `%s`."));
+		if (!(url == null)) {
+			bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player));
+			// wait for loading track
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ignore) {
+			}
 			return true;
 		} else if (queue.isEmpty()) {
 			player.stopTrack();
 			return false;
 		} else {
+			// wait for loading next track
 			player.playTrack(queue.poll());
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException ignore) {
+			}
 			return true;
 		}
 	}
@@ -100,7 +109,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			if (url == null) {
 				player.playTrack(queue.poll());
 			} else {
-				bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player, null, null));
+				bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player));
 			}
 		}
 
@@ -207,6 +216,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	}
 
 	public final String messageNowPlayingTrack(AudioTrack track, Message m, String prefix) {
+		if (track == null) {
+			m.delete().queue();
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		if (prefix != null) {
 			builder.append(prefix).append("\n");

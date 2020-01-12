@@ -36,14 +36,15 @@ public class SkipCommand extends MusicCommand {
 					StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
 					builder.append(" **").append(num + 1).append("** tracks got skipped!");
 
-					if (trackScheduler.playNextTrack(event)) {
-						event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> trackScheduler
-								.messageNowPlayingTrack(player.getPlayingTrack(), m, builder.toString()));
-					} else {
-						builder.append("\n")
-								.append(event.getClient().getWarning() + " **Nothing to play at the moment!**");
-						event.reply(builder.toString());
-					}
+					event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> {
+						if (trackScheduler.playNextTrack()) {
+							trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, builder.toString());
+						} else {
+							builder.append("\n")
+									.append(event.getClient().getWarning() + " **Nothing to play at the moment!**");
+							m.editMessage(builder.toString()).queue();
+						}
+					});
 				} else {
 					StringBuilder builder = new StringBuilder(event.getClient().getError());
 					builder.append(" The number must be greater than zero!");
@@ -51,7 +52,7 @@ public class SkipCommand extends MusicCommand {
 				}
 			}
 		} else {
-			if (trackScheduler.playNextTrack(event)) {
+			if (trackScheduler.playNextTrack()) {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
 						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
 			} else {

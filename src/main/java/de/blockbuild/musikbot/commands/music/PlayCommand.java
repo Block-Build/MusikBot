@@ -49,14 +49,16 @@ public class PlayCommand extends MusicCommand {
 							.loadItemOrdered(musicManager, TrackURL, new ResultHandler(trackScheduler, event, m)));
 				}
 			} else if (player.getPlayingTrack() == null) {
-				if (trackScheduler.playNextTrack(null)) {
-					// If player don't play but songs are in queue
-					// Could show the wrong track if the next song fail to load
-					event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-							m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
-				} else {
-					event.reply(event.getClient().getWarning() + " **Nothing to play at the moment!**");
-				}
+				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> {
+					if (trackScheduler.playNextTrack()) {
+						// If player don't play but songs are in queue
+						// Could show the wrong track if the next song fail to load
+						trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null);
+					} else {
+						m.editMessage(event.getClient().getWarning() + " **Nothing to play at the moment!**").queue();
+					}
+				});
+
 			} else {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
 						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));

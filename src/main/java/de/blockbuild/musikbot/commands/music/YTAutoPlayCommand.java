@@ -27,6 +27,7 @@ public class YTAutoPlayCommand extends MusicCommand {
 			builder.append(" YouTube autoplay: `disabled`");
 		} else {
 			sendCommandInfo(event);
+			return;
 		}
 		event.reply(builder.toString());
 	}
