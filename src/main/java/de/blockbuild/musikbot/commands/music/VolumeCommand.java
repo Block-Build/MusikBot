@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.music;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
 import de.blockbuild.musikbot.Bot;
@@ -12,7 +13,7 @@ public class VolumeCommand extends MusicCommand {
 		this.name = "volume";
 		this.aliases = new String[] { "vol", "v" };
 		this.help = "Changes the volume.";
-		this.arguments = "[0-100]";
+		this.arguments = "[0-150]";
 	}
 
 	@Override
@@ -28,16 +29,16 @@ public class VolumeCommand extends MusicCommand {
 			} catch (NumberFormatException e) {
 				volume = -1;
 			}
-			if (volume < 0 || volume > 100) {
-				StringBuilder builder = new StringBuilder(event.getClient().getError());
-				builder.append(" Volume must be a valid integer between `0` and `100`!");
-				event.reply(builder.toString());
+			StringBuilder builder = new StringBuilder();
+			if (volume < 0 || volume > 150) {
+				builder.append(event.getClient().getError());
+				builder.append(" Volume must be a valid integer between `0` and `150`!");
 			} else {
 				musicManager.setVolume(volume);
-				StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
+				builder.append(volume < 50 ? Emoji.SOUND.getUtf8() : Emoji.LOUD_SOUND.getUtf8());
 				builder.append(" Volume now set to `").append(volume).append("`.");
-				event.reply(builder.toString());
 			}
+			event.reply(builder.toString());
 		}
 	}
 

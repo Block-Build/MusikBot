@@ -1,11 +1,7 @@
 package de.blockbuild.musikbot.core;
 
-import java.util.List;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.configuration.GuildConfiguration;
 
@@ -18,8 +14,7 @@ public class GuildMusicManager {
 	public final GuildConfiguration config;
 	private final Bot bot;
 	private final Guild guild;
-	public List<AudioTrack> tracks;
-	private Boolean isQueue, autoPlay;
+	private Boolean autoPlay;
 
 	public GuildMusicManager(AudioPlayerManager playerManager, Guild guild, Bot bot) {
 		this.bot = bot;
@@ -46,7 +41,7 @@ public class GuildMusicManager {
 			}
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
-						new BasicResultHandler(this.getAudioPlayer(), null, null));
+						new BasicResultHandler(this.getAudioPlayer()));
 			}
 		}
 	}
@@ -74,14 +69,6 @@ public class GuildMusicManager {
 
 	public int getVolume() {
 		return player.getVolume();
-	}
-
-	public Boolean isQueue() {
-		return this.isQueue;
-	}
-
-	public void setIsQueue(boolean bool) {
-		this.isQueue = bool;
 	}
 
 	public Boolean isAutoPlay() {
