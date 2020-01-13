@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.radio;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -10,6 +11,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
+
+import net.dv8tion.jda.core.entities.Message;
 
 public class RadioMnmCommand extends RadioCommand {
 
@@ -26,8 +29,8 @@ public class RadioMnmCommand extends RadioCommand {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		playerManager.loadItemOrdered(musicManager, "http://icecast.vrtcdn.be/mnm-high.mp3",
-				new ResultHandler(trackScheduler, event));
+		event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> playerManager.loadItemOrdered(musicManager,
+				"http://icecast.vrtcdn.be/mnm-high.mp3", new ResultHandler(trackScheduler, event, m)));
 	}
 
 	@Override
@@ -49,15 +52,18 @@ public class RadioMnmCommand extends RadioCommand {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		final private Message m;
 
-		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.m = m;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.playTrack(track, event);
+			trackScheduler.playTrack(track);
+			trackScheduler.messageAddTrack(track, m);
 		}
 
 		@Override
@@ -75,7 +81,7 @@ public class RadioMnmCommand extends RadioCommand {
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load ").append(args);
+			builder.append(" faild to load ").append(args);
 			event.reply(builder.toString());
 		}
 	}
