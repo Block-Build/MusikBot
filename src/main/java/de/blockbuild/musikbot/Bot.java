@@ -9,6 +9,7 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.command.Command.Category;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -21,14 +22,12 @@ import de.blockbuild.musikbot.commands.connection.PingCommand;
 import de.blockbuild.musikbot.commands.connection.QuitCommand;
 import de.blockbuild.musikbot.commands.general.InfoCommand;
 import de.blockbuild.musikbot.commands.general.VersionCommand;
-import de.blockbuild.musikbot.commands.music.ChooseCommand;
 import de.blockbuild.musikbot.commands.music.FlushQueue;
 import de.blockbuild.musikbot.commands.music.NextCommand;
 import de.blockbuild.musikbot.commands.music.PauseCommand;
 import de.blockbuild.musikbot.commands.music.PlayCommand;
 import de.blockbuild.musikbot.commands.music.PlaylistCommand;
 import de.blockbuild.musikbot.commands.music.QueueCommand;
-import de.blockbuild.musikbot.commands.music.ResumeCommand;
 import de.blockbuild.musikbot.commands.music.ShuffleCommand;
 import de.blockbuild.musikbot.commands.music.SkipCommand;
 import de.blockbuild.musikbot.commands.music.StopCommand;
@@ -71,6 +70,7 @@ public class Bot {
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
+	private final EventWaiter waiter;
 	private JDA jda;
 	public final BotConfiguration config;
 
@@ -78,9 +78,10 @@ public class Bot {
 		System.out.println("[" + main.getName() + "] Get started...");
 
 		this.main = main;
-		musicManagers = new HashMap<>();
-		playerManager = new DefaultAudioPlayerManager();
-		config = new BotConfiguration(this);
+		this.waiter = new EventWaiter();
+		this.musicManagers = new HashMap<>();
+		this.playerManager = new DefaultAudioPlayerManager();
+		this.config = new BotConfiguration(this);
 
 		try {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
@@ -115,10 +116,10 @@ public class Bot {
 				return false;
 			}
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
-					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).build();
+					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(waiter).build();
 			jda.awaitReady();
 		} catch (LoginException e) {
-			System.out.println("Invaild bot Token");
+			System.out.println("Invalid bot Token");
 			return false;
 		} catch (InterruptedException e) {
 			// Should never triggered!
@@ -221,14 +222,12 @@ public class Bot {
 				new QueueCommand(this),
 				new NextCommand(this), 
 				new SkipCommand(this),
-				new ChooseCommand(this),
 				new FlushQueue(this),
 				new ShuffleCommand(this),
 				new PlaylistCommand(this),
 				new YTAutoPlayCommand(this),
 				new VolumeCommand(this), 
 				new PauseCommand(this),
-				new ResumeCommand(this),
 				new StopCommand(this), 
 				
 				//General
@@ -317,6 +316,10 @@ public class Bot {
 
 	public Main getMain() {
 		return main;
+	}
+
+	public EventWaiter getWaiter() {
+		return waiter;
 	}
 
 	public AudioPlayerManager getPlayerManager() {

@@ -3,6 +3,7 @@ package de.blockbuild.musikbot.commands.music;
 import java.io.File;
 import java.util.List;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -16,6 +17,7 @@ import de.blockbuild.musikbot.core.TrackScheduler;
 
 public class PlaylistCommand extends MusicCommand {
 	List<String> tracks;
+	private int amount;
 
 	public PlaylistCommand(Bot bot) {
 		super(bot);
@@ -69,10 +71,10 @@ public class PlaylistCommand extends MusicCommand {
 			playlist.addTracks(trackScheduler.getQueue());
 
 			if (playlist.writeConfig()) {
-				builder.append(" Successfully saved playlist `").append(name).append("` containing `")
-						.append(playlist.getAmount()).append("` Tracks");
+				builder.append(" Successfully saved playlist **").append(name).append("** containing **")
+						.append(playlist.getAmount()).append("** Tracks");
 			} else {
-				builder.append(" Failed to save playlist `").append(name).append("`");
+				builder.append(" Failed to save playlist **").append(name).append("**");
 			}
 			event.reply(builder.toString());
 
@@ -81,35 +83,33 @@ public class PlaylistCommand extends MusicCommand {
 		case "delete":
 		case "del":
 			playlist.deleteConfig();
-			builder.append(" Successfully deleted: `").append(name).append("`");
+			builder.append(" Successfully deleted: **").append(name).append("**.");
 			event.reply(builder.toString());
 
 			break;
 		case "load":
-			builder.append(" Load Playlist...");
-			event.reply(builder.toString());
+			event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> {
+				StringBuilder builder1 = new StringBuilder();
+				if (playlist.getPlaylist().isEmpty()) {
+					builder1.append(event.getClient().getWarning());
+					builder1.append(" Playlist `").append(name).append("` dosen't exsist.");
+				} else {
+					amount = 0;
+					for (String track : playlist.getPlaylist()) {
+						bot.getPlayerManager().loadItemOrdered(musicManager, track,
+								new ResultHandler(trackScheduler, event));
+					}
 
-			if (playlist.getPlaylist().isEmpty()) {
-				builder = new StringBuilder().append(event.getClient().getWarning());
-				builder.append(" Playlist `").append(name).append("` dosen't exsist.");
-				event.reply(builder.toString());
-				return;
-			}
-
-			for (String track : playlist.getPlaylist()) {
-				bot.getPlayerManager().loadItemOrdered(musicManager, track, new ResultHandler(trackScheduler, event));
-			}
-
-			builder = new StringBuilder().append(event.getClient().getSuccess());
-			builder.append(" Successfully load Playlist `").append(name).append("` containing `")
-					.append(playlist.getAmount()).append("` Tracks.");
-
-			event.reply(builder.toString());
-
+					builder1.append(event.getClient().getSuccess());
+					builder1.append(" Successfully load **").append(amount);
+					builder1.append("** tracks from Playlist **").append(name).append("**");
+				}
+				m.editMessage(builder1.toString()).queue();
+			});
 			break;
 		case "list":
 		case "show":
-			builder.append(" **Playlist `").append(name).append("`**\n");
+			builder.append(" Playlist **").append(name).append(":**\n");
 			for (String track : playlist.getPlaylist()) {
 				builder.append("`").append(track).append("`\n");
 			}
@@ -148,7 +148,8 @@ public class PlaylistCommand extends MusicCommand {
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.queueSilent(track);
+			trackScheduler.queueTrack(track);
+			amount++;
 		}
 
 		@Override
@@ -159,14 +160,14 @@ public class PlaylistCommand extends MusicCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(args);
+			builder.append(" No result found: **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(args);
+			builder.append(" Faild to load **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 	}

@@ -1,5 +1,12 @@
-/.gradle/
-/bin/
-/build/
+# eclipse
 /.settings/
-
+.project
+.classpath
+.settings/
+.buildpath
+/bin/
+# gradle
+/.gradle/
+/build/
+/.git/
+!gradle-wrapper.jar

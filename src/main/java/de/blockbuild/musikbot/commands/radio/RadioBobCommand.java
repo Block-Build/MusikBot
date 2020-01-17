@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.radio;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -10,6 +11,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
+
+import net.dv8tion.jda.core.entities.Message;
 
 public class RadioBobCommand extends RadioCommand {
 
@@ -26,8 +29,10 @@ public class RadioBobCommand extends RadioCommand {
 		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		playerManager.loadItemOrdered(musicManager, "http://streams.radiobob.de/bob-live/mp3-192/mediaplayer",
-				new ResultHandler(trackScheduler, event));
+		event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
+				m -> playerManager.loadItemOrdered(musicManager,
+						"http://streams.radiobob.de/bob-live/mp3-192/mediaplayer",
+						new ResultHandler(trackScheduler, event, m)));
 	}
 
 	@Override
@@ -49,15 +54,18 @@ public class RadioBobCommand extends RadioCommand {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		final private Message m;
 
-		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.m = m;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.playTrack(track, event);
+			trackScheduler.playTrack(track);
+			trackScheduler.messageAddTrack(track, m);
 		}
 
 		@Override
@@ -68,14 +76,14 @@ public class RadioBobCommand extends RadioCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(args);
+			builder.append(" No result found: **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load ").append(args);
+			builder.append(" Faild to load **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 	}
