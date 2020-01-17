@@ -220,14 +220,14 @@ public class RautemusikCommand extends RadioCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(args);
+			builder.append(" No result found: **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(args);
+			builder.append(" Faild to load **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 	}

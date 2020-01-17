@@ -183,14 +183,14 @@ public class PlayCommand extends MusicCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: `").append(args).append("`");
+			builder.append(" No result found: **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load `").append(args).append("`");
+			builder.append(" Faild to load **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 	}
