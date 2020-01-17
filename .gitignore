@@ -9,4 +9,3 @@
 /.gradle/
 /build/
 /.git/
-!gradle-wrapper.jar
