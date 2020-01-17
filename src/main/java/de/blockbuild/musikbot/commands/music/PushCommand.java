@@ -1,36 +1,31 @@
-package de.blockbuild.musikbot.commands.radio;
+package de.blockbuild.musikbot.commands.music;
 
-import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
-import de.blockbuild.musikbot.commands.RadioCommand;
+import de.blockbuild.musikbot.commands.MBCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
 import net.dv8tion.jda.core.entities.Message;
 
-public class RadioBonnRheinSiegCommand extends RadioCommand {
+public class PushCommand extends MBCommand {
 
-	public RadioBonnRheinSiegCommand(Bot bot) {
+	public PushCommand(Bot bot) {
 		super(bot);
-		this.name = "radiobonnrheinsieg";
-		this.aliases = new String[] { "rbrs" };
-		this.help = "Plays RadioBonnRheinSieg!";
+		this.name = "push";
+		// this.aliases = new String[] { "" };
+		this.help = "Plays a given track and queues the current playing track";
+		// this.arguments = "";
 		this.joinOnCommand = true;
 	}
 
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
-		TrackScheduler trackScheduler = musicManager.getTrackScheduler();
-		AudioPlayerManager playerManager = bot.getPlayerManager();
 
-		event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> playerManager.loadItemOrdered(musicManager,
-				"http://stream.lokalradio.nrw/rbrs", new ResultHandler(trackScheduler, event, m)));
 	}
 
 	@Override
@@ -62,13 +57,10 @@ public class RadioBonnRheinSiegCommand extends RadioCommand {
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.playTrack(track);
-			trackScheduler.messageAddTrack(track, m);
 		}
 
 		@Override
 		public void playlistLoaded(AudioPlaylist playlist) {
-			// should never called
 		}
 
 		@Override
@@ -85,4 +77,5 @@ public class RadioBonnRheinSiegCommand extends RadioCommand {
 			event.reply(builder.toString());
 		}
 	}
+
 }

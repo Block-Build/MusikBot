@@ -1,5 +1,6 @@
 package de.blockbuild.musikbot.commands.radio;
 
+import com.github.breadmoirai.discordemoji.Emoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -10,6 +11,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
+
+import net.dv8tion.jda.core.entities.Message;
 
 public class RautemusikCommand extends RadioCommand {
 
@@ -28,8 +31,8 @@ public class RautemusikCommand extends RadioCommand {
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 		if (args.isEmpty()) {
 			if (event.getMessage().getContentDisplay().trim().toLowerCase().startsWith("main", 1)) {
-				playerManager.loadItemOrdered(musicManager, "http://main-high.rautemusik.fm/listen.mp3",
-						new ResultHandler(trackScheduler, event));
+				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> playerManager.loadItemOrdered(musicManager,
+						"http://main-high.rautemusik.fm/listen.mp3", new ResultHandler(trackScheduler, event, m)));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
 				builder.append(" ").append(this.arguments);
@@ -166,10 +169,11 @@ public class RautemusikCommand extends RadioCommand {
 			}
 
 			if (!(link == null)) {
-				playerManager.loadItemOrdered(playerManager, link, new ResultHandler(trackScheduler, event));
+				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> playerManager.loadItemOrdered(playerManager,
+						link, new ResultHandler(trackScheduler, event, m)));
 			} else {
 				StringBuilder builder = new StringBuilder(event.getClient().getWarning());
-				builder.append(" `").append(args).append("` Isn't a vaild radio station");
+				builder.append(" **").append(args).append("** Isn't a vaild radio station");
 				event.reply(builder.toString());
 			}
 		}
@@ -194,15 +198,18 @@ public class RautemusikCommand extends RadioCommand {
 
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		final private Message m;
 
-		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.m = m;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
-			trackScheduler.playTrack(track, event);
+			trackScheduler.playTrack(track);
+			trackScheduler.messageAddTrack(track, m);
 		}
 
 		@Override
@@ -213,14 +220,14 @@ public class RautemusikCommand extends RadioCommand {
 		@Override
 		public void noMatches() {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: ").append(args);
+			builder.append(" No result found: **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
 			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" faild to load ").append(args);
+			builder.append(" Faild to load **").append(args).append("**");
 			event.reply(builder.toString());
 		}
 	}
