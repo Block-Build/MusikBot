@@ -48,7 +48,6 @@ public class BotConfiguration extends ConfigurationManager {
 	@SuppressWarnings("unchecked")
 	public boolean readConfig() {
 		try {
-
 			Map<String, Object> config = this.loadConfig1();
 
 			config.putIfAbsent("Bot_Token", "insert token here");
@@ -66,13 +65,13 @@ public class BotConfiguration extends ConfigurationManager {
 			section.putIfAbsent("Warning", "\uD83D\uDE2E");
 			section.putIfAbsent("Error", "\uD83D\uDE26");
 			config.put("Emojis", section);
+			this.emojis = section;
 
 			this.token = config.get("Bot_Token").toString();
 			this.ownerID = config.get("Owner_ID").toString();
 			this.trigger = config.get("Command_Trigger").toString();
 			this.game = config.get("Game").toString();
 
-			this.emojis = section;
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read BotConfiguration!");
