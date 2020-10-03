@@ -1,9 +1,10 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-
-import org.bukkit.configuration.file.YamlConfiguration;
+import java.util.Map;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -35,22 +36,25 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	@Override
 	public boolean writeConfig() {
-		YamlConfiguration config = new YamlConfiguration();
+		Map<String, Object> config = new LinkedHashMap<String, Object>();
 
-		config.set("User_Name", this.userName);
-		config.set("Playlist_Name", this.playlistName);
-		config.set("Amount", playlist.size());
-		config.set("Playlist", this.playlist);
+		config.put("User_Name", this.userName);
+		config.put("Playlist_Name", this.playlistName);
+		config.put("Amount", playlist.size());
+		config.put("Playlist", this.playlist);
 
 		return this.saveConfig(config, header);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig();
+			Map<String, Object> config = this.loadConfig1();
 
-			this.playlist = config.getStringList("Playlist");
+			config.putIfAbsent("Playlist", new LinkedList<String>());
+
+			this.playlist = (List<String>) config.get("Playlist");
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read Playlist `" + this.playlistName + "`!");
