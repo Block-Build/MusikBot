@@ -28,6 +28,7 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.25'
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     compile 'com.github.breadmoirai:DiscordEmoji:1.1.0'
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
 
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
 }
