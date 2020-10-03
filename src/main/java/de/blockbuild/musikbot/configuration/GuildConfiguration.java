@@ -2,6 +2,7 @@ package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +68,8 @@ public class GuildConfiguration extends ConfigurationManager {
 			config.putIfAbsent("Volume", 100);
 			config.putIfAbsent("Delete_Command_Massages_Delay", 0);
 			config.putIfAbsent("Whitelist_Enabled", "");
-			config.putIfAbsent("Whitelist", null);
-			config.putIfAbsent("Blacklist", null);
+			config.putIfAbsent("Whitelist", new LinkedList<Long>());
+			config.putIfAbsent("Blacklist", new LinkedList<Long>());
 
 			Map<String, Object> section;
 			if (config.containsKey("Command_Permission_Roles")) {

@@ -43,33 +43,7 @@ public abstract class ConfigurationManager {
 		}
 	}
 
-	public synchronized boolean saveConfig(YamlConfiguration config, String header) {
-		try {
-			config.options().header(header);
-			config.options().copyDefaults(true);
-			config.save(this.file);
-			return true;
-		} catch (Exception e) {
-			System.out.println("Couldn't save " + file.getName());
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public synchronized YamlConfiguration loadConfig() {
-		try {
-			YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-			config.options().copyDefaults(true);
-			return config;
-
-		} catch (Exception e) {
-			System.out.println("Couldn't load " + file.getName());
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public synchronized Map<String, Object> loadConfig1() {
+	public synchronized Map<String, Object> loadConfig() {
 		try (InputStream is = new FileInputStream(file)) {
 			Yaml yaml = new Yaml();
 			return yaml.load(is);

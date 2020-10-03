@@ -48,7 +48,7 @@ public class BotConfiguration extends ConfigurationManager {
 	@SuppressWarnings("unchecked")
 	public boolean readConfig() {
 		try {
-			Map<String, Object> config = this.loadConfig1();
+			Map<String, Object> config = this.loadConfig();
 
 			config.putIfAbsent("Bot_Token", "insert token here");
 			config.putIfAbsent("Owner_ID", "12345");

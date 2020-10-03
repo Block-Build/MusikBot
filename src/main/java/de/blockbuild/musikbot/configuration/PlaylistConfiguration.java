@@ -50,7 +50,7 @@ public class PlaylistConfiguration extends ConfigurationManager {
 	@Override
 	public boolean readConfig() {
 		try {
-			Map<String, Object> config = this.loadConfig1();
+			Map<String, Object> config = this.loadConfig();
 
 			config.putIfAbsent("Playlist", new LinkedList<String>());
 
