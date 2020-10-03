@@ -62,7 +62,7 @@ public class GuildConfiguration extends ConfigurationManager {
 	@SuppressWarnings("unchecked")
 	public boolean readConfig() {
 		try {
-			Map<String, Object> config = this.loadConfig1();
+			Map<String, Object> config = this.loadConfig();
 
 			config.putIfAbsent("Guild_Name", this.guildName);
 			config.putIfAbsent("Volume", 100);
