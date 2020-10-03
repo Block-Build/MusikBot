@@ -30,6 +30,7 @@ public abstract class ConfigurationManager {
 
 			Yaml yaml = new Yaml(o);
 			StringWriter writer = new StringWriter();
+			writer.append(header);
 			yaml.dump(data, writer);
 
 			bw.write(writer.toString());
