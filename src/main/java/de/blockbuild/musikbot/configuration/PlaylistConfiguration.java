@@ -19,7 +19,7 @@ public class PlaylistConfiguration extends ConfigurationManager {
 	private static String header;
 
 	public PlaylistConfiguration(Bot bot, User user, String name) {
-		super(new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
+		super(new File(bot.getMain().getFilePath(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
 		this.userName = user.getName();
 		this.playlistName = name;
 

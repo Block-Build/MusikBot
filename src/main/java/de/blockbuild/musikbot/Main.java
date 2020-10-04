@@ -1,5 +1,7 @@
 package de.blockbuild.musikbot;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,11 +17,15 @@ import net.dv8tion.jda.core.entities.User;
 public class Main extends JavaPlugin {
 
 	private Bot bot;
+	private String FilePath;
 
 	@Override
 	public void onEnable() {
 		try {
+			setFilePath();
+
 			start();
+
 			Metrics metrics = new Metrics(this);
 
 			metrics.addCustomChart(new Metrics.SingleLineChart("guilds_lin", () -> bot.getJda().getGuilds().size()));
@@ -72,5 +78,14 @@ public class Main extends JavaPlugin {
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			bot = new Bot(this);
 		}, 1L);
+	}
+
+	private final void setFilePath() {
+		FilePath = Paths.get("").toAbsolutePath().toString() + File.separator + "plugins" + File.separator
+				+ getName().toString();
+	}
+
+	public final String getFilePath() {
+		return FilePath;
 	}
 }

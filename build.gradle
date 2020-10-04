@@ -47,7 +47,7 @@ shadowJar {
         exclude(dependency('org.spigotmc:spigot-api:1.12.1-R0.1-SNAPSHOT'))
         exclude(dependency('com.google.guava:guava:21.0'))
         exclude(dependency('org.hamcrest:hamcrest-core:1.1'))
-        exclude(dependency('org.yaml:snakeyaml:1.19'))
+        //exclude(dependency('org.yaml:snakeyaml:1.19'))
         exclude(dependency('commons-lang:commons-lang:2.6'))
     }
     relocate 'org.apache', 'shadow.org.apache'

@@ -12,7 +12,7 @@ public class BotConfiguration extends ConfigurationManager {
 	private static String header;
 
 	public BotConfiguration(Bot bot) {
-		super(new File(bot.getMain().getDataFolder(), "BotConfig.yml"));
+		super(new File(bot.getMain().getFilePath(), "BotConfig.yml"));
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("# MusikBot by Block-Build\n");

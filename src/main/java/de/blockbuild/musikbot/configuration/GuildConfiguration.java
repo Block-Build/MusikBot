@@ -21,7 +21,7 @@ public class GuildConfiguration extends ConfigurationManager {
 	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
-		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
+		super(new File(bot.getMain().getFilePath(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
 		this.musicManager = musicManager;
 		this.guildName = musicManager.getGuild().getName();
 
