@@ -9,8 +9,6 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -69,21 +67,5 @@ public abstract class ConfigurationManager {
 
 	public String getRawConfiguration() {
 		return loadConfig().toString();
-	}
-
-	protected ConfigurationSection phraseMap(ConfigurationSection section, Map<String, Object> map, String... keys) {
-
-		for (String s : keys) {
-			section.addDefault(s, map.get(s));
-		}
-		return section;
-	}
-
-	protected ConfigurationSection addDefaultSection(YamlConfiguration config, String section) {
-		if (config.contains(section)) {
-			return config.getConfigurationSection(section);
-		} else {
-			return config.createSection(section);
-		}
 	}
 }
