@@ -2,6 +2,7 @@ package de.blockbuild.musikbot;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
@@ -48,25 +49,28 @@ import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Icon;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Activity.ActivityType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Icon;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 
 public class Bot {
 	public final static Permission[] BASIC_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
 			Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS,
 			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
+	public final static GatewayIntent[] Intents = new GatewayIntent[] { GatewayIntent.GUILD_VOICE_STATES,
+			GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGES };
 	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
@@ -115,8 +119,11 @@ public class Bot {
 				System.out.println("Without a token the Bot will not be able to start.");
 				return false;
 			}
-			jda = new JDABuilder(AccountType.BOT).setToken(token).setGame(Game.of(GameType.DEFAULT, "starting..."))
-					.setAudioEnabled(true).setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListener(waiter).build();
+			jda = JDABuilder.create(token, Arrays.asList(Intents))
+					.enableCache(CacheFlag.VOICE_STATE, CacheFlag.MEMBER_OVERRIDES)
+					.disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOTE)
+					.setActivity(Activity.of(ActivityType.DEFAULT, "starting..."))
+					.setStatus(OnlineStatus.DO_NOT_DISTURB).addEventListeners(waiter).build();
 			jda.awaitReady();
 		} catch (LoginException e) {
 			System.out.println("Invalid bot Token");
@@ -135,14 +142,14 @@ public class Bot {
 			System.err.println(e);
 		}
 
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Game.of(GameType.DEFAULT, config.getGame()));
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(ActivityType.DEFAULT, config.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
 
 		// Print invite token to console
 		System.out.println("Invite Token:");
-		String inviteURL = jda.asBot().getInviteUrl(Bot.BASIC_PERMS);
+		String inviteURL = jda.getInviteUrl(Bot.BASIC_PERMS);
 		System.out.println(inviteURL);
 		config.setInviteLink(inviteURL);
 
@@ -175,8 +182,7 @@ public class Bot {
 	}
 
 	public void initListeners() {
-		jda.addEventListener(new MessageListener(this));
-		jda.addEventListener(new VoiceChannelListener());
+		jda.addEventListener(new MessageListener(this), new VoiceChannelListener());
 	}
 
 	public void initCommandClient() {

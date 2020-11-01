@@ -2,8 +2,8 @@ package de.blockbuild.musikbot.commands;
 
 import de.blockbuild.musikbot.Bot;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 
 public abstract class SetupCommand extends MBCommand {
 

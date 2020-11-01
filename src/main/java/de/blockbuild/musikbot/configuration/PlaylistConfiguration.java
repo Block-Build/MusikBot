@@ -10,7 +10,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import de.blockbuild.musikbot.Bot;
 
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 
 public class PlaylistConfiguration extends ConfigurationManager {
 	private String playlistName, userName;

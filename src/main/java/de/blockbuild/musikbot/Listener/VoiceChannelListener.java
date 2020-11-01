@@ -3,10 +3,10 @@ package de.blockbuild.musikbot.Listener;
 import de.blockbuild.musikbot.core.AudioPlayerSendHandler;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class VoiceChannelListener extends ListenerAdapter {
 

@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Role;
 
 public class GuildConfiguration extends ConfigurationManager {
 	private final GuildMusicManager musicManager;

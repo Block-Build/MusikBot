@@ -20,8 +20,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import de.blockbuild.musikbot.Bot;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 

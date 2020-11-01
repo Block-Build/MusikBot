@@ -3,9 +3,9 @@ package de.blockbuild.musikbot.commands;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 
 public abstract class MusicCommand extends MBCommand {
 

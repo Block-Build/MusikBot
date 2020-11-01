@@ -9,16 +9,15 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.configuration.GuildConfiguration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 
 public abstract class MBCommand extends Command implements Comparable<Command> {
 
@@ -33,7 +32,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 	protected VoiceChannel channel;
 	protected VoiceChannel selfChannel;
 	protected TextChannel textChannel;
-	protected PrivateChannel privateChannel;
 	protected GuildMusicManager musicManager;
 	protected Guild guild;
 	protected String args;
@@ -54,8 +52,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		args = event.getArgs();
 		user = event.getAuthor();
 		selfUser = event.getSelfUser();
-		textChannel = event.getTextChannel();
-		privateChannel = event.getPrivateChannel();
 
 		if (event.getChannelType() == ChannelType.PRIVATE) {
 			if (event.isOwner()) {
@@ -84,6 +80,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		selfMember = event.getSelfMember();
 		channel = member.getVoiceState().getChannel();
 		selfChannel = selfMember.getVoiceState().getChannel();
+		textChannel = event.getTextChannel();
 		musicManager = bot.getGuildAudioPlayer(guild);
 
 		if (musicManager.config.getMessageDeleteDelay() > 0) {

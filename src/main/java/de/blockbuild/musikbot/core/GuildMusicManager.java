@@ -5,8 +5,8 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.configuration.GuildConfiguration;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 public class GuildMusicManager {
 	private final AudioPlayer player;

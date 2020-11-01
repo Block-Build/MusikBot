@@ -16,9 +16,9 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.exceptions.PermissionException;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.exceptions.PermissionException;
 
 public class PlayCommand extends MusicCommand {
 
@@ -127,7 +127,7 @@ public class PlayCommand extends MusicCommand {
 							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
 								trackScheduler.messageAddTrack(track, reply);
 							});
-						}).setUsers(event.getAuthor());
+						}).setUsers(event.getAuthor()).setCancel((msg) -> {});
 
 				for (int i = 0; i < 5 && i < playlist.getTracks().size(); i++) {
 
