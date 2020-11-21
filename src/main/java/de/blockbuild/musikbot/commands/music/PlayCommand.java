@@ -127,7 +127,7 @@ public class PlayCommand extends MusicCommand {
 							event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", reply -> {
 								trackScheduler.messageAddTrack(track, reply);
 							});
-						}).setUsers(event.getAuthor()).setCancel((msg) -> {});
+						}).setUsers(event.getAuthor());
 
 				for (int i = 0; i < 5 && i < playlist.getTracks().size(); i++) {
 
