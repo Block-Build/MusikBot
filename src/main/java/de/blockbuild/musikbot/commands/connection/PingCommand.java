@@ -16,7 +16,7 @@ public class PingCommand extends ConnectionCommand {
 	@Override
 	protected void doGuildCommand(CommandEvent event) {
 		StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-		builder.append(" Ping: `").append(event.getJDA().getPing()).append("ms`");
+		builder.append(" Ping: `").append(event.getJDA().getGatewayPing()).append("ms`");
 		event.reply(builder.toString());
 	}
 

@@ -12,7 +12,7 @@ import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.RadioCommand;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class RadioBonnRheinSiegCommand extends RadioCommand {
 
