@@ -19,7 +19,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import de.blockbuild.musikbot.Bot;
-
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -108,8 +107,20 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			String url = nextYTAutoPlay(track);
 			if (url == null) {
 				player.playTrack(queue.poll());
+
+				if (musicManager.config.isNowPlayingTrackEnabled()) {
+					bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
+							.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
+							.queue(m -> messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+				}
 			} else {
 				bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player));
+
+				if (musicManager.config.isNowPlayingTrackEnabled()) {
+					bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
+							.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
+							.queue(m -> messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+				}
 			}
 		}
 

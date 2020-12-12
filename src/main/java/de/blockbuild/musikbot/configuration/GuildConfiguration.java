@@ -18,7 +18,7 @@ public class GuildConfiguration extends ConfigurationManager {
 	private int volume, messageDeleteDelay;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles, nowPlaying;
 	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
@@ -57,6 +57,8 @@ public class GuildConfiguration extends ConfigurationManager {
 
 			this.phraseMap(config.createSection("Auto_Connect_On_Startup"), this.autoConnect, "Enabled",
 					"VoiceChannelId", "Track");
+			this.phraseMap(config.createSection("Message_Now_Playing_Track"), this.nowPlaying, "Enabled",
+					"TextChannelId");
 			this.phraseMap(config.createSection("Default_TextChannel"), this.defaultTextChannel, "Enabled",
 					"TextChannelId");
 			this.phraseMap(config.createSection("Default_VoiceChannel"), this.defaultVoiceChannel, "Enabled",
@@ -95,6 +97,10 @@ public class GuildConfiguration extends ConfigurationManager {
 			c.addDefault("VoiceChannelId", 0L);
 			c.addDefault("Track", "");
 
+			c = this.addDefaultSection(config, "Message_Now_Playing_Track");
+			c.addDefault("Enabled", false);
+			c.addDefault("TextChannelId", 0L);
+
 			c = this.addDefaultSection(config, "Default_TextChannel");
 			c.addDefault("Enabled", false);
 			c.addDefault("TextChannelId", 0L);
@@ -114,6 +120,7 @@ public class GuildConfiguration extends ConfigurationManager {
 			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track");
 
 			this.autoConnect = config.getConfigurationSection("Auto_Connect_On_Startup").getValues(false);
+			this.nowPlaying = config.getConfigurationSection("Message_Now_Playing_Track").getValues(false);
 			this.defaultTextChannel = config.getConfigurationSection("Default_TextChannel").getValues(false);
 			this.defaultVoiceChannel = config.getConfigurationSection("Default_VoiceChannel").getValues(false);
 
@@ -135,6 +142,9 @@ public class GuildConfiguration extends ConfigurationManager {
 
 		if (isAutoConnectEnabled() && getAutoConnectVoiceChannelId() == 0L)
 			setAutoConnectEnabled(false);
+
+		if (isNowPlayingTrackEnabled() && getNowPlayingTrackTextChannelId() == 0L)
+			setNowPlayingTrackEnabled(false);
 
 		if (isDefaultTextChannelEnabled() && getDefaultTextChannel() == 0L)
 			setDefaultTextChannelEnabled(false);
@@ -189,6 +199,22 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setAutoConnectTrack(String track) {
 		autoConnect.replace("Track", track);
+	}
+
+	public Boolean isNowPlayingTrackEnabled() {
+		return (Boolean) nowPlaying.get("Enabled");
+	}
+
+	public void setNowPlayingTrackEnabled(Boolean bool) {
+		nowPlaying.replace("Enabled", bool);
+	}
+
+	public long getNowPlayingTrackTextChannelId() {
+		return Long.parseLong(nowPlaying.get("TextChannelId").toString());
+	}
+
+	public void setNowPlayingTrackTextChannelId(Long textChannelId) {
+		nowPlaying.replace("TextChannelId", textChannelId);
 	}
 
 	public int getVolume() {

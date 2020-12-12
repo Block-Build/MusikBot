@@ -58,6 +58,14 @@ Auto_Connect_On_Startup:
 # Insert an URL.
   Track: ''
 
+# Send now playing Track title to textchannel on next track
+Message_Now_Playing_Track:
+# Enable or disable
+  Enabled: false
+# The ID of the TextChannel to use.
+# Example: 259798211111726208
+  TextChannelId: 0
+  
 # A specific TextChannel the bot only listen to.
 Default_TextChannel:
 # Enable or disable
