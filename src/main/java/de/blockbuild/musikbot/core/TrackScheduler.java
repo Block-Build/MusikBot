@@ -104,23 +104,13 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			String url = nextYTAutoPlay(track);
-			if (url == null) {
-				player.playTrack(queue.poll());
+			playNextTrack();
 
-				if (musicManager.config.isNowPlayingTrackEnabled()) {
-					bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
-							.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
-							.queue(m -> messageNowPlayingTrack(player.getPlayingTrack(), m, null));
-				}
-			} else {
-				bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(player));
-
-				if (musicManager.config.isNowPlayingTrackEnabled()) {
-					bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
-							.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
-							.queue(m -> messageNowPlayingTrack(player.getPlayingTrack(), m, null));
-				}
+			if (musicManager.config.isNowPlayingTrackEnabled()) {
+				bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
+//						.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
+//						.queue(m -> messageNowPlayingTrackShort(player.getPlayingTrack(), m));
+						.sendMessage(messageNowPlayingTrackShort(player.getPlayingTrack())).queue();
 			}
 		}
 
@@ -226,10 +216,10 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		return builder.toString();
 	}
 
-	public final String messageNowPlayingTrack(AudioTrack track, Message m, String prefix) {
+	public final String messageNowPlayingTrackLong(AudioTrack track, Message m, String prefix) {
 		if (track == null) {
 			m.delete().queue();
-			return "";
+			return null;
 		}
 		StringBuilder builder = new StringBuilder();
 		if (prefix != null) {
@@ -239,6 +229,30 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		builder.append(" Now playing: **").append(track.getInfo().title).append("**. Left time: (`");
 		builder.append(getTime(track.getDuration() - track.getPosition())).append("`) Minutes.");
 		m.editMessage(builder.toString()).queue();
+		return builder.toString();
+	}
+
+	public final String messageNowPlayingTrackShort(AudioTrack track, Message m) {
+		if (track == null) {
+			m.delete().queue();
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(Emoji.NOTES.getUtf8());
+		builder.append(" Now playing: **").append(track.getInfo().title).append("**.");
+		m.editMessage(builder.toString()).queue();
+		return builder.toString();
+	}
+
+	public final String messageNowPlayingTrackShort(AudioTrack track) {
+		if (track == null) {
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(Emoji.NOTES.getUtf8());
+		builder.append(" Now playing: **").append(track.getInfo().title).append("**.");
 		return builder.toString();
 	}
 

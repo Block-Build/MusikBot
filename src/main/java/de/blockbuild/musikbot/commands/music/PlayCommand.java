@@ -53,7 +53,7 @@ public class PlayCommand extends MusicCommand {
 					if (trackScheduler.playNextTrack()) {
 						// If player don't play but songs are in queue
 						// Could show the wrong track if the next song fail to load
-						trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null);
+						trackScheduler.messageNowPlayingTrackLong(player.getPlayingTrack(), m, null);
 					} else {
 						m.editMessage(event.getClient().getWarning() + " **Nothing to play at the moment!**").queue();
 					}
@@ -61,7 +61,7 @@ public class PlayCommand extends MusicCommand {
 
 			} else {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+						m -> trackScheduler.messageNowPlayingTrackLong(player.getPlayingTrack(), m, null));
 			}
 		} else {
 			final String TrackUrl;
