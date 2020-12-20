@@ -21,6 +21,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import de.blockbuild.musikbot.Bot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 public class TrackScheduler extends AudioEventAdapter implements AudioEventListener {
 
@@ -107,10 +108,14 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 			playNextTrack();
 
 			if (musicManager.config.isNowPlayingTrackEnabled()) {
-				bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId())
-//						.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
-//						.queue(m -> messageNowPlayingTrackShort(player.getPlayingTrack(), m));
-						.sendMessage(messageNowPlayingTrackShort(player.getPlayingTrack())).queue();
+				TextChannel tc = bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId());
+//						tc.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
+//						tc.queue(m -> messageNowPlayingTrackShort(player.getPlayingTrack(), m));
+				tc.sendMessage(messageNowPlayingTrackShort(player.getPlayingTrack())).queue(m -> {
+					if (musicManager.config.getMessageDeleteDelay() > 0) {
+						musicManager.deleteMessageLater(tc, m, musicManager.config.getMessageDeleteDelay());
+					}
+				});
 			}
 		}
 
