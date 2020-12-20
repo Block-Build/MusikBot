@@ -1,27 +1,30 @@
 package de.blockbuild.musikbot.core;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 public class BasicResultHandler implements AudioLoadResultHandler {
 
-	private final AudioPlayer player;
+	private TrackScheduler trackScheduler;
 
-	public BasicResultHandler(AudioPlayer player) {
-		this.player = player;
+	public BasicResultHandler(TrackScheduler trackScheduler) {
+		this.trackScheduler = trackScheduler;
 	}
 
 	@Override
 	public void trackLoaded(AudioTrack track) {
-		player.playTrack(track);
+		trackScheduler.playTrack(track);
 	}
 
 	@Override
 	public void playlistLoaded(AudioPlaylist playlist) {
-		player.playTrack(playlist.getTracks().get(0));
+		// player.playTrack(playlist.getTracks().get(0));
+
+		for (AudioTrack track : playlist.getTracks()) {
+			trackScheduler.queueTrack(track);
+		}
 	}
 
 	@Override
