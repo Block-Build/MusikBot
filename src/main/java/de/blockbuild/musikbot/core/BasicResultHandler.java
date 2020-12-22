@@ -19,6 +19,12 @@ public class BasicResultHandler implements AudioLoadResultHandler {
 
 	@Override
 	public void trackLoaded(AudioTrack track) {
+		trackScheduler.playTrack(track);
+
+		try {
+			Thread.sleep(300);
+		} catch (InterruptedException ignore) {
+		}
 
 		if (musicManager.config.isNowPlayingTrackEnabled()) {
 			TextChannel tc = musicManager.getGuild()
@@ -31,8 +37,6 @@ public class BasicResultHandler implements AudioLoadResultHandler {
 						}
 					});
 		}
-
-		trackScheduler.playTrack(track);
 	}
 
 	@Override
