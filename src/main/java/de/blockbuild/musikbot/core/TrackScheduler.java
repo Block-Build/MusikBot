@@ -105,17 +105,17 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		if (endReason.mayStartNext) {
-			playNextTrack();
-
-			if (musicManager.config.isNowPlayingTrackEnabled()) {
-				TextChannel tc = bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId());
+			if (playNextTrack()) {
+				if (musicManager.config.isNowPlayingTrackEnabled()) {
+					TextChannel tc = bot.getTextChannelById(musicManager.config.getNowPlayingTrackTextChannelId());
 //						tc.sendMessage(Emoji.MAG_RIGHT.getUtf8() + " Loading...")
 //						tc.queue(m -> messageNowPlayingTrackShort(player.getPlayingTrack(), m));
-				tc.sendMessage(messageNowPlayingTrackShort(player.getPlayingTrack())).queue(m -> {
-					if (musicManager.config.getMessageDeleteDelay() > 0) {
-						musicManager.deleteMessageLater(tc, m, musicManager.config.getMessageDeleteDelay());
-					}
-				});
+					tc.sendMessage(messageNowPlayingTrackShort(player.getPlayingTrack())).queue(m -> {
+						if (musicManager.config.getMessageDeleteDelay() > 0) {
+							musicManager.deleteMessageLater(tc, m, musicManager.config.getMessageDeleteDelay());
+						}
+					});
+				}
 			}
 		}
 
