@@ -67,7 +67,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 	public boolean playNextTrack() {
 		String url = nextYTAutoPlay(player.getPlayingTrack());
 		if (!(url == null)) {
-			bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(this));
+			bot.getPlayerManager().loadItemOrdered(musicManager, url, new BasicResultHandler(musicManager));
 			// wait for loading track
 			try {
 				Thread.sleep(1000);

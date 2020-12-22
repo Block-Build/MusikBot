@@ -46,7 +46,7 @@ public class GuildMusicManager {
 			}
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
-						new BasicResultHandler(getTrackScheduler()));
+						new BasicResultHandler(this));
 			}
 		}
 	}
