@@ -1,11 +1,10 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.core.GuildMusicManager;
@@ -18,20 +17,20 @@ public class GuildConfiguration extends ConfigurationManager {
 	private int volume, messageDeleteDelay;
 	private List<Long> blacklist, whitelist;
 	private Boolean disconnectIfAlone, disconnectAfterLastTrack, useWhitelist;
-	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles;
+	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles, nowPlaying;
 	private static String header;
 
 	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
-		super(new File(bot.getMain().getDataFolder(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
+		super(new File(bot.getMain().getFilePath(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
 		this.musicManager = musicManager;
 		this.guildName = musicManager.getGuild().getName();
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("MusikBot by Block-Build\n");
-		builder.append("+=====================+\n");
-		builder.append("| GUILD CONFIGURATION |\n");
-		builder.append("+=====================+\n");
-		builder.append("\n");
+		builder.append("# MusikBot by Block-Build\n");
+		builder.append("# +=====================+\n");
+		builder.append("# | GUILD CONFIGURATION |\n");
+		builder.append("# +=====================+\n");
+		builder.append("# \n");
 		header = builder.toString();
 
 		readConfig();
@@ -39,83 +38,106 @@ public class GuildConfiguration extends ConfigurationManager {
 	}
 
 	public boolean writeConfig() {
-		try {
-			YamlConfiguration config = new YamlConfiguration();
+		Map<String, Object> config = new LinkedHashMap<String, Object>();
 
-			config.set("Guild_Name", this.guildName);
-			config.set("Volume", this.volume);
-			config.set("Delete_Command_Massages_Delay", this.messageDeleteDelay);
-			config.set("Whitelist_Enabled", this.useWhitelist);
-			config.set("Whitelist", this.whitelist);
-			config.set("Blacklist", this.blacklist);
+		config.put("Guild_Name", this.guildName);
+		config.put("Volume", this.volume);
+		config.put("Delete_Command_Massages_Delay", this.messageDeleteDelay);
+		config.put("Whitelist_Enabled", this.useWhitelist);
+		config.put("Whitelist", this.whitelist);
+		config.put("Blacklist", this.blacklist);
 
-			this.phraseMap(config.createSection("Command_Permission_Roles"), this.roles, "Music_Commands",
-					"Radio_Commands", "Connection_Commands", "Setup_Commands");
+		config.put("Command_Permission_Roles", this.roles);
 
-			config.set("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
-			config.set("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
+		config.put("Auto_Disconnect_If_Alone", this.disconnectIfAlone);
+		config.put("Auto_Disconnect_After_Last_Track", this.disconnectAfterLastTrack);
 
-			this.phraseMap(config.createSection("Auto_Connect_On_Startup"), this.autoConnect, "Enabled",
-					"VoiceChannelId", "Track");
-			this.phraseMap(config.createSection("Default_TextChannel"), this.defaultTextChannel, "Enabled",
-					"TextChannelId");
-			this.phraseMap(config.createSection("Default_VoiceChannel"), this.defaultVoiceChannel, "Enabled",
-					"VoiceChannelId");
+		config.put("Auto_Connect_On_Startup", this.autoConnect);
+		config.put("Message_Now_Playing_Track", this.nowPlaying);
+		config.put("Default_TextChannel", this.defaultTextChannel);
+		config.put("Default_VoiceChannel", this.defaultVoiceChannel);
 
-			return this.saveConfig(config, header);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		return this.saveConfig(config, header);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean readConfig() {
 		try {
-			YamlConfiguration config = this.loadConfig();
-			ConfigurationSection c;
+			Map<String, Object> config = this.loadConfig();
 
-			config.addDefault("Guild_Name", this.guildName);
-			config.addDefault("Volume", 100);
-			config.addDefault("Delete_Command_Massages_Delay", 0);
-			config.addDefault("Whitelist_Enabled", "");
-			config.addDefault("Whitelist", null);
-			config.addDefault("Blacklist", null);
+			config.putIfAbsent("Guild_Name", this.guildName);
+			config.putIfAbsent("Volume", 100);
+			config.putIfAbsent("Delete_Command_Massages_Delay", 0);
+			config.putIfAbsent("Whitelist_Enabled", "");
+			config.putIfAbsent("Whitelist", new LinkedList<Long>());
+			config.putIfAbsent("Blacklist", new LinkedList<Long>());
 
-			c = this.addDefaultSection(config, "Command_Permission_Roles");
-			c.addDefault("Music_Commands", "");
-			c.addDefault("Radio_Commands", "");
-			c.addDefault("Connection_Commands", "");
-			c.addDefault("Setup_Commands", "");
+			Map<String, Object> section;
+			if (config.containsKey("Command_Permission_Roles")) {
+				section = (Map<String, Object>) config.get("Command_Permission_Roles");
+			} else {
+				section = new LinkedHashMap<String, Object>();
+			}
+			section.putIfAbsent("Music_Commands", "");
+			section.putIfAbsent("Radio_Commands", "");
+			section.putIfAbsent("Connection_Commands", "");
+			section.putIfAbsent("Setup_Commands", "");
+			config.put("Command_Permission_Roles", section);
+			this.roles = section;
 
-			config.addDefault("Auto_Disconnect_If_Alone", false);
-			config.addDefault("Auto_Disconnect_After_Last_Track", false);
+			config.putIfAbsent("Auto_Disconnect_If_Alone", false);
+			config.putIfAbsent("Auto_Disconnect_After_Last_Track", false);
 
-			c = this.addDefaultSection(config, "Auto_Connect_On_Startup");
-			c.addDefault("Enabled", false);
-			c.addDefault("VoiceChannelId", 0L);
-			c.addDefault("Track", "");
+			if (config.containsKey("Auto_Connect_On_Startup")) {
+				section = (Map<String, Object>) config.get("Auto_Connect_On_Startup");
+			} else {
+				section = new LinkedHashMap<String, Object>();
+			}
+			section.putIfAbsent("Enabled", false);
+			section.putIfAbsent("VoiceChannelId", 0L);
+			section.putIfAbsent("Track", "");
+			config.put("Auto_Connect_On_Startup", section);
+			this.autoConnect = section;
 
-			c = this.addDefaultSection(config, "Default_TextChannel");
-			c.addDefault("Enabled", false);
-			c.addDefault("TextChannelId", 0L);
+			if (config.containsKey("Message_Now_Playing_Track")) {
+				section = (Map<String, Object>) config.get("Message_Now_Playing_Track");
+			} else {
+				section = new LinkedHashMap<String, Object>();
+			}
+			section.putIfAbsent("Enabled", false);
+			section.putIfAbsent("TextChannelId", 0L);
+			config.put("Message_Now_Playing_Track", section);
+			this.nowPlaying = section;
 
-			c = this.addDefaultSection(config, "Default_VoiceChannel");
-			c.addDefault("Enabled", false);
-			c.addDefault("VoiceChannelId", 0L);
+			if (config.containsKey("Default_TextChannel")) {
+				section = (Map<String, Object>) config.get("Default_TextChannel");
+			} else {
+				section = new LinkedHashMap<String, Object>();
+			}
+			section.putIfAbsent("Enabled", false);
+			section.putIfAbsent("TextChannelId", 0L);
+			config.put("Default_TextChannel", section);
+			this.defaultTextChannel = section;
 
-			this.volume = !(config.getInt("Volume") < 1) && !(config.getInt("Volume") > 100) ? config.getInt("Volume")
+			if (config.containsKey("Default_VoiceChannel")) {
+				section = (Map<String, Object>) config.get("Default_VoiceChannel");
+			} else {
+				section = new LinkedHashMap<String, Object>();
+			}
+			section.putIfAbsent("Enabled", false);
+			section.putIfAbsent("VoiceChannelId", 0L);
+			config.put("Default_VoiceChannel", section);
+			this.defaultVoiceChannel = section;
+
+			this.volume = !((int) config.get("Volume") < 1) && !((int) config.get("Volume") > 100)
+					? (int) config.get("Volume")
 					: 100;
-			this.messageDeleteDelay = config.getInt("Delete_Command_Massages_Delay");
-			this.useWhitelist = config.getBoolean("Whitelist_Enabled");
-			this.whitelist = config.getLongList("Whitelist");
-			this.blacklist = config.getLongList("Blacklist");
-			this.roles = config.getConfigurationSection("Command_Permission_Roles").getValues(false);
-			this.disconnectIfAlone = config.getBoolean("Auto_Disconnect_If_Alone");
-			this.disconnectAfterLastTrack = config.getBoolean("Auto_Disconnect_After_Last_Track");
-
-			this.autoConnect = config.getConfigurationSection("Auto_Connect_On_Startup").getValues(false);
-			this.defaultTextChannel = config.getConfigurationSection("Default_TextChannel").getValues(false);
-			this.defaultVoiceChannel = config.getConfigurationSection("Default_VoiceChannel").getValues(false);
+			this.messageDeleteDelay = (int) config.get("Delete_Command_Massages_Delay");
+			this.useWhitelist = (Boolean) config.get("Whitelist_Enabled");
+			this.whitelist = (List<Long>) config.get("Whitelist");
+			this.blacklist = (List<Long>) config.get("Blacklist");
+			this.disconnectIfAlone = (Boolean) config.get("Auto_Disconnect_If_Alone");
+			this.disconnectAfterLastTrack = (Boolean) config.get("Auto_Disconnect_After_Last_Track");
 
 			initConfig();
 			return true;
@@ -135,6 +157,9 @@ public class GuildConfiguration extends ConfigurationManager {
 
 		if (isAutoConnectEnabled() && getAutoConnectVoiceChannelId() == 0L)
 			setAutoConnectEnabled(false);
+
+		if (isNowPlayingTrackEnabled() && getNowPlayingTrackTextChannelId() == 0L)
+			setNowPlayingTrackEnabled(false);
 
 		if (isDefaultTextChannelEnabled() && getDefaultTextChannel() == 0L)
 			setDefaultTextChannelEnabled(false);
@@ -189,6 +214,22 @@ public class GuildConfiguration extends ConfigurationManager {
 
 	public void setAutoConnectTrack(String track) {
 		autoConnect.replace("Track", track);
+	}
+
+	public Boolean isNowPlayingTrackEnabled() {
+		return (Boolean) nowPlaying.get("Enabled");
+	}
+
+	public void setNowPlayingTrackEnabled(Boolean bool) {
+		nowPlaying.replace("Enabled", bool);
+	}
+
+	public long getNowPlayingTrackTextChannelId() {
+		return Long.parseLong(nowPlaying.get("TextChannelId").toString());
+	}
+
+	public void setNowPlayingTrackTextChannelId(Long textChannelId) {
+		nowPlaying.replace("TextChannelId", textChannelId);
 	}
 
 	public int getVolume() {
