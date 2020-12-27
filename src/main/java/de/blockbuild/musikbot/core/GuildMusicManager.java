@@ -1,11 +1,16 @@
 package de.blockbuild.musikbot.core;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.configuration.GuildConfiguration;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class GuildMusicManager {
@@ -41,9 +46,17 @@ public class GuildMusicManager {
 			}
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
-						new BasicResultHandler(this.getAudioPlayer()));
+						new BasicResultHandler(this));
 			}
 		}
+	}
+
+	public void deleteMessageLater(MessageChannel channel, Message message, int delay) {
+		Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+			message.delete().queue(unused -> {
+			}, ignored -> {
+			});
+		}, delay, TimeUnit.MINUTES);
 	}
 
 	public Guild getGuild() {
