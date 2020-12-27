@@ -89,9 +89,9 @@ public class Bot {
 
 		try {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
-					new File(main.getFilePath(), "Sample_BotConfig.yml"));
+					new File(main.getDataFolder(), "Sample_BotConfig.yml"));
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
-					new File(main.getFilePath(), "Sample_GuildConfig.yml"));
+					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
 		} catch (IOException e) {
 			System.err.println("[" + main.getName() + "] Can't write Sample_Configs.");
 			e.printStackTrace();

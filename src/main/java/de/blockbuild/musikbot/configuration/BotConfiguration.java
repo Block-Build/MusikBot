@@ -1,9 +1,10 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import de.blockbuild.musikbot.Bot;
 
 public class BotConfiguration extends ConfigurationManager {
@@ -12,20 +13,20 @@ public class BotConfiguration extends ConfigurationManager {
 	private static String header;
 
 	public BotConfiguration(Bot bot) {
-		super(new File(bot.getMain().getFilePath(), "BotConfig.yml"));
+		super(new File(bot.getMain().getDataFolder(), "BotConfig.yml"));
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("# MusikBot by Block-Build\n");
-		builder.append("# +===================+\n");
-		builder.append("# | BOT CONFIGURATION |\n");
-		builder.append("# +===================+\n");
-		builder.append("# \n");
-		builder.append("# You have to insert the bot token and owner id.\n");
+		builder.append("MusikBot by Block-Build\n");
+		builder.append("+===================+\n");
+		builder.append("| BOT CONFIGURATION |\n");
+		builder.append("+===================+\n");
+		builder.append("\n");
+		builder.append("You have to insert the bot token and owner id.\n");
 		builder.append(
-				"# Instructions on: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
+				"Instructions on: `https://www.spigotmc.org/resources/the-discord-musikbot-on-minecraft.64277/`\n");
 		builder.append(
-				"# Support/Suggestions/Bugs? Have a look on this site: `https://github.com/Block-Build/MusikBot`\n");
-		builder.append("# \n");
+				"Support/Suggestions/Bugs? Have a look on this site: `https://github.com/Block-Build/MusikBot`\n");
+		builder.append("\n");
 		header = builder.toString();
 
 		readConfig();
@@ -33,45 +34,39 @@ public class BotConfiguration extends ConfigurationManager {
 	}
 
 	public boolean writeConfig() {
-		Map<String, Object> config = new LinkedHashMap<String, Object>();
+		YamlConfiguration config = new YamlConfiguration();
 
-		config.put("Bot_Token", this.token);
-		config.put("Owner_ID", this.ownerID);
-		config.put("Command_Trigger", this.trigger);
-		config.put("Game", this.game);
-		config.put("Emojis", emojis);
-		config.put("Invite_URL", this.inviteURL);
+		config.set("Bot_Token", this.token);
+		config.set("Owner_ID", this.ownerID);
+		config.set("Command_Trigger", this.trigger);
+		config.set("Game", this.game);
+		this.phraseMap(config.createSection("Emojis"), this.emojis, "Success", "Warning", "Error");
+		config.set("Invite_URL", this.inviteURL);
 
 		return this.saveConfig(config, header);
 	}
 
-	@SuppressWarnings("unchecked")
 	public boolean readConfig() {
 		try {
-			Map<String, Object> config = this.loadConfig();
+			YamlConfiguration config = this.loadConfig();
+			ConfigurationSection c;
 
-			config.putIfAbsent("Bot_Token", "insert token here");
-			config.putIfAbsent("Owner_ID", "12345");
-			config.putIfAbsent("Command_Trigger", "!");
-			config.putIfAbsent("Game", "Ready for playing music. !Play");
+			config.addDefault("Bot_Token", "insert token here");
+			config.addDefault("Owner_ID", "12345");
+			config.addDefault("Command_Trigger", "!");
+			config.addDefault("Game", "Ready for playing music. !Play");
 
-			Map<String, Object> section;
-			if (config.containsKey("Emojis")) {
-				section = (Map<String, Object>) config.get("Emojis");
-			} else {
-				section = new LinkedHashMap<String, Object>();
-			}
-			section.putIfAbsent("Success", "\uD83D\uDE03");
-			section.putIfAbsent("Warning", "\uD83D\uDE2E");
-			section.putIfAbsent("Error", "\uD83D\uDE26");
-			config.put("Emojis", section);
-			this.emojis = section;
+			c = this.addDefaultSection(config, "Emojis");
+			c.addDefault("Success", "\uD83D\uDE03");
+			c.addDefault("Warning", "\uD83D\uDE2E");
+			c.addDefault("Error", "\uD83D\uDE26");
 
-			this.token = config.get("Bot_Token").toString();
-			this.ownerID = config.get("Owner_ID").toString();
-			this.trigger = config.get("Command_Trigger").toString();
-			this.game = config.get("Game").toString();
+			this.token = config.getString("Bot_Token");
+			this.ownerID = config.getString("Owner_ID");
+			this.trigger = config.getString("Command_Trigger");
+			this.game = config.getString("Game");
 
+			this.emojis = config.getConfigurationSection("Emojis").getValues(false);
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read BotConfiguration!");

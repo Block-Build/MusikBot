@@ -1,10 +1,9 @@
 package de.blockbuild.musikbot.configuration;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -19,16 +18,16 @@ public class PlaylistConfiguration extends ConfigurationManager {
 	private static String header;
 
 	public PlaylistConfiguration(Bot bot, User user, String name) {
-		super(new File(bot.getMain().getFilePath(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
+		super(new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/" + name + ".yml"));
 		this.userName = user.getName();
 		this.playlistName = name;
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("# MusikBot by Block-Build\n");
-		builder.append("# +========================+\n");
-		builder.append("# | PLAYLIST CONFIGURATION |\n");
-		builder.append("# +========================+\n");
-		builder.append("# \n");
+		builder.append("MusikBot by Block-Build\n");
+		builder.append("+========================+\n");
+		builder.append("| PLAYLIST CONFIGURATION |\n");
+		builder.append("+========================+\n");
+		builder.append("\n");
 		header = builder.toString();
 
 		readConfig();
@@ -36,25 +35,22 @@ public class PlaylistConfiguration extends ConfigurationManager {
 
 	@Override
 	public boolean writeConfig() {
-		Map<String, Object> config = new LinkedHashMap<String, Object>();
+		YamlConfiguration config = new YamlConfiguration();
 
-		config.put("User_Name", this.userName);
-		config.put("Playlist_Name", this.playlistName);
-		config.put("Amount", playlist.size());
-		config.put("Playlist", this.playlist);
+		config.set("User_Name", this.userName);
+		config.set("Playlist_Name", this.playlistName);
+		config.set("Amount", playlist.size());
+		config.set("Playlist", this.playlist);
 
 		return this.saveConfig(config, header);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean readConfig() {
 		try {
-			Map<String, Object> config = this.loadConfig();
+			YamlConfiguration config = this.loadConfig();
 
-			config.putIfAbsent("Playlist", new LinkedList<String>());
-
-			this.playlist = (List<String>) config.get("Playlist");
+			this.playlist = config.getStringList("Playlist");
 			return true;
 		} catch (Exception e) {
 			System.out.println("Couldn't read Playlist `" + this.playlistName + "`!");
