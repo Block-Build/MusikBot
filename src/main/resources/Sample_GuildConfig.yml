@@ -74,7 +74,7 @@ Default_TextChannel:
 # Example: 259798211111726208
   TextChannelId: 0
 
-# A specific VoiceChannel the bot only listen to.
+# A specific VoiceChannel the bot only can join.
 Default_VoiceChannel:
 # Enable or disable
   Enabled: false

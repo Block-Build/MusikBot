@@ -11,7 +11,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.github.breadmoirai.discordemoji.Emoji;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
@@ -50,16 +49,6 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 		}
 	}
 
-	@Deprecated
-	public void playTrack(AudioTrack track, CommandEvent event) {
-		if (!(event == null)) {
-			StringBuilder builder = new StringBuilder(event.getClient().getSuccess());
-			builder.append(" Successfully added: `").append(track.getInfo().title).append("`");
-			event.reply(builder.toString());
-		}
-		player.startTrack(track, false);
-	}
-
 	public boolean playTrack(AudioTrack track) {
 		return player.startTrack(track, false);
 	}
@@ -73,6 +62,7 @@ public class TrackScheduler extends AudioEventAdapter implements AudioEventListe
 				Thread.sleep(1000);
 			} catch (InterruptedException ignore) {
 			}
+			
 			return true;
 		} else if (queue.isEmpty()) {
 			player.stopTrack();
