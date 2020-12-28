@@ -1,7 +1,5 @@
 package de.blockbuild.musikbot.commands;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 
@@ -13,8 +11,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -84,7 +80,7 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		musicManager = bot.getGuildAudioPlayer(guild);
 
 		if (musicManager.config.getMessageDeleteDelay() > 0) {
-			deleteMessageLater(event.getChannel(), event.getMessage(), musicManager.config.getMessageDeleteDelay());
+			musicManager.deleteMessageLater(event.getChannel(), event.getMessage(), musicManager.config.getMessageDeleteDelay());
 		}
 
 		if (musicManager.config.isDefaultTextChannelEnabled()) {
@@ -118,14 +114,6 @@ public abstract class MBCommand extends Command implements Comparable<Command> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	protected void deleteMessageLater(MessageChannel channel, Message message, int delay) {
-		Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-			message.delete().queue(unused -> {
-			}, ignored -> {
-			});
-		}, delay, TimeUnit.MINUTES);
 	}
 
 	public Long getLong(String string, CommandEvent event) {

@@ -38,7 +38,7 @@ public class SkipCommand extends MusicCommand {
 
 					event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> {
 						if (trackScheduler.playNextTrack()) {
-							trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, builder.toString());
+							trackScheduler.messageNowPlayingTrackLong(player.getPlayingTrack(), m, builder.toString());
 						} else {
 							builder.append("\n")
 									.append(event.getClient().getWarning() + " **Nothing to play at the moment!**");
@@ -54,7 +54,7 @@ public class SkipCommand extends MusicCommand {
 		} else {
 			if (trackScheduler.playNextTrack()) {
 				event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...",
-						m -> trackScheduler.messageNowPlayingTrack(player.getPlayingTrack(), m, null));
+						m -> trackScheduler.messageNowPlayingTrackLong(player.getPlayingTrack(), m, null));
 			} else {
 				event.reply(event.getClient().getWarning() + " **Nothing to play at the moment!**");
 			}
