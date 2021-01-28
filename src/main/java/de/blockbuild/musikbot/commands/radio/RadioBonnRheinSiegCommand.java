@@ -20,7 +20,7 @@ public class RadioBonnRheinSiegCommand extends RadioCommand {
 		super(bot);
 		this.name = "radiobonnrheinsieg";
 		this.aliases = new String[] { "rbrs" };
-		this.help = "Plays RadioBonnRheinSieg!";
+		this.help = "Streams RadioBonnRheinSieg!";
 		this.joinOnCommand = true;
 	}
 
