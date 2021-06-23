@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.login.LoginException;
 
+import de.blockbuild.musikbot.configuration.ConfigFactory;
+import de.blockbuild.musikbot.configuration.Configuration;
 import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -80,7 +82,8 @@ public class Bot {
 	public final BotConfiguration config;
 
 	public Bot(Main main) {
-		System.out.println("[" + main.getName() + "] Get started...");
+		final Configuration config = ConfigFactory.getInstance().getConfig();
+		System.out.println("[" + config.getName() + "] Get started...");
 
 		this.main = main;
 		this.waiter = new EventWaiter();
@@ -94,16 +97,16 @@ public class Bot {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
 					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
 		} catch (IOException e) {
-			System.err.println("[" + main.getName() + "] Can't write Sample_Configs.");
+			System.err.println("[" + config.getName() + "] Can't write Sample_Configs.");
 			e.printStackTrace();
 		}
 
 		if (start()) {
 			initListeners();
 			initCommandClient();
-			System.out.println("[" + main.getName() + "] Started successfully");
+			System.out.println("[" + config.getName() + "] Started successfully");
 		} else {
-			System.out.println("[" + main.getName() + "] Shut down");
+			System.out.println("[" + config.getName() + "] Shut down");
 			main.onDisable();
 		}
 	}

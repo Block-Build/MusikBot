@@ -1,4 +1,4 @@
-package de.blockbuild.musikbot.config;
+package de.blockbuild.musikbot.configuration;
 
 public final class ConfigFactory {
 
