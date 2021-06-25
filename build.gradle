@@ -11,9 +11,13 @@ targetCompatibility = 1.8
 repositories {
     jcenter()
     mavenCentral()
+    
+    //MC
     maven {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
+    
+    // JDA & LavaPlayer
     maven {
         name 'm2-dv8tion'
         url 'https://m2.dv8tion.net/releases'
