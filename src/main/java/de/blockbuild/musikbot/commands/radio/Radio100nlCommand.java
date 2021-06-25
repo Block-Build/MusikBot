@@ -14,13 +14,12 @@ import de.blockbuild.musikbot.core.TrackScheduler;
 
 import net.dv8tion.jda.api.entities.Message;
 
-public class RadioBonnRheinSiegCommand extends RadioCommand {
-
-	public RadioBonnRheinSiegCommand(Bot bot) {
+public class Radio100nlCommand extends RadioCommand {
+	public Radio100nlCommand(Bot bot) {
 		super(bot);
-		this.name = "radiobonnrheinsieg";
-		this.aliases = new String[] { "rbrs" };
-		this.help = "Streams RadioBonnRheinSieg!";
+		this.name = "radio100%nl";
+		this.aliases = new String[] { "100%nl" };
+		this.help = "Streams Radio 100%NL!";
 		this.joinOnCommand = true;
 	}
 
@@ -30,7 +29,7 @@ public class RadioBonnRheinSiegCommand extends RadioCommand {
 		AudioPlayerManager playerManager = bot.getPlayerManager();
 
 		event.reply(Emoji.MAG_RIGHT.getUtf8() + " Loading...", m -> playerManager.loadItemOrdered(musicManager,
-				"http://stream.lokalradio.nrw/rbrs", new ResultHandler(trackScheduler, event, m)));
+				"https://stream.100p.nl/100pctnl.mp3", new ResultHandler(trackScheduler, event, m)));
 	}
 
 	@Override

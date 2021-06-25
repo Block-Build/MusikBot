@@ -47,6 +47,20 @@ public class GuildMusicManager {
 			if (!(config.getAutoConnectTrack() == null)) {
 				playerManager.loadItemOrdered(playerManager, config.getAutoConnectTrack(),
 						new BasicResultHandler(this));
+
+				if (config.isNowPlayingTrackEnabled()) {
+					Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+
+						TextChannel tc = guild.getTextChannelById(config.getNowPlayingTrackTextChannelId());
+						tc.sendMessage(trackScheduler.messageNowPlayingTrackShort(player.getPlayingTrack()))
+								.queue(m -> {
+									if (config.getMessageDeleteDelay() > 0) {
+										deleteMessageLater(tc, m, config.getMessageDeleteDelay());
+									}
+								});
+					}, 5, TimeUnit.SECONDS);
+
+				}
 			}
 		}
 	}

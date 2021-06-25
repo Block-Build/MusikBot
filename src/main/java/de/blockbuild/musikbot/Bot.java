@@ -34,6 +34,7 @@ import de.blockbuild.musikbot.commands.music.SkipCommand;
 import de.blockbuild.musikbot.commands.music.StopCommand;
 import de.blockbuild.musikbot.commands.music.VolumeCommand;
 import de.blockbuild.musikbot.commands.music.YTAutoPlayCommand;
+import de.blockbuild.musikbot.commands.radio.Radio100nlCommand;
 import de.blockbuild.musikbot.commands.radio.RadioBobCommand;
 import de.blockbuild.musikbot.commands.radio.RadioBonnRheinSiegCommand;
 import de.blockbuild.musikbot.commands.radio.RadioMnmCommand;
@@ -246,6 +247,7 @@ public class Bot {
 				new RautemusikCommand(this), 
 				new RadioBobCommand(this),
 				new RadioMnmCommand(this),
+				new Radio100nlCommand(this),
 				
 				//Connection
 				new JoinCommand(this), 
