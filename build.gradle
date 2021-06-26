@@ -9,7 +9,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    jcenter()
+    jcenter() // remove before Feb 2022
     mavenCentral()
     
     //MC
