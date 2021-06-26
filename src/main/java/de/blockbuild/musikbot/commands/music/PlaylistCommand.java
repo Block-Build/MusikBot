@@ -15,9 +15,12 @@ import de.blockbuild.musikbot.commands.MusicCommand;
 import de.blockbuild.musikbot.configuration.PlaylistConfiguration;
 import de.blockbuild.musikbot.core.TrackScheduler;
 
+import net.dv8tion.jda.api.entities.Message;
+
 public class PlaylistCommand extends MusicCommand {
 	List<String> tracks;
-	private int amount;
+	private int amount, erramount;
+	private Message errmessage;
 
 	public PlaylistCommand(Bot bot) {
 		super(bot);
@@ -55,8 +58,8 @@ public class PlaylistCommand extends MusicCommand {
 			return;
 		}
 
-		String name = x[1];
-		PlaylistConfiguration playlist = new PlaylistConfiguration(bot, user, name);
+		String pname = x[1];
+		PlaylistConfiguration playlist = new PlaylistConfiguration(bot, user, pname);
 
 		switch (x[0]) {
 		case "save":
@@ -71,10 +74,10 @@ public class PlaylistCommand extends MusicCommand {
 			playlist.addTracks(trackScheduler.getQueue());
 
 			if (playlist.writeConfig()) {
-				builder.append(" Successfully saved playlist **").append(name).append("** containing **")
+				builder.append(" Successfully saved playlist **").append(pname).append("** containing **")
 						.append(playlist.getAmount()).append("** Tracks");
 			} else {
-				builder.append(" Failed to save playlist **").append(name).append("**");
+				builder.append(" Failed to save playlist **").append(pname).append("**");
 			}
 			event.reply(builder.toString());
 
@@ -83,7 +86,7 @@ public class PlaylistCommand extends MusicCommand {
 		case "delete":
 		case "del":
 			playlist.deleteConfig();
-			builder.append(" Successfully deleted: **").append(name).append("**.");
+			builder.append(" Successfully deleted: **").append(pname).append("**.");
 			event.reply(builder.toString());
 
 			break;
@@ -92,24 +95,26 @@ public class PlaylistCommand extends MusicCommand {
 				StringBuilder builder1 = new StringBuilder();
 				if (playlist.getPlaylist().isEmpty()) {
 					builder1.append(event.getClient().getWarning());
-					builder1.append(" Playlist `").append(name).append("` dosen't exsist.");
+					builder1.append(" Playlist `").append(pname).append("` dosen't exsist.");
 				} else {
 					amount = 0;
+					erramount = 0;
+					errmessage = null;
 					for (String track : playlist.getPlaylist()) {
 						bot.getPlayerManager().loadItemOrdered(musicManager, track,
-								new ResultHandler(trackScheduler, event));
+								new ResultHandler(trackScheduler, event, m, pname));
 					}
 
 					builder1.append(event.getClient().getSuccess());
 					builder1.append(" Successfully load **").append(amount);
-					builder1.append("** tracks from Playlist **").append(name).append("**");
+					builder1.append("** tracks from Playlist **").append(pname).append("**");
 				}
 				m.editMessage(builder1.toString()).queue();
 			});
 			break;
 		case "list":
 		case "show":
-			builder.append(" Playlist **").append(name).append(":**\n");
+			builder.append(" Playlist **").append(pname).append(":**\n");
 			for (String track : playlist.getPlaylist()) {
 				builder.append("`").append(track).append("`\n");
 			}
@@ -140,16 +145,27 @@ public class PlaylistCommand extends MusicCommand {
 	private class ResultHandler implements AudioLoadResultHandler {
 		private TrackScheduler trackScheduler;
 		private CommandEvent event;
+		private Message pmessage;
+		private String pname;
+		private StringBuilder sucmsg = new StringBuilder();
+		private StringBuilder errmsg = new StringBuilder();
 
-		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event) {
+		public ResultHandler(TrackScheduler trackScheduler, CommandEvent event, Message m, String pname) {
 			this.trackScheduler = trackScheduler;
 			this.event = event;
+			this.pmessage = m;
+			this.pname = pname;
 		}
 
 		@Override
 		public void trackLoaded(AudioTrack track) {
 			trackScheduler.queueTrack(track);
 			amount++;
+
+			sucmsg.append(event.getClient().getSuccess());
+			sucmsg.append(" Successfully load **").append(amount);
+			sucmsg.append("** tracks from Playlist **").append(pname).append("**");
+			pmessage.editMessage(sucmsg.toString()).queue();
 		}
 
 		@Override
@@ -159,16 +175,38 @@ public class PlaylistCommand extends MusicCommand {
 
 		@Override
 		public void noMatches() {
-			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" No result found: **").append(args).append("**");
-			event.reply(builder.toString());
+			erramount++;
+			errmsg.append(event.getClient().getError());
+			errmsg.append(" Failed to load **").append(erramount).append("** tracks");
+
+			if (errmessage == null) {
+				errmessage = event.getChannel().sendMessage(errmsg.toString()).complete();
+
+				if (musicManager.config.getMessageDeleteDelay() > 0) {
+					musicManager.deleteMessageLater(event.getChannel(), errmessage,
+							musicManager.config.getMessageDeleteDelay());
+				}
+			} else {
+				errmessage.editMessage(errmsg.toString()).queue();
+			}
 		}
 
 		@Override
 		public void loadFailed(FriendlyException throwable) {
-			StringBuilder builder = new StringBuilder(event.getClient().getError());
-			builder.append(" Faild to load **").append(args).append("**");
-			event.reply(builder.toString());
+			erramount++;
+			errmsg.append(event.getClient().getError());
+			errmsg.append(" Failed to load **").append(erramount).append("** tracks");
+
+			if (errmessage == null) {
+				errmessage = event.getChannel().sendMessage(errmsg.toString()).complete();
+
+				if (musicManager.config.getMessageDeleteDelay() > 0) {
+					musicManager.deleteMessageLater(event.getChannel(), errmessage,
+							musicManager.config.getMessageDeleteDelay());
+				}
+			} else {
+				errmessage.editMessage(errmsg.toString()).queue();
+			}
 		}
 	}
 }
