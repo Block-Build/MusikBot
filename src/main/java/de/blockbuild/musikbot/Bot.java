@@ -93,9 +93,9 @@ public class Bot {
 
 		try {
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
-					new File(main.getDataFolder(), "Sample_BotConfig.yml"));
+					new File(main.getFilePath(), "Sample_BotConfig.yml"));
 			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
-					new File(main.getDataFolder(), "Sample_GuildConfig.yml"));
+					new File(main.getFilePath(), "Sample_GuildConfig.yml"));
 		} catch (IOException e) {
 			System.err.println("[" + config.getName() + "] Can't write Sample_Configs.");
 			e.printStackTrace();
@@ -186,7 +186,8 @@ public class Bot {
 	}
 
 	public void initListeners() {
-		jda.addEventListener(new MessageListener(this), new VoiceChannelListener());
+		jda.addEventListener(new MessageListener(this));
+		jda.addEventListener(new VoiceChannelListener());
 	}
 
 	public void initCommandClient() {
