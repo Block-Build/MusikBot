@@ -5,6 +5,8 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.blockbuild.musikbot.configuration.ConfigFactory;
+import de.blockbuild.musikbot.configuration.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +16,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements Configuration {
 
 	private Bot bot;
 	private String FilePath;
@@ -22,6 +24,7 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		try {
+			ConfigFactory.getInstance().register(this);
 			setFilePath();
 			start();
 			Metrics();
@@ -81,7 +84,7 @@ public class Main extends JavaPlugin {
 			return users.size();
 		}));
 	}
-	
+
 	private final void setFilePath() {
 		FilePath = Paths.get("").toAbsolutePath().toString() + File.separator + "plugins" + File.separator
 				+ getName().toString();
@@ -90,4 +93,10 @@ public class Main extends JavaPlugin {
 	public final String getFilePath() {
 		return FilePath;
 	}
+
+	@Override
+	public String getVersion() {
+		return String.valueOf(this.getDescription().getVersion());
+	}
+
 }
