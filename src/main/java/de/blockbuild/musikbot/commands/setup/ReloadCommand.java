@@ -20,8 +20,7 @@ public class ReloadCommand extends SetupCommand {
 		StringBuilder builder = new StringBuilder().append(event.getClient().getSuccess());
 		builder.append(" Reloading...");
 		event.reply(builder.toString());
-
-		bot.getMain().reload();
+		ConfigFactory.getInstance().getConfig().reload();
 	}
 
 	@Override

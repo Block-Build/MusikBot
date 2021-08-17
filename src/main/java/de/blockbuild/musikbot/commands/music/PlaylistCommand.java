@@ -43,7 +43,8 @@ public class PlaylistCommand extends MusicCommand {
 		if (args.isEmpty() || x.length < 2) {
 			if (args.startsWith("list") || args.startsWith("show") || args.startsWith("load")) {
 				builder.append(" **Your Playlists:**\n");
-				File[] filelist = new File(bot.getMain().getDataFolder(), "/Playlists/" + user.getId() + "/")
+				final Configuration config = ConfigFactory.getInstance().getConfig();
+				File[] filelist = new File(config.getDataFolder(), "/Playlists/" + user.getId() + "/")
 						.listFiles();
 				if (filelist.length == 0) {
 					builder.append("`No saved playlist.`");
@@ -61,7 +62,7 @@ public class PlaylistCommand extends MusicCommand {
 		}
 
 		String pname = x[1];
-		PlaylistConfiguration playlist = new PlaylistConfiguration(bot, user, pname);
+		PlaylistConfiguration playlist = new PlaylistConfiguration(user, pname);
 
 		switch (x[0]) {
 		case "save":

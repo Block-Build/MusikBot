@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
+@SuppressWarnings("unused")
 public class Main extends JavaPlugin implements Configuration {
 
 	private Bot bot;
@@ -48,7 +49,7 @@ public class Main extends JavaPlugin implements Configuration {
 
 	private void start() {
 		Bukkit.getScheduler().runTaskLater(this, () -> {
-			bot = new Bot(this);
+			bot = new Bot();
 		}, 1L);
 	}
 

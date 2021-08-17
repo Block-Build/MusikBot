@@ -39,7 +39,7 @@ public class MessageListener extends ListenerAdapter {
 				}
 			});
 		} else if (msg.equalsIgnoreCase("***trigger")) {
-			channel.sendMessage(bot.config.getTrigger()).queue();
+			channel.sendMessage(bot.botConfig.getTrigger()).queue();
 		}
 	}
 }

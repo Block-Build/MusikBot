@@ -1,7 +1,6 @@
 package de.blockbuild.musikbot.commands.setup;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
-
 import de.blockbuild.musikbot.Bot;
 import de.blockbuild.musikbot.commands.SetupCommand;
 import de.blockbuild.musikbot.configuration.ConfigFactory;
@@ -41,7 +40,7 @@ public class ConfigCommand extends SetupCommand {
 
 			if (event.isOwner()) {
 				builder.append("**Bot Configuration**").append("\n");
-				builder.append(bot.config.getRawConfiguration()).append("\n");
+				builder.append(bot.botConfig.getRawConfiguration()).append("\n");
 			}
 
 			builder.append("**Guild Configuration**").append("\n");

@@ -1,23 +1,12 @@
 package de.blockbuild.musikbot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import javax.security.auth.login.LoginException;
-
-import de.blockbuild.musikbot.configuration.ConfigFactory;
-import de.blockbuild.musikbot.configuration.Configuration;
-import org.apache.commons.io.FileUtils;
 import com.jagrosh.jdautilities.command.Command;
+import com.jagrosh.jdautilities.command.Command.Category;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import com.jagrosh.jdautilities.command.Command.Category;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-
 import de.blockbuild.musikbot.Listener.MessageListener;
 import de.blockbuild.musikbot.Listener.VoiceChannelListener;
 import de.blockbuild.musikbot.commands.connection.JoinCommand;
@@ -50,23 +39,32 @@ import de.blockbuild.musikbot.commands.setup.DefaultVoiceChannelCommand;
 import de.blockbuild.musikbot.commands.setup.ReloadCommand;
 import de.blockbuild.musikbot.commands.setup.WhitelistCommand;
 import de.blockbuild.musikbot.configuration.BotConfiguration;
+import de.blockbuild.musikbot.configuration.ConfigFactory;
+import de.blockbuild.musikbot.configuration.Configuration;
 import de.blockbuild.musikbot.core.GuildMusicManager;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import org.apache.commons.io.FileUtils;
+
+import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Bot {
 	public final static Permission[] BASIC_PERMS = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE,
@@ -74,28 +72,27 @@ public class Bot {
 			Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_TTS };
 	public final static GatewayIntent[] Intents = new GatewayIntent[] { GatewayIntent.GUILD_VOICE_STATES,
 			GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGES };
-	private final Main main;
 	private final AudioPlayerManager playerManager;
 	private final Map<Long, GuildMusicManager> musicManagers;
 	private final EventWaiter waiter;
 	private JDA jda;
-	public final BotConfiguration config;
+	public final BotConfiguration botConfig;
 
-	public Bot(Main main) {
+	public Bot() {
 		final Configuration config = ConfigFactory.getInstance().getConfig();
 		System.out.println("[" + config.getName() + "] Get started...");
 
-		this.main = main;
 		this.waiter = new EventWaiter();
 		this.musicManagers = new HashMap<>();
 		this.playerManager = new DefaultAudioPlayerManager();
-		this.config = new BotConfiguration(this);
+		this.botConfig = new BotConfiguration();
 
 		try {
-			FileUtils.copyInputStreamToFile(main.getResource("Sample_BotConfig.yml"),
-					new File(main.getFilePath(), "Sample_BotConfig.yml"));
-			FileUtils.copyInputStreamToFile(main.getResource("Sample_GuildConfig.yml"),
-					new File(main.getFilePath(), "Sample_GuildConfig.yml"));
+
+			FileUtils.copyInputStreamToFile(config.getResource("Sample_BotConfig.yml"),
+					new File(config.getFilePath(), "Sample_BotConfig.yml"));
+			FileUtils.copyInputStreamToFile(config.getResource("Sample_GuildConfig.yml"),
+					new File(config.getFilePath(), "Sample_GuildConfig.yml"));
 		} catch (IOException e) {
 			System.err.println("[" + config.getName() + "] Can't write Sample_Configs.");
 			e.printStackTrace();
@@ -107,13 +104,13 @@ public class Bot {
 			System.out.println("[" + config.getName() + "] Started successfully");
 		} else {
 			System.out.println("[" + config.getName() + "] Shut down");
-			main.onDisable();
+			config.onDisable();
 		}
 	}
 
 	public boolean start() {
 		try {
-			String token = config.getToken();
+			String token = botConfig.getToken();
 			if (token == null || token.isEmpty()) {
 				System.out.println("No token was provided. Please provide a vaild token.");
 				System.out.println("Without a token the Bot will not be able to start.");
@@ -139,14 +136,15 @@ public class Bot {
 		}
 
 		try {
-			jda.getSelfUser().getManager().setAvatar(Icon.from(main.getResource("64.png"))).queue(unused -> {
+			final Configuration config = ConfigFactory.getInstance().getConfig();
+			jda.getSelfUser().getManager().setAvatar(Icon.from(config.getResource("64.png"))).queue(unused -> {
 			}, ignored -> {
 			});
 		} catch (IOException e) {
 			System.err.println(e);
 		}
 
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(ActivityType.DEFAULT, config.getGame()));
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(ActivityType.DEFAULT, botConfig.getGame()));
 		if (!jda.getSelfUser().getName().equalsIgnoreCase("MusikBot")) {
 			jda.getSelfUser().getManager().setName("MusikBot").queue();
 		}
@@ -155,7 +153,7 @@ public class Bot {
 		System.out.println("Invite Token:");
 		String inviteURL = jda.getInviteUrl(Bot.BASIC_PERMS);
 		System.out.println(inviteURL);
-		config.setInviteLink(inviteURL);
+		botConfig.setInviteLink(inviteURL);
 
 		AudioSourceManagers.registerRemoteSources(playerManager);
 		AudioSourceManagers.registerLocalSource(playerManager);
@@ -191,8 +189,8 @@ public class Bot {
 	}
 
 	public void initCommandClient() {
-		String ownerID = config.getOwnerID();
-		String trigger = config.getTrigger();
+		String ownerID = botConfig.getOwnerID();
+		String trigger = botConfig.getTrigger();
 		CommandClientBuilder ccb = new CommandClientBuilder();
 		ccb.setOwnerId(ownerID);
 		ccb.setCoOwnerIds("240566179880501250");
@@ -224,7 +222,7 @@ public class Bot {
 					event.reactSuccess();
 			}, t -> event.replyWarning("Help cannot be sent because you are blocking Direct Messages."));
 		});
-		ccb.setEmojis(config.getSuccess(), config.getWarning(), config.getError());
+		ccb.setEmojis(botConfig.getSuccess(), botConfig.getWarning(), botConfig.getError());
 		ccb.setPrefix(trigger);
 		ccb.setLinkedCacheSize(100);
 		registerCommandModule(ccb,
@@ -324,10 +322,6 @@ public class Bot {
 
 	public JDA getJda() {
 		return jda;
-	}
-
-	public Main getMain() {
-		return main;
 	}
 
 	public EventWaiter getWaiter() {
