@@ -4,15 +4,13 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.blockbuild.musikbot.Bot;
-
 public class BotConfiguration extends ConfigurationManager {
 	private String token, trigger, game, ownerID, inviteURL;
 	private Map<String, Object> emojis;
 	private static String header;
 
-	public BotConfiguration(Bot bot) {
-		super(new File(bot.getMain().getFilePath(), "BotConfig.yml"));
+	public BotConfiguration() {
+		super(new File(ConfigFactory.getInstance().getConfig().getFilePath(), "BotConfig.yml"));
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("# MusikBot by Block-Build\n");

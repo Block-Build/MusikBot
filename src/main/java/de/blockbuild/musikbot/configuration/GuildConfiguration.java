@@ -20,8 +20,8 @@ public class GuildConfiguration extends ConfigurationManager {
 	private Map<String, Object> autoConnect, defaultTextChannel, defaultVoiceChannel, roles, nowPlaying;
 	private static String header;
 
-	public GuildConfiguration(Bot bot, GuildMusicManager musicManager) {
-		super(new File(bot.getMain().getFilePath(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
+	public GuildConfiguration(GuildMusicManager musicManager) {
+		super(new File(ConfigFactory.getInstance().getConfig().getFilePath(), "/Guilds/" + musicManager.getGuild().getId() + ".yml"));
 		this.musicManager = musicManager;
 		this.guildName = musicManager.getGuild().getName();
 

@@ -28,7 +28,7 @@ public class GuildMusicManager {
 		this.trackScheduler = new TrackScheduler(bot, this);
 		this.player.addListener(trackScheduler);
 		this.autoPlay = false;
-		this.config = new GuildConfiguration(bot, this);
+		this.config = new GuildConfiguration(this);
 
 		if (config.isAutoConnectEnabled()) {
 			if (config.getAutoConnectVoiceChannelId() == 0) {
